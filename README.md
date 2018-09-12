@@ -139,6 +139,7 @@
 ### 后台
 
 * Python
+* Python virtualenv  Python虚拟环境
 * Python Flask  Web应用框架
 * Python pymysql  MySQL连接库
 * Python tensorflow  机器学习框架
