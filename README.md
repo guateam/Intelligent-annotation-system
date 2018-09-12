@@ -31,7 +31,6 @@
 
   * [统计所有批注并能进行数据挖掘及应用分析](#统计所有批注并能进行数据挖掘及应用分析)
 * [技术栈](#技术栈)
-
   * [前端](#前端)
 
   * [后台](#后台)
@@ -132,15 +131,19 @@
 
 * HTML, CSS, JavaScript
 * Vue.js
-* Vue VueRouter
-* Vue VueX
+* Vue VueRouter  Vue路由管理
+* Vue VueX  Vue数据管理
+* Vue axios  Vue请求工具
+* Vue iview  VueUI组件库
 
 ### 后台
 
 * Python
-* Python Flask
-* Python pymysql
-* 机器学习部分待定
+* Python Flask  Web应用框架
+* Python pymysql  MySQL连接库
+* Python tensorflow  机器学习框架
+* Python tensorboard  可视化训练结果
+* Python jieba  分词
 
 ### 存储
 
