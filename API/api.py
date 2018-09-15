@@ -62,7 +62,7 @@ def login():
     if result:
         result = db.update({'username': username, 'password': password}, {'token': new_token()}, 'user')
         if result:
-            return jsonify({'code': 1, 'msg': 'success', 'data': {'token': result['token']}})
+            return jsonify({'code': 1, 'msg': 'success', 'data': {'token': result['token'], 'group': result['group']}})
         return jsonify({'code': -1, 'msg': 'unable to update token'})
     return jsonify({'code': 0, 'msg': 'unexpected user'})
 
@@ -100,13 +100,13 @@ def sign_up():
 '''
 
 
-@app.route('/api/reading/get_book_info')
-def get_book_info():
+@app.route('/api/reading/get_book_info/<book_id>')
+def get_book_info(book_id):
     """
     获取书籍简介信息
     :return: code(0=未知书籍id，1=成功)
     """
-    book_id = request.form['id']
+    # book_id = request.form['id']
     db = Database()
     result = db.get({'id': book_id}, 'article')
     if result:
