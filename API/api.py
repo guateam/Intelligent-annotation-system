@@ -1,7 +1,15 @@
-from flask import Flask, request
+import json
+
+from flask import Flask, request, jsonify
 
 # 创建app
 app = Flask(__name__)
+
+'''
+    返回格式
+    json
+    {code=操作码，msg=错误信息，data=返回数据(可选)}
+'''
 
 
 # @app.route()是一种装饰器语法，装饰其下方的函数
@@ -22,6 +30,52 @@ def test_request():
     else:
         text = 'Can not receive anything.'
     return 'text = ' + text
+
+
+@app.route('/api/check_server')
+def check_server():
+    """
+    检查服务器是否可用
+    :return: json status(1=正常)
+    """
+    return jsonify({'code': 1, 'msg': ''})
+
+
+'''
+    用户接口
+'''
+
+
+@app.route('/api/account/login')
+def login():
+    """
+    用户登录
+    :return:
+    """
+    pass
+
+
+@app.route('/api/account/sign_up')
+def sign_up():
+    """
+    用户注册
+    :return:
+    """
+    pass
+
+
+'''
+    阅读接口
+'''
+
+
+@app.route('/api/reading/get_book_info')
+def get_book_info():
+    """
+    获取书籍简介信息
+    :return:
+    """
+    pass
 
 
 if __name__ == '__main__':
