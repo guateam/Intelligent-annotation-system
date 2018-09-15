@@ -1,9 +1,15 @@
 import json
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 # 创建app
 app = Flask(__name__)
+
+'''
+    返回格式
+    json
+    {code=操作码，msg=错误信息，data=返回数据(可选)}
+'''
 
 
 # @app.route()是一种装饰器语法，装饰其下方的函数
@@ -32,7 +38,7 @@ def check_server():
     检查服务器是否可用
     :return: json status(1=正常)
     """
-    return json.dumps({'status': 1})
+    return jsonify({'code': 1, 'msg': ''})
 
 
 '''
