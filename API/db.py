@@ -1,11 +1,10 @@
 import pymysql
 
-
 """                      MYSQL信息                      """
 MYSQL_HOST = 'localhost'
 MYSQL_PORT = 3306
 MYSQL_USER = 'root'
-MYSQL_PASSWORD = ''
+MYSQL_PASSWORD = 'zhangyuk'
 MYSQL_DB = 'IntelligentAnnotationSystem'
 """ 以上为变量为演示所用，正式开发时请统一写入config文件后引入 """
 
@@ -54,3 +53,54 @@ class Database(object):
         except pymysql.MySQLError as e:
             print(e.args)
             return False
+
+    def get(self, data, table):
+        """
+        获取数据库数据
+        :param data: dist 待查寻的数据
+        :param table: 目标table的名称
+        :return: list 查询到的内容
+        """
+
+        try:
+            with self.db.cursor() as cursor:
+                list1 = []
+                for key, values in data.items():
+                    list1.append(key + ' = "' + values + '"')
+                where = ' AND '.join(list1)
+                sql_query = 'SELECT * FROM %s WHERE %s' % (table, where)
+                cursor.execute(sql_query)
+                results = cursor.fetchall()
+                if len(results):
+                    return results[0]
+                return results
+        except pymysql.MySQLError as e:
+            print(e.args)
+            return []
+
+    def update(self, where_list, data, table):
+        """
+        更新数据库数据
+        :param where_list: dist 需要更新的数据库所在
+        :param data: dist 需要更新的内容
+        :param table: 目标表名
+        :return: list 更新后的表单
+        """
+        try:
+            with self.db.cursor() as cursor:
+                list1 = []
+                for key, values in where_list.items():
+                    list1.append(key + ' = "' + values + '"')
+                list2 = []
+                for key, values in data.items():
+                    list2.append(key + ' = "' + values + '"')
+                where = ' AND '.join(list1)
+                update = ' , '.join(list2)
+                sql_query = 'UPDATE %s SET %s WHERE %s' % (table, update, where)
+                cursor.execute(sql_query)
+                self.db.commit()
+                where_list.update(data)
+                return self.get(where_list, table)
+        except pymysql.MySQLError as e:
+            print(e.args)
+            return []

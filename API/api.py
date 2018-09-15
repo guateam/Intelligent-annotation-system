@@ -1,8 +1,11 @@
-import json
+import random
+import string
 
 from flask import Flask, request, jsonify
 
 # 创建app
+from API.db import Database
+
 app = Flask(__name__)
 
 '''
@@ -46,13 +49,41 @@ def check_server():
 '''
 
 
-@app.route('/api/account/login')
+@app.route('/api/account/login', methods=['POST'])
 def login():
     """
     用户登录
-    :return:
+    :return: code(0=未知用户，-1=token初始化失败，1=成功)
     """
-    pass
+    username = request.form['username']
+    password = request.form['password']
+    db = Database()
+    result = db.get({'username': username, 'password': password}, 'user')
+    if result:
+        result = db.update({'username': username, 'password': password}, {'token': new_token()}, 'user')
+        if result:
+            return jsonify({'code': 1, 'msg': 'success', 'data': {'token': result['token']}})
+        return jsonify({'code': -1, 'msg': 'unable to update token'})
+    return jsonify({'code': 0, 'msg': 'unexpected user'})
+
+
+def new_token():
+    ran_str = ''.join(random.sample(string.ascii_letters + string.digits, 25))
+    return ran_str
+
+
+@app.route('/api/account/logout', methods=['POST'])
+def logout():
+    """
+    用户退出
+    :return: code(0=未知用户，1=成功)
+    """
+    token = request.form['token']
+    db = Database()
+    result = db.update({'token': token}, {'token': ''}, 'user')
+    if result:
+        return jsonify({'code': 1, 'msg': 'success'})
+    return jsonify({'code': 0, 'msg': 'unexpected user'})
 
 
 @app.route('/api/account/sign_up')
@@ -73,9 +104,14 @@ def sign_up():
 def get_book_info():
     """
     获取书籍简介信息
-    :return:
+    :return: code(0=未知书籍id，1=成功)
     """
-    pass
+    book_id = request.form['id']
+    db = Database()
+    result = db.get({'id': book_id}, 'article')
+    if result:
+        return jsonify({'code': 1, 'msg': 'success', 'data': result})
+    return jsonify({'code': 0, 'msg': 'unexpected book id'})
 
 
 if __name__ == '__main__':
