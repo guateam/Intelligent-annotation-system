@@ -193,7 +193,7 @@
 
 | Column      | Datatype  | PrimaryKey | NotNull | Default           | Comments     | Extra       |
 | ----------- | --------- | ---------- | ------- | ----------------- | ------------ | ----------- |
-| id          | int(11)   | yes        | yes     | AI                | 批注         |             |
+| id          | int(11)   | yes        | yes     | AI                | 批注id       |             |
 | article_id  | int(11)   | no         | yes     |                   | 文章id       | foreign key |
 | user_id     | int(11)   | no         | yes     |                   | 批注人id     |             |
 | paragraph   | int(11)   | no         | yes     |                   | 自然段       |             |
