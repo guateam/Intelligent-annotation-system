@@ -156,7 +156,63 @@
 
 ## 数据库结构
 
+用户表：user
+
+| Column   | Datatype    | PrimaryKey | NotNull | Default           | Comments |
+| -------- | ----------- | ---------- | ------- | ----------------- | -------- |
+| id       | int(11)     | yes        | yes     | AI                | 用户id   |
+| username | varchar(20) | no         | yes     |                   | 用户名   |
+| email    | varchar(45) | no         | no      |                   | 邮箱     |
+| phone    | varchar(20) | no         | no      |                   | 手机     |
+| password | varchar(45) | no         | yes     |                   | 密码     |
+| nickname | varchar(45) | no         | no      |                   | 昵称     |
+| token    | varchar(25) | no         | no      |                   | TOKEN    |
+| group    | int(11)     | no         | yes     |                   | 用户组   |
+| date     | timestamp   | no         | yes     | current_timestamp | 注册时间 |
+
+文章表：article
+
+| Column    | Datatype    | PrimaryKey | NotNull | Default           | Comments       |
+| --------- | ----------- | ---------- | ------- | ----------------- | -------------- |
+| id        | int(11)     | yes        | yes     | AI                | 文章id         |
+| title     | varchar(45) | no         | yes     |                   | 文章标题       |
+| file_path | varchar(45) | no         | yes     |                   | 文章内容的路径 |
+| uploader  | int(11)     | no         | yes     |                   | 上传人         |
+| state     | int(11)     | no         | yes     |                   | 审核状态        |
+| date      | timestamp   | no         | yes     | current_timestamp | 上传时间       |
+
+文章类型表：article_tag
+
+| Column     | Datatype    | PrimaryKey | NotNull | Default | Comments | Extra       |
+| ---------- | ----------- | ---------- | ------- | ------- | -------- | ----------- |
+| id         | int(11)     | yes        | yes     | AI      | id       |             |
+| article_id | int(11)     | no         | yes     |         | 文章id   | foreign key |
+| tag        | varchar(20) | no         | yes     |         | Tag      |             |
+
+批注表：comments
+
+| Column      | Datatype  | PrimaryKey | NotNull | Default           | Comments     | Extra       |
+| ----------- | --------- | ---------- | ------- | ----------------- | ------------ | ----------- |
+| id          | int(11)   | yes        | yes     | AI                | 批注         |             |
+| article_id  | int(11)   | no         | yes     |                   | 文章id       | foreign key |
+| user_id     | int(11)   | no         | yes     |                   | 批注人id     |             |
+| paragraph   | int(11)   | no         | yes     |                   | 自然段       |             |
+| start_index | int(11)   | no         | yes     |                   | 开始索引     |             |
+| end_index   | int(11)   | no         | yes     |                   | 结束索引     |             |
+| type        | int(11)   | no         | yes     |                   | 批注类型     |             |
+| text        | text      | no         | no      |                   | 文字批注内容 |             |
+| date        | timestamp | no         | yes     | current_timestamp | 批注时间     |             |
+
 ## 接口
+
+接口规范
+
+* 返回值
+  - 类型：json
+  - 字段：
+    - code：操作状态码
+    - msg：错误提示
+    - data：返回数据
 
 ## 界面设计
 
