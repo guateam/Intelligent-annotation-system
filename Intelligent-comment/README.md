@@ -1,4 +1,4 @@
-# Intelligent-comment
+# intelligent
 
 ## Project setup
 ```
