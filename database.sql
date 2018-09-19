@@ -24,7 +24,8 @@ DROP TABLE IF EXISTS `article`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `article` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '文章id',
-  `titile` varchar(45) NOT NULL COMMENT '文章标题',
+  `title` varchar(45) NOT NULL COMMENT '文章标题',
+  `image_path` varchar(45) DEFAULT NULL COMMENT '标题图片的路径',
   `file_path` varchar(45) NOT NULL COMMENT '文章内容的路径',
   `uploader` int(11) NOT NULL COMMENT '上传人',
   `state` int(11) NOT NULL COMMENT '审核状态',
@@ -84,7 +85,9 @@ CREATE TABLE `comments` (
   `end_index` int(11) NOT NULL COMMENT '结束索引',
   `type` int(11) NOT NULL COMMENT '批注类型',
   `text` text COMMENT '文字批注内容',
+  `disagree_count` int(11) NOT NULL DEFAULT '0' COMMENT '反对数',
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '批注时间',
+  `agree_count` int(11) NOT NULL DEFAULT '0' COMMENT '赞同数',
   PRIMARY KEY (`id`),
   KEY `comments_article_id_fk` (`article_id`),
   CONSTRAINT `comments_article_id_fk` FOREIGN KEY (`article_id`) REFERENCES `article` (`id`)
@@ -139,4 +142,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-15 19:54:55
+-- Dump completed on 2018-09-19 21:43:13
