@@ -32,16 +32,22 @@
   - [统计所有批注并能进行数据挖掘及应用分析](#统计所有批注并能进行数据挖掘及应用分析)
 - [技术栈](#技术栈)
   - [前端](#前端)
-
-  - [后台](#后台)
-
+  - [后台接口](#后台接口)
+  - [机器学习项目](#机器学习项目)
+  - [网络爬虫](#网络爬虫)
   - [存储](#存储)
-
   - [移动端](#移动端)
 - [数据库结构](#数据库结构)
 - [接口](#接口)
 - [界面设计](#界面设计)
   - [大屏网页版](#大屏网页版)
+- [智能判断优秀批注](#智能判断优秀批注)
+  - [样本](#样本)
+    - [数据来源](#数据来源)
+    - [数据筛选](#数据筛选)
+    - [数据处理](#数据处理)
+
+
 
 ## 文档编辑规范
 
@@ -60,16 +66,19 @@
 - [ ] 后台数据库中填入若干用于测试的内容
 - 后台完成提供首页内容的接口，包括
   - [ ] 书籍推荐
-
   - [ ] 热门文章
-
   - [ ] 优秀批注
-
   - [ ] 热门分类
-
   - [ ] 优秀学生
-
   - [ ] 优秀老师
+- [ ] 建立爬虫项目，收集短评样本用于以后实现判断批注是否优秀
+
+- 数据库需要修改：
+  - [x] 文章需要图片字段
+  - [x] 批注有回复功能，需要存储每条批注的回复
+  - [x] 批注有赞同和反对数量
+  - [ ] 批注需要添加字段来表示权重，用于排序
+
 - 开发要求：对所有代码添加尽可能详细的注释，做到能够让其他组员快速读懂代码逻辑并能修改代码，修改情况：
   - [ ] 前端
   - [ ] 后台
@@ -154,7 +163,7 @@
 
 ## 技术栈
 
-### 前端
+### 前端页面
 
 - HTML, CSS, JavaScript
 - Vue.js
@@ -163,15 +172,23 @@
 - Vue axios  Vue请求工具
 - Vue iview  VueUI组件库
 
-### 后台
+### 后台接口
 
 - Python
 - Python virtualenv  Python虚拟环境
 - Python Flask  Web应用框架
 - Python pymysql  MySQL连接库
+
+### 机器学习项目
+
 - Python tensorflow  机器学习框架
 - Python tensorboard  可视化训练结果
 - Python jieba  分词
+
+### 网络爬虫
+
+- Python requests  请求页面
+- Python pyquery  html解析器
 
 ### 存储
 
@@ -203,6 +220,7 @@
 | --------- | ----------- | ---------- | ------- | ----------------- | -------------- |
 | id        | int(11)     | yes        | yes     | AI                | 文章id         |
 | title     | varchar(45) | no         | yes     |                   | 文章标题       |
+| image_path | varchar(45) | no | no | NULL | 标题图片的路径 |
 | file_path | varchar(45) | no         | yes     |                   | 文章内容的路径 |
 | uploader  | int(11)     | no         | yes     |                   | 上传人         |
 | state     | int(11)     | no         | yes     |                   | 审核状态        |
@@ -218,17 +236,19 @@
 
 批注表：comments
 
-| Column      | Datatype  | PrimaryKey | NotNull | Default           | Comments     | Extra       |
-| ----------- | --------- | ---------- | ------- | ----------------- | ------------ | ----------- |
-| id          | int(11)   | yes        | yes     | AI                | 批注id       |             |
-| article_id  | int(11)   | no         | yes     |                   | 文章id       | foreign key |
-| user_id     | int(11)   | no         | yes     |                   | 批注人id     |             |
-| paragraph   | int(11)   | no         | yes     |                   | 自然段       |             |
-| start_index | int(11)   | no         | yes     |                   | 开始索引     |             |
-| end_index   | int(11)   | no         | yes     |                   | 结束索引     |             |
-| type        | int(11)   | no         | yes     |                   | 批注类型     |             |
-| text        | text      | no         | no      |                   | 文字批注内容 |             |
-| date        | timestamp | no         | yes     | current_timestamp | 批注时间     |             |
+| Column         | Datatype  | PrimaryKey | NotNull | Default           | Comments     | Extra       |
+| -------------- | --------- | ---------- | ------- | ----------------- | ------------ | ----------- |
+| id             | int(11)   | yes        | yes     | AI                | 批注id       |             |
+| article_id     | int(11)   | no         | yes     |                   | 文章id       | foreign key |
+| user_id        | int(11)   | no         | yes     |                   | 批注人id     |             |
+| paragraph      | int(11)   | no         | yes     |                   | 自然段       |             |
+| start_index    | int(11)   | no         | yes     |                   | 开始索引     |             |
+| end_index      | int(11)   | no         | yes     |                   | 结束索引     |             |
+| type           | int(11)   | no         | yes     |                   | 批注类型     |             |
+| text           | text      | no         | no      |                   | 文字批注内容 |             |
+| agree_count    | int       | no         | yes     | 0                 | 赞同数       |             |
+| disagree_count | int       | no         | yes     | 0                 | 反对数       |             |
+| date           | timestamp | no         | yes     | current_timestamp | 批注时间     |             |
 
 ## 接口
 
@@ -325,3 +345,35 @@
     - 从阅读区域右侧弹出，弹出时阅读区域左移
     - 点击添加批注时在顶部加入编辑框
     - 列表右下角有添加批注按钮
+
+
+
+## 智能判断优秀批注
+
+利用机器学习，利用大量样本训练得到可以判断批注是否优秀的模型
+
+### 样本
+
+#### 数据来源
+
+豆瓣评分 > 7.0的图书短评
+
+#### 数据筛选
+
+优秀评论：
+
+- 评论字数 > 15
+- 评论星星数 >= 4 
+- 评论被评为“有用”的次数 > 400
+
+非优秀评论：
+
+- 评论字数 <= 15
+- 评论星星数 <= 3
+- 评论被评为“有用”的次数 == 0
+- 评论包含敏感词
+
+#### 数据处理
+
+1. 分词：使用结巴分词对短评进行分词，去掉停用词
+2. 建立两个目录，分别用于存储优秀评论和非优秀评论，评论在目录下的存储形式为`[索引].txt`，每条评论存为一个文件
