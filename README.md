@@ -263,7 +263,7 @@
     
 接口详情
 - 账户
-  - 用户登录
+  - 用户登录 /api/account/login()
     - 参数
         - username ：用户名
         - password ：密码
@@ -273,32 +273,117 @@
         - data ：
             - token ：用户标识
             - group ：用户群组
-  - 用户登出
+  - 用户登出 /api/account/logout()
     - 参数
         - token ：用户标识
     - 返回值
         - code ：0 = 未知用户，1 = 成功
         - msg ：信息
-  - 用户注册
+  - 用户注册 /api/account/signup()
     - 参数
         - 待定
     - 返回值
         - code ：0 = 未知错误，-1 = 已存在用户，1 = 成功
 - 读书
-  - 通过书籍ID获取书籍详情
+  - 通过书籍ID获取书籍详情 /api/reading/get_book_info()
     - 参数(通过路由 事例：/api/reading/get_book_info/1)
-        - id ：书籍id 
+        - id ：文章id 
     - 返回值
         - code ：0 = 未知书籍，1 = 成功
         - msg ：信息
         - data 
-            - id ：书籍id
-            - title ：书籍标题
-            - file_path ：书籍内容地址
+            - id ：文章id
+            - title ：文章标题
+            - file_path ：文章内容地址
             - uploader ：上传人
-            - state ：书籍状态 0 = 未审核，1 = 已审核，-1 = 未通过审核或下架
-            - date ：书籍上传日期
-
+            - state ：文章状态 0 = 未审核，1 = 已审核，-1 = 未通过审核或下架
+            - date ：文章上传日期
+  - 首页文章推荐 /api/reading/article_recommend()
+    - 参数
+        - token ：用户token
+    - 返回值
+        - code ：0 = 未知用户， 1 = 成功
+        - msg ：信息
+        - data
+            - 数组
+                - id ：文章id
+                - title ：文章标题
+                - file_path ：文章内容地址
+                - uploader ：上传人
+                - date ：文章上传日期
+                - cover ：封面
+                - author ：作者
+                - num_comment ：评论数
+                - like ：点赞数量
+  - 首页优秀批注推荐 /api/reading/comment_recommend()
+    - 参数
+        - token ：用户token
+    - 返回值
+        - code ：0 = 未知用户，1 = 成功
+        - msg ：信息
+        - data
+            - 数组
+                - id ：批注id
+                - book_id ：文章id
+                - book_name ：文章标题
+                - comment ：批注内容
+                - comment_uploader ：批注上传人
+                - comment_sentence ：批注目标段落
+                - num_comment ：评论数
+                - like ：点赞数量
+  - 首页热门分类 /api/reading/tag_recommend()
+    - 参数
+        - token ：用户token
+    - 返回值
+        - code ：0 = 未知用户，1 = 成功
+        - msg ：信息
+        - data
+            - 数组
+                - id ：tag id
+                - name ：分类名称
+- 用户
+    - 首页推荐老师 /api/user/teacher_recommend()
+        - 参数
+            - token ：用户token
+        - 返回值
+            - code ：0 = 未知用户，1 = 成功
+            - msg ：信息
+            - data
+                - 数组
+                    - id ：用户id
+                    - name ：用户昵称
+                    - school ：来自学校
+                    - introduce ：简介
+    - 首页推荐学生 /api/user/student_recommend()
+        - 参数
+            - token ：用户token
+        - 返回值
+            - code ：0 = 未知用户，1 = 成功
+            - msg ：信息
+            - data
+                - 数组
+                    - id ：用户id
+                    - name ：用户昵称
+                    - school ：来自学校
+                    - introduce ：简介
+- 信息
+    - 通知信息
+        - 参数
+            - token ：用户token
+        - 返回值
+            - 数组
+                - code ：0 = 未知用户，1 = 成功
+                - msg ：信息
+                - data
+                    - 数组
+                        - 待定
+- 杂项
+    - ping /api/check_server()
+        - 参数
+            - 无
+        - 返回值
+            - code ：1 = 成功
+            - msg ：信息
 ## 界面设计
 
 ### 大屏网页版
