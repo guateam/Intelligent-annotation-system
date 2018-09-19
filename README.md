@@ -209,6 +209,7 @@
 | --------- | ----------- | ---------- | ------- | ----------------- | -------------- |
 | id        | int(11)     | yes        | yes     | AI                | 文章id         |
 | title     | varchar(45) | no         | yes     |                   | 文章标题       |
+| author | varchar(20) | no | yes | "未知作者" | 文章作者 |
 | image_path | varchar(45) | no | no | NULL | 标题图片的路径 |
 | file_path | varchar(45) | no         | yes     |                   | 文章内容的路径 |
 | uploader  | int(11)     | no         | yes     |                   | 上传人         |

@@ -25,11 +25,12 @@ DROP TABLE IF EXISTS `article`;
 CREATE TABLE `article` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '文章id',
   `title` varchar(45) NOT NULL COMMENT '文章标题',
-  `image_path` varchar(45) DEFAULT NULL COMMENT '标题图片的路径',
+  `author` varchar(20) NOT NULL DEFAULT '未知作者' COMMENT '文章作者',
   `file_path` varchar(45) NOT NULL COMMENT '文章内容的路径',
   `uploader` int(11) NOT NULL COMMENT '上传人',
   `state` int(11) NOT NULL COMMENT '审核状态',
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间',
+  `image_path` varchar(45) DEFAULT NULL COMMENT '标题图片的路径',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -142,4 +143,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-19 21:43:13
+-- Dump completed on 2018-09-19 21:50:57
