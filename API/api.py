@@ -135,7 +135,20 @@ def get_book_info(book_id):
 
 @app.route('/api/reading/article_recommend')
 def article_recommend():
-    pass
+    token = '1'
+    db = Database()
+    result = []
+    user = db.get({'token': token}, 'user')  # 获取用户信息
+    if user:
+        book = db.get({}, 'article', 0)  # 获取书籍信息
+        for value in book:
+            tags = db.get({'article_id': value['id']}, 'article_tag', 0)  # 获取书籍对应tag信息
+            if tags:
+                pass  # 执行相关操作
+                value.update({'num_comment': 0, 'like': 0})
+                result.append(value)
+        return jsonify({'code': 1, 'msg': '', 'data': result})
+    return jsonify({'code': 0, 'msg': 'unexpected user'})
 
 
 @app.route('/api/reading/comment_recommend')

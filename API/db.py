@@ -54,24 +54,31 @@ class Database(object):
             print(e.args)
             return False
 
-    def get(self, data, table):
+    def get(self, data, table, type=1):
         """
         获取数据库数据
+        :param type: int 返回种类 1 = 自动返回数组或单个dist 0 = 全部返回数组(用于遍历)
         :param data: dist 待查寻的数据
         :param table: 目标table的名称
         :return: list 查询到的内容
         """
-
         try:
             with self.db.cursor() as cursor:
+                if not data:
+                    sql_query = 'SELECT * FROM %s' % table
+                    cursor.execute(sql_query)
+                    results = cursor.fetchall()
+                    if len(results) and type == 1:
+                        return results[0]
+                    return results
                 list1 = []
                 for key, values in data.items():
-                    list1.append(key + ' = "' + values + '"')
+                    list1.append(key + ' = "' + str(values) + '"')
                 where = ' AND '.join(list1)
                 sql_query = 'SELECT * FROM %s WHERE %s' % (table, where)
                 cursor.execute(sql_query)
                 results = cursor.fetchall()
-                if len(results):
+                if len(results) and type == 1:
                     return results[0]
                 return results
         except pymysql.MySQLError as e:
