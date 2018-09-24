@@ -1,19 +1,17 @@
 <template>
   <div id="app">
     <Myheader></Myheader>
-    <ArticleList></ArticleList>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
     // @ is an alias to /src
-    import Myheader from '@/components/myheader/myheader'
-    import ArticleList from '@/components/article-list/article-list'
+    import Myheader from './components/myheader/myheader'
 
     export default {
         components: {
-            Myheader,
-            ArticleList
+            Myheader
         }
     }
 </script>
