@@ -5,7 +5,7 @@ import hashlib
 MYSQL_HOST = 'localhost'
 MYSQL_PORT = 3306
 MYSQL_USER = 'root'
-MYSQL_PASSWORD = 'zhangyuk'
+MYSQL_PASSWORD = '1455140909'
 MYSQL_DB = 'IntelligentAnnotationSystem'
 """ 以上为变量为演示所用，正式开发时请统一写入config文件后引入 """
 
@@ -20,6 +20,7 @@ def generate_password(original_password):
     sha256 = hashlib.sha256()  # 创建sha256对象
     sha256.update((original_password + salt).encode('utf-8'))  # 加载密码
     return sha256.hexdigest()  # 返回十六进制字符串
+
 
 
 class Database(object):
@@ -52,14 +53,14 @@ class Database(object):
         :return: 操作是否成功
         """
         # 构造键值成分
-        keys = ', '.join(data.keys())
+        keys = '`' + '`, `'.join(data.keys()) + '`'
         values = ', '.join(['%s'] * len(data))
         # 插入数据
         try:
             with self.db.cursor() as cursor:
                 # 构造sql语句
                 sql_query = 'INSERT INTO %s (%s) VALUES (%s)' % (table, keys, values)
-                cursor.execute(sql_query, tuple(data.values()))
+                print(sql_query, tuple(data.values()))
             # 提交语句
             self.db.commit()
             return True
