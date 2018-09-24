@@ -52,7 +52,8 @@ class Database(object):
         :return: 操作是否成功
         """
         # 构造键值成分
-        keys = ', '.join(data.keys())
+        keys = '`' + '`, `'.join(data.keys()) + '`'
+
         values = ', '.join(['%s'] * len(data))
         # 插入数据
         try:

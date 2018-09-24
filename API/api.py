@@ -107,7 +107,7 @@ def logout():
     return jsonify({'code': 0, 'msg': 'unexpected user'})  # 失败返回
 
 
-@app.route('/api/account/sign_up', methods=['POST'])
+@app.route('/api/account/signup', methods=['POST'])
 def sign_up():
     """
     用户注册
@@ -136,7 +136,7 @@ def sign_up():
         'email': email,
         'password': generate_password(password),
         'group': group
-    })  # 添加新用户
+    }, 'user')  # 添加新用户
     if flag:
         return jsonify({'code': 1, 'msg': 'success'})
     return jsonify({'code': -3, 'msg': 'unknown'})
@@ -209,7 +209,7 @@ def article_recommend():
     根据用户模型推荐文章
     :return: code 1=成功 0=未知用户 data 数组
     """
-    token = '1'
+    token = request.values.get('token')
     db = Database()
     result = []
     user = db.get({'token': token}, 'user')  # 获取用户信息
