@@ -49,10 +49,12 @@
 
 ## 开发进度
 
-截止至 2018-09-23
+截止至 2018-09-24
 
 - [ ] 前端完成首页样式，内容见[界面设计：大屏网页版](#大屏网页版)
+
 - [ ] 后台数据库中填入若干用于测试的内容
+
 - 后台完成提供首页内容的接口，包括
   - [ ] 书籍推荐
   - [ ] 热门文章
@@ -60,17 +62,30 @@
   - [ ] 热门分类
   - [ ] 优秀学生
   - [ ] 优秀老师
-- [ ] 建立爬虫项目，收集短评样本用于以后实现判断批注是否优秀
+
+- 建立爬虫项目，收集短评样本用于以后实现判断批注是否优秀
+
+  - [x] 完成下载器
+
+  - 完成解析器
+    - [ ] 解析豆瓣图书首页
+    - [ ] 解析图书详情页
+    - [ ] 解析短评页面
+  - [ ] 完成任务队列
+  - [ ] 完成存储器
+  - [ ] 完成调度器
 
 - 数据库需要修改：
   - [x] 文章需要图片字段
   - [x] 批注有回复功能，需要存储每条批注的回复
   - [x] 批注有赞同和反对数量
   - [ ] 批注需要添加字段来表示权重，用于排序
+  - [x] 用户表添加了一个管理员用户，用户名`admin`，密码`admin`
 
 - 开发要求：对所有代码添加尽可能详细的注释，做到能够让其他组员快速读懂代码逻辑并能修改代码，修改情况：
   - [ ] 前端
   - [ ] 后台
+
 - 学习内容：
   - [ ] 前端学习Vue.js，进度：
   - [ ] 后台学习python flask，进度：
@@ -156,32 +171,34 @@
 
 - HTML, CSS, JavaScript
 - Vue.js
-- Vue VueRouter  Vue路由管理
-- Vue VueX  Vue数据管理
-- Vue axios  Vue请求工具
-- Vue iview  VueUI组件库
+- Vue - VueRouter => Vue路由管理
+- Vue - VueX => Vue数据管理
+- Vue - axios => Vue请求工具
+- Vue - iview => VueUI组件库
 
 ### 后台接口
 
 - Python
-- Python virtualenv  Python虚拟环境
-- Python Flask  Web应用框架
-- Python pymysql  MySQL连接库
+- Python - virtualenv => Python虚拟环境
+- Python - Flask => Web应用框架
+- Python - pymysql => MySQL连接库
 
 ### 机器学习项目
 
-- Python tensorflow  机器学习框架
-- Python tensorboard  可视化训练结果
-- Python jieba  分词
+- Python - tensorflow => 机器学习框架
+- Python - tensorboard => 可视化训练结果
+- Python - jieba => 分词
 
 ### 网络爬虫
 
-- Python requests  请求页面
-- Python pyquery  html解析器
+- Python - requests => 请求页面
+- Python - pyquery => html解析器
+- Python - redis => redis数据库接口
 
 ### 存储
 
 - MySQL
+- Redis
 
 ### 移动端
 
@@ -191,17 +208,17 @@
 
 用户表：user
 
-| Column   | Datatype    | PrimaryKey | NotNull | Default           | Comments |
-| -------- | ----------- | ---------- | ------- | ----------------- | -------- |
-| id       | int(11)     | yes        | yes     | AI                | 用户id   |
-| username | varchar(20) | no         | yes     |                   | 用户名   |
-| email    | varchar(45) | no         | no      |                   | 邮箱     |
-| phone    | varchar(20) | no         | no      |                   | 手机     |
-| password | varchar(45) | no         | yes     |                   | 密码     |
-| nickname | varchar(45) | no         | no      |                   | 昵称     |
-| token    | varchar(25) | no         | no      |                   | TOKEN    |
-| group    | int(11)     | no         | yes     |                   | 用户组   |
-| date     | timestamp   | no         | yes     | current_timestamp | 注册时间 |
+| Column   | Datatype     | PrimaryKey | NotNull | Default           | Comments | Extra                    |
+| -------- | ------------ | ---------- | ------- | ----------------- | -------- | ------------------------ |
+| id       | int(11)      | yes        | yes     | AI                | 用户id   |                          |
+| username | varchar(20)  | no         | yes     |                   | 用户名   |                          |
+| email    | varchar(45)  | no         | no      |                   | 邮箱     |                          |
+| phone    | varchar(20)  | no         | no      |                   | 手机     |                          |
+| password | varchar(200) | no         | yes     |                   | 密码     |                          |
+| nickname | varchar(45)  | no         | no      |                   | 昵称     |                          |
+| token    | varchar(25)  | no         | no      |                   | TOKEN    |                          |
+| group    | int(11)      | no         | yes     |                   | 用户组   | 1-管理员\|2-教师\|3-学生 |
+| date     | timestamp    | no         | yes     | current_timestamp | 注册时间 |                          |
 
 文章表：article
 

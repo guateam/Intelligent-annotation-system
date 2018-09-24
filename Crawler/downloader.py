@@ -14,18 +14,19 @@ class Downloader(object):
         """
         下载页面源码
         :param url: 目标地址
-        :return: 网页源码，失败时返回False
+        :return: 网页源码
         """
+        page_source = None  # 定义返回值
+        # 尝试发送请求
         try:
-            response = requests.get(url, headers=self.headers)  # 发送请求
+            response = requests.get(url, headers=self.headers)
             if response.status_code == requests.codes.ok:  # 判断响应状态
                 page_source = response.text  # 获取网页源码
-                return page_source  # 返回源码
             else:
                 response.raise_for_status()  # 抛出异常状态
         except requests.exceptions.HTTPError as e:
             print(e)  # 打印出异常信息
-            return False  # 返回False
+        return page_source  # 返回源码
 
 
 # 测试异常处理

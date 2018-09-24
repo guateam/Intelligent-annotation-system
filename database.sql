@@ -26,11 +26,11 @@ CREATE TABLE `article` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '文章id',
   `title` varchar(45) NOT NULL COMMENT '文章标题',
   `author` varchar(20) NOT NULL DEFAULT '未知作者' COMMENT '文章作者',
+  `image_path` varchar(45) DEFAULT NULL COMMENT '标题图片的路径',
   `file_path` varchar(45) NOT NULL COMMENT '文章内容的路径',
   `uploader` int(11) NOT NULL COMMENT '上传人',
   `state` int(11) NOT NULL COMMENT '审核状态',
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间',
-  `image_path` varchar(45) DEFAULT NULL COMMENT '标题图片的路径',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -116,13 +116,13 @@ CREATE TABLE `user` (
   `username` varchar(20) NOT NULL COMMENT '用户名',
   `email` varchar(45) DEFAULT NULL COMMENT '邮箱',
   `phone` varchar(20) DEFAULT NULL COMMENT '手机',
-  `password` varchar(45) NOT NULL COMMENT '密码',
+  `password` varchar(200) NOT NULL COMMENT '密码',
   `nickname` varchar(45) DEFAULT NULL COMMENT '昵称',
   `token` varchar(25) DEFAULT NULL COMMENT 'TOKEN',
-  `group` int(11) NOT NULL COMMENT '用户组',
+  `group` int(11) NOT NULL COMMENT '用户组 1-管理员|2-教师|3-学生',
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='用户表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,6 +131,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'admin','adminstrator@outlook.com','18012345678','593421b87fabdaa514f3943ab2a037ff5ac3063f63c278e0d6b4a0dc3ee15361','系统管理员',NULL,1,'2018-09-24 05:54:31');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -143,4 +144,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-19 21:50:57
+-- Dump completed on 2018-09-24 13:55:59
