@@ -288,9 +288,33 @@
         - msg ：信息
   - 用户注册 /api/account/signup()
     - 参数
-        - 待定
+        - username ：用户名
+        - password ：密码
+        - phone ：手机号
+        - email ：EMail
+        - nickname ：昵称
+        - group ：用户组
     - 返回值
-        - code ：0 = 未知错误，-1 = 已存在用户，1 = 成功
+        - code ：0 = 用户名已存在，-1 = EMail已存在，-2 = 手机号已存在，-3 = 未知错误，1 = 成功
+        - msg ：信息
+  - 用户名检测 /api/account/check_username_available()
+    - 参数
+        - username ：用户名
+    - 返回值
+        - code ：0 = 不可用，1 = 可用
+        - msg ：信息
+  - 手机号检测 /api/account/check_phone_available()
+    - 参数
+        - phone ：手机号
+    - 返回值
+        - code ：0 = 不可用，1 = 可用
+        - msg ：信息
+  - 邮箱检测 /api/account/check_email_available()
+    - 参数
+        - email ：邮箱
+    - 返回值
+        - code ：0 = 不可用，1 = 可用
+        - msg ：信息
 - 读书
   - 通过书籍ID获取书籍详情 /api/reading/get_book_info()
     - 参数(通过路由 事例：/api/reading/get_book_info/1)

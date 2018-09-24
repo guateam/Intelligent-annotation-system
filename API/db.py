@@ -67,29 +67,34 @@ class Database(object):
             print(e.args)
             return False
 
-    def get(self, data, table):
+    def get(self, data, table, type=1):
         """
         获取数据库数据
+        :param type: int 返回种类 1 = 自动返回数组或单个dist 0 = 全部返回数组(用于遍历)
         :param data: dist 待查寻的数据
         :param table: 目标table的名称
-        :return: list 查询到的内容
+        :return: list 查询到的内容 当无数据时返回空数组，单个数据时按照type种类返回单个dist或数组，多个数据时固定返回数组
         """
-
         try:
             with self.db.cursor() as cursor:
+                if not data:  # 判断data是否为空
+                    sql_query = 'SELECT * FROM %s' % table  # 构造sql语句
+                    cursor.execute(sql_query)
+                    results = cursor.fetchall()
+                    return results  # 返回所有数据
                 list1 = []
                 for key, values in data.items():
-                    list1.append(key + ' = "' + values + '"')
+                    list1.append(key + ' = "' + str(values) + '"')
                 where = ' AND '.join(list1)
-                sql_query = 'SELECT * FROM %s WHERE %s' % (table, where)
+                sql_query = 'SELECT * FROM %s WHERE %s' % (table, where)  # 构造sql语句
                 cursor.execute(sql_query)
                 results = cursor.fetchall()
-                if len(results):
-                    return results[0]
-                return results
+                if len(results) and type == 1:
+                    return results[0]  # 返回单个数组
+                return results  # 返回多个数组
         except pymysql.MySQLError as e:
             print(e.args)
-            return []
+            return []  # 返回空数组
 
     def update(self, where_list, data, table):
         """
@@ -97,7 +102,7 @@ class Database(object):
         :param where_list: dist 需要更新的数据库所在
         :param data: dist 需要更新的内容
         :param table: 目标表名
-        :return: list 更新后的表单
+        :return: dist 更新后的表单 单个dist
         """
         try:
             with self.db.cursor() as cursor:
@@ -109,11 +114,11 @@ class Database(object):
                     list2.append(key + ' = "' + values + '"')
                 where = ' AND '.join(list1)
                 update = ' , '.join(list2)
-                sql_query = 'UPDATE %s SET %s WHERE %s' % (table, update, where)
+                sql_query = 'UPDATE %s SET %s WHERE %s' % (table, update, where)  # 构造sql语句
                 cursor.execute(sql_query)
                 self.db.commit()
-                where_list.update(data)
-                return self.get(where_list, table)
+                where_list.update(data)  # 更新查询选项
+                return self.get(where_list, table)  # 调用get返回更新后的信息
         except pymysql.MySQLError as e:
             print(e.args)
             return []

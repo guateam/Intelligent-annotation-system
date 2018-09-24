@@ -4,7 +4,7 @@ import string
 from flask import Flask, request, jsonify
 
 # 创建app
-from API.db import Database
+from API.db import Database, generate_password
 
 app = Flask(__name__)
 
@@ -58,9 +58,11 @@ def login():
     username = request.form['username']
     password = request.form['password']
     db = Database()
-    result = db.get({'username': username, 'password': password}, 'user')  # 获取数据
+    result = db.get({'username': username, 'password': generate_password(password)}, 'user')  # 获取数据
     if result:
-        result = db.update({'username': username, 'password': password}, {'token': new_token()}, 'user')  # 更新token
+        result = db.update({'username': username, 'password': generate_password(password)},
+                           {'token': new_token()},
+                           'user')  # 更新token
         if result:
             return jsonify(
                 {'code': 1, 'msg': 'success', 'data': {'token': result['token'], 'group': result['group']}}
@@ -105,13 +107,81 @@ def logout():
     return jsonify({'code': 0, 'msg': 'unexpected user'})  # 失败返回
 
 
-@app.route('/api/account/sign_up')
+@app.route('/api/account/sign_up', methods=['POST'])
 def sign_up():
     """
     用户注册
     :return:
     """
-    pass
+    username = request.form['username']
+    nickname = request.form['nickname']
+    phone = request.form['phone']
+    email = request.form['email']
+    password = request.form['password']
+    group = request.form['group']
+    db = Database()
+    check_username = db.get({'username': username}, 'user')
+    check_email = db.get({'email': email}, 'user')
+    check_phone = db.get({'phone': phone}, 'user')
+    if check_username:
+        return jsonify({'code': 0, 'msg': 'username is already signed'})
+    if check_email:
+        return jsonify({'code': -1, 'msg': 'email is already signed'})
+    if check_phone:
+        return jsonify({'code': -2, 'msg': 'phone is already signed'})
+    flag = db.insert({
+        'username': username,
+        'nickname': nickname,
+        'phone': phone,
+        'email': email,
+        'password': generate_password(password),
+        'group': group
+    })  # 添加新用户
+    if flag:
+        return jsonify({'code': 1, 'msg': 'success'})
+    return jsonify({'code': -3, 'msg': 'unknown'})
+
+
+@app.route('/api/account/check_username_available')
+def check_username_available():
+    """
+    检查用户名是否可用
+    :return: code 1 = 可用 0 = 不可用
+    """
+    username = request.form['username']
+    db = Database()
+    check_username = db.get({'username': username}, 'user')
+    if check_username:
+        return jsonify({'code': 0, 'msg': 'username is already signed'})
+    return jsonify({'code': 1, 'msg': 'username is available'})
+
+
+@app.route('/api/account/check_phone_available')
+def check_phone_available():
+    """
+    检查手机号是否可用
+    :return: code 1 = 可用 0 = 不可用
+    """
+    phone = request.form['phone']
+    db = Database()
+    check_phone = db.get({'phone': phone}, 'user')
+    if check_phone:
+        return jsonify({'code': 0, 'msg': 'phone is already signed'})
+    return jsonify({'code': 1, 'msg': 'phone is available'})
+
+
+@app.route('/api/account/check_email_available')
+def check_email_available():
+    """
+    检查邮箱是否可用
+    :return: code 1 = 可用 0 = 不可用
+    """
+    email = request.form['email']
+    db = Database()
+    check_email = db.get({'email': email}, 'user')
+    if check_email:
+        return jsonify({'code': 0, 'msg': 'email is already signed'})
+    return jsonify({'code': 1, 'msg': 'email is available'})
 
 
 '''
@@ -135,17 +205,40 @@ def get_book_info(book_id):
 
 @app.route('/api/reading/article_recommend')
 def article_recommend():
-    pass
+    """
+    根据用户模型推荐文章
+    :return: code 1=成功 0=未知用户 data 数组
+    """
+    token = '1'
+    db = Database()
+    result = []
+    user = db.get({'token': token}, 'user')  # 获取用户信息
+    if user:
+        book = db.get({}, 'article', 0)  # 获取书籍信息
+        for value in book:
+            tags = db.get({'article_id': value['id']}, 'article_tag', 0)  # 获取书籍对应tag信息
+            if tags:
+                pass  # 执行相关操作
+                value.update({'num_comment': 0, 'like': 0})
+                result.append(value)
+        return jsonify({'code': 1, 'msg': '', 'data': result})
+    return jsonify({'code': 0, 'msg': 'unexpected user'})
 
 
 @app.route('/api/reading/comment_recommend')
 def comment_recommend():
-    pass
+    """
+    根据用户模型推荐批注
+    :return:
+    """
 
 
 @app.route('/api/reading/tag_recommend')
 def tag_recommend():
-    pass
+    """
+    根据用户模型推荐tag
+    :return:
+    """
 
 
 '''
@@ -155,12 +248,18 @@ def tag_recommend():
 
 @app.route('/api/user/teacher_recommend')
 def teacher_recommend():
-    pass
+    """
+    根据用户模型推荐老师
+    :return:
+    """
 
 
 @app.route('/api/user/student_recommend')
 def student_recommend():
-    pass
+    """
+    根据用户模型推荐学生
+    :return:
+    """
 
 
 if __name__ == '__main__':
