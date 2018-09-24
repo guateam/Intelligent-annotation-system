@@ -1,4 +1,5 @@
 import pymysql
+import hashlib
 
 """                      MYSQL信息                      """
 MYSQL_HOST = 'localhost'
@@ -7,6 +8,18 @@ MYSQL_USER = 'root'
 MYSQL_PASSWORD = 'zhangyuk'
 MYSQL_DB = 'IntelligentAnnotationSystem'
 """ 以上为变量为演示所用，正式开发时请统一写入config文件后引入 """
+
+
+def generate_password(original_password):
+    """
+    加密函数，使用sha256对密码进行加密处理
+    :param original_password: 原密码
+    :return: 加密后的二进制字符串
+    """
+    salt = 'intelligent'  # 加盐
+    sha256 = hashlib.sha256()  # 创建sha256对象
+    sha256.update((original_password + salt).encode('utf-8'))  # 加载密码
+    return sha256.hexdigest()  # 返回十六进制字符串
 
 
 class Database(object):
