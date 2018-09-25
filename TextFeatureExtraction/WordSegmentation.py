@@ -13,13 +13,14 @@ import numpy as np
 import random
 import math
 
-#下面reload如果报错好像可以无视，因为是用来区分py版本，下面报错是旧版本py的函数
+# 下面reload如果报错好像可以无视，因为是用来区分py版本，下面报错是旧版本py的函数
 if sys.version_info[0] > 2:
     is_py3 = True
 else:
     reload(sys)
     sys.setdefaultencoding("utf-8")
     is_py3 = False
+
 
 def native_word(word, encoding='utf-8'):
     """如果在python2下面使用python3训练的模型，可考虑调用此函数转化一下字符编码"""
@@ -28,11 +29,13 @@ def native_word(word, encoding='utf-8'):
     else:
         return word
 
+
 def native_content(content):
     if not is_py3:
         return content.decode('utf-8')
     else:
         return content
+
 
 def word_segmentation(sentence, hmm=True):
     """
@@ -45,6 +48,7 @@ def word_segmentation(sentence, hmm=True):
     seg_list = jieba.cut(sentence, HMM=hmm)  # 分词
     return seg_list
 
+
 def open_file(filename, mode='r'):
     """
     常用文件操作，可在python2和python3间切换.
@@ -55,6 +59,7 @@ def open_file(filename, mode='r'):
     else:
         return open(filename, mode)
 
+
 def read_file(filename):
     """读取文件数据"""
     contents, labels = [], []
@@ -62,11 +67,12 @@ def read_file(filename):
         for line in f:
             try:
                 label, content = line.strip().split('\t')
-                contents.append(list(content)) # 字符级特征
+                contents.append(list(content))  # 字符级特征
                 labels.append(label)
             except:
                 pass
     return contents, labels
+
 
 def build_vocab(train_dir, vocab_dir, vocab_size=5000):
     """根据训练集构建词汇表，存储"""
@@ -82,6 +88,7 @@ def build_vocab(train_dir, vocab_dir, vocab_size=5000):
     words = ['<PAD>'] + list(words)
     open_file(vocab_dir, mode='w').write('\n'.join(words) + '\n')
 
+
 def read_vocab(vocab_dir):
     """读取词汇表"""
     # words = open_file(vocab_dir).read().strip().split('\n')
@@ -92,6 +99,7 @@ def read_vocab(vocab_dir):
 
     return words, word_to_id
 
+
 def read_category():
     """读取分类目录，固定"""
     categories = ['体育', '财经', '房产', '家居', '教育', '科技', '时尚', '时政', '游戏', '娱乐']
@@ -101,6 +109,7 @@ def read_category():
     cat_to_id = dict(zip(categories, range(len(categories))))
 
     return categories, cat_to_id
+
 
 def to_words(content, words):
     """将id表示的内容转换为文字"""
@@ -136,6 +145,7 @@ def batch_iter(x, y, batch_size=64):
         start_id = i * batch_size
         end_id = min((i + 1) * batch_size, data_len)
         yield x_shuffle[start_id:end_id], y_shuffle[start_id:end_id]
+
 
 class TCNNConfig(object):
     """CNN配置参数"""
@@ -256,7 +266,6 @@ def train():
     x_train, y_train = process_file(train_dir, word_to_id, cat_to_id, config.seq_length)
     x_val, y_val = process_file(val_dir, word_to_id, cat_to_id, config.seq_length)
 
-
     # 创建session
     session = tf.Session()
     session.run(tf.global_variables_initializer())
@@ -297,7 +306,7 @@ def train():
 
                 msg = 'Iter: {0:>6}, Train Loss: {1:>6.2}, Train Acc: {2:>7.2%},' \
                       + ' Val Loss: {3:>6.2}, Val Acc: {4:>7.2%}'
-                print(msg.format(total_batch, loss_train, acc_train, loss_val, acc_val,improved_str))
+                print(msg.format(total_batch, loss_train, acc_train, loss_val, acc_val, improved_str))
 
             session.run(model.optim, feed_dict=feed_dict)  # 运行优化
             total_batch += 1
@@ -359,11 +368,10 @@ vocab_dir = os.path.join(base_dir, 'cnews.vocab.txt')
 save_dir = 'checkpoints/textcnn'
 save_path = os.path.join(save_dir, 'best_validation')  # 最佳验证结果保存路径
 
-
 if __name__ == '__main__':
-#   用于判断是训练还是预测
-#    if len(sys.argv) != 2 or sys.argv[1] not in ['train', 'test']:
-#        raise ValueError("""usage: python run_cnn.py [train / test]""")
+    #   用于判断是训练还是预测
+    #    if len(sys.argv) != 2 or sys.argv[1] not in ['train', 'test']:
+    #        raise ValueError("""usage: python run_cnn.py [train / test]""")
 
     print('Configuring CNN model...')
     config = TCNNConfig()
@@ -374,18 +382,12 @@ if __name__ == '__main__':
     config.vocab_size = len(words)
     model = TextCNN(config)
 
-    #if sys.argv[1] == 'train':
+    # if sys.argv[1] == 'train':
     train()
-    #else:
-    #    test()
+# else:
+#    test()
 
 
-
-    
 # if __name__ == '__main__':
 #     for word in word_segmentation('在这篇文章中，我们将实现一个类似于Kim Yoon的卷积神经网络语句分类的模型', hmm=False):
 #         print(word, end='/')
-
-
-
-
