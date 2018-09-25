@@ -1,4 +1,6 @@
-# 定义异常
+"""
+错误信息
+"""
 
 
 class QueueEmptyError(Exception):
