@@ -124,11 +124,11 @@ def sign_up():
     check_email = db.get({'email': email}, 'user')
     check_phone = db.get({'phone': phone}, 'user')
     if check_username:
-        return jsonify({'code': 0, 'msg': 'username is already signed'})
+        return jsonify({'code': 0, 'msg': 'username is already signed'})  # 用户名重复
     if check_email:
-        return jsonify({'code': -1, 'msg': 'email is already signed'})
+        return jsonify({'code': -1, 'msg': 'email is already signed'})  # 邮箱重复
     if check_phone:
-        return jsonify({'code': -2, 'msg': 'phone is already signed'})
+        return jsonify({'code': -2, 'msg': 'phone is already signed'})  # 手机号重复
     flag = db.insert({
         'username': username,
         'nickname': nickname,
@@ -138,8 +138,8 @@ def sign_up():
         'group': group
     }, 'user')  # 添加新用户
     if flag:
-        return jsonify({'code': 1, 'msg': 'success'})
-    return jsonify({'code': -3, 'msg': 'unknown'})
+        return jsonify({'code': 1, 'msg': 'success'})  # 成功返回
+    return jsonify({'code': -3, 'msg': 'unknown'})  # 未知错误
 
 
 @app.route('/api/account/check_username_available')
@@ -150,10 +150,10 @@ def check_username_available():
     """
     username = request.form['username']
     db = Database()
-    check_username = db.get({'username': username}, 'user')
+    check_username = db.get({'username': username}, 'user')  # 查询
     if check_username:
-        return jsonify({'code': 0, 'msg': 'username is already signed'})
-    return jsonify({'code': 1, 'msg': 'username is available'})
+        return jsonify({'code': 0, 'msg': 'username is already signed'})  # 不可用
+    return jsonify({'code': 1, 'msg': 'username is available'})  # 可用
 
 
 @app.route('/api/account/check_phone_available')
