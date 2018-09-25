@@ -1,0 +1,82 @@
+
+#计算出余弦相似度
+#vector1    用户的评分矩阵，一维
+#vector2    某个其他用户的评分矩阵，一维
+#返回       用户和某个用户的兴趣相似度
+def cosine_similarity(vector1, vector2):
+    dot_product = 0.0
+    normA = 0.0
+    normB = 0.0
+    for a, b in zip(vector1, vector2):
+        dot_product += a * b
+        normA += a ** 2
+        normB += b ** 2
+    if normA == 0.0 or normB == 0.0:
+        return 0
+    else:
+        return round(dot_product / ((normA ** 0.5) * (normB ** 0.5)) * 100, 2)
+
+#获取兴趣程度，作为protected方法使用
+#similar    该用户和目标用户的兴趣相似度,数字
+#rate_vec   该用户的评分矩阵，一维
+#返回       每个评价对象的兴趣程度 ,一维
+def interest_value(similar,rate_vec):
+    interest_vec = []
+    for i in range(len(rate_vec)):
+        interest_vec.append(similar*rate_vec[i])
+    return interest_vec
+
+#获取目标用户最感兴趣的几个对象
+#similar_vec  其他用户和目标用户的兴趣相似度矩阵，一维
+#rate_vec     用户的评分矩阵，二维，一维对应某用户，一维对应该用户的评分
+#k            选取其他用户的个数，按相似度程度降序排列
+#m             输出的元组个数
+#返回           元组，格式为 (评论对象下标，兴趣度)
+def most_interest(similar_vec,rate_vec,k=1,m=1):
+    total_interest = []
+    for i in range(len(rate_vec[0])):
+        total_interest.append(0)
+    together = sorted(list(   zip(   list(zip(range(len(similar_vec)),similar_vec)),rate_vec)   ),key=lambda item:item[0][1])
+    together = together[0:k]
+    print(len(together))
+    print(together[0][1])
+    for i in range(len(together)):
+        now_vec = interest_value(together[i][0][1],together[i][1])
+        for j in range(len(now_vec)):
+            total_interest[j]+=now_vec[j]
+    
+    zip_interest = dict(zip(range(len(total_interest)),total_interest))
+    sorted_interest = sorted(zip_interest.items(),key=lambda item:item[1],reverse=True)
+    return sorted_interest[:k]
+        
+
+#以下为使用样例
+
+#用户id列表
+user_vec = [1,2,3,4]
+#对象类型
+item_vec = ["体育","游戏","财经","军事","娱乐"]
+#每个用户对每个对象类型的评分(在本系统中，对象是文章类型，评分是偏好程度，偏好程度可以根据点赞数量，浏览次数等等数据获得)
+rate_vec = [
+    [1  ,3  ,0.4,2.2,1.3],
+    [0.8,0.7,1.5,1.7,3  ],
+    [1.6,0.4,2.3,1  ,1.5],
+    [0.7,1.6,1.1,1.2,0.3]
+]
+#相似度矩阵，待计算
+similar_vec = []
+for i in range(len(rate_vec)):
+    if i==0:
+        #以第一个用户为目标用户，第一次循环计算自己的相似度，adjusted_cosin算法得到的值越小，相似度越大，这里设置为0
+        #表示最大相似度
+        similar_vec.append(0)
+    else:
+        #以第一个用户为目标用户，计算其他用户的相似度
+        similar_vec.append(cosine_similarity(rate_vec[0],rate_vec[i]))
+
+#获取目标用户最感兴趣的对象类型
+most_interest_vec = most_interest(similar_vec[1:],rate_vec[1:])
+#输出类型
+#当用户基数少的时候，由于cos计算结果可能都很大，即使选取最相似的其他用户进行推荐，也会形成推荐不准确
+#比如这个例子下的结果"财经",目标用户对财经的评价很低，但是依然推荐了财经
+print(item_vec[most_interest_vec[0][0]])
