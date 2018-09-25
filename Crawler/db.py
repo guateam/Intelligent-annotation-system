@@ -1,14 +1,16 @@
-# 数据库模块
-# 管理url队列
 import redis
 
 from Crawler.error import QueueEmptyError
 
+# 数据库信息
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 REDIS_PASSWORD = None
-REDIS_KEY = 'book_url'
 
+# 键名
+REDIS_KEY = 'books'
+
+# 分数
 MAX_SCORE = 100
 MIN_SCORE = 0
 
@@ -42,7 +44,7 @@ class RedisClient(object):
         """
         score = self.db.zscore(REDIS_KEY, url)  # 获取分数
         if score > MIN_SCORE:  # 如果分数大于最小值
-            print('图书链接：{}，标记为已完成'.format(url))
+            print('图书链接 {} , 标记为已完成.'.format(url))
             return self.db.zincrby(REDIS_KEY, url, -MAX_SCORE)  # 分数减去最大值
 
     def exists(self, url):
@@ -85,17 +87,11 @@ class RedisClient(object):
         """
         return self.db.zremrangebyscore(REDIS_KEY, MIN_SCORE, MAX_SCORE)  # 删除所有成员
 
-
-# 测试用
-if __name__ == '__main__':
-    db = RedisClient()
-    baidu = 'www.baidu.com'
-    google = 'www.google.com'
-    print(db.add(baidu))
-    print(db.add(google))
-    print(db.all())
-    print(db.pop())
-    print(db.done(google))
-    print(db.all())
-    print(db.pop())
-    print(db.clear())
+    def delete(self, url):
+        """
+        删除url
+        :param url: URL
+        :return:
+        """
+        print('图书链接 {} 已从队列中移除.'.format(url))
+        return self.db.zrem(REDIS_KEY, url)  # 删除url
