@@ -8,7 +8,7 @@ def word_segmentation(sentence, hmm=True):
     :param hmm: 是否开启新词发现
     :return: 分词结果列表，非list，可迭代
     """
-    jieba.enable_parallel(4)  # 使用4进程运行
+    # jieba.enable_parallel(4)  # 使用4进程运行，仅在非windows平台可用
     seg_list = jieba.cut(sentence, HMM=hmm)  # 分词
     return seg_list
 
