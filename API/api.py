@@ -1,3 +1,4 @@
+import datetime
 import os
 import random
 import string
@@ -8,6 +9,7 @@ from flask import Flask, request, jsonify, Response
 from werkzeug.utils import secure_filename
 
 from API.db import Database, generate_password
+from TextFeatureExtraction.WordSegmentation import pred
 
 app = Flask(__name__)
 
@@ -202,7 +204,7 @@ def get_book_info(book_id):
     db = Database()
     result = db.get({'id': book_id}, 'article')  # 获取书籍id
     if result:
-        result.update({'image_path':change_route(result['image_path'])})
+        result.update({'image_path': change_route(result['image_path'])})
         return jsonify({'code': 1, 'msg': 'success', 'data': result})
     return jsonify({'code': 0, 'msg': 'unexpected book id'})
 
@@ -278,11 +280,11 @@ def upload_article():
     if user:
         base_path = ''
         article = request.files['article']
-        article_path = os.path.join(base_path, 'static\\upload', article.filename)
+        article_path = os.path.join(base_path, 'static\\upload', datetime.datetime.now().timestamp(), article.filename)
         article.save(article_path)  # 上传文章
 
         image = request.files['image']
-        image_path = os.path.join(base_path, 'static\\upload', secure_filename(image.filename))
+        image_path = os.path.join(base_path, 'static\\upload', datetime.datetime.now().timestamp(), image.filename)
         image.save(image_path)  # 上传封面
 
         title = request.form['title']
@@ -295,9 +297,16 @@ def upload_article():
             'author': author,
             'uploader': int(user['id'])
         }, 'article')  # 添加记录
-
         if flag:
-            return jsonify({'code': 1, 'msg': 'success'})  # 成功返回
+            with open(article_path, 'r') as file:
+                result = pred(file.read())
+                print(result)
+                data = db.get({'file_path': article_path}, 'article')
+                if data:
+                    tag_flag = db.insert({'article_id': data['id'], 'tag': result[0]})
+                    if tag_flag:
+                        return jsonify({'code': 1, 'msg': 'success'})  # 成功返回
+                return jsonify({'code': -1, 'msg': 'unknown error'})  # 未知错误
         return jsonify({'code': -1, 'msg': 'unknown error'})  # 未知错误
     return jsonify({'code': 0, 'msg': 'unexpected user'})  # 未知用户
 
@@ -319,4 +328,8 @@ if __name__ == '__main__':
     # 开启调试模式，修改代码后不需要重新启动服务即可生效
     # 请勿在生产环境下使用调试模式
     # Flask服务将默认运行在localhost的5000端口上
+
+    # with open('static\\upload\\36.txt', 'rb') as file:
+    #     result = pred(file.read())
+    #     print(result)
     app.run(debug=True)
