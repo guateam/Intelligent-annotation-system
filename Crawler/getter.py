@@ -1,4 +1,5 @@
 import json
+import re
 
 from Crawler.crawler import Crawler
 from Crawler.db import RedisClient
@@ -33,7 +34,8 @@ class Getter(object):
             book_list = self.crawler.crawl_home()  # 获取书籍列表
             if book_list is not None:  # 如果书籍列表不为空
                 for book in book_list:
-                    self.redis.add(book)  # 把书籍URL加入队列
+                    if re.match(r'https://book.douban.com/subject/.*', book):  # 检测书籍url格式
+                        self.redis.add(book)  # 把书籍URL加入队列
         else:
             print('Queue is over threshold.')
             return
@@ -50,8 +52,9 @@ class Getter(object):
                 comment_url, book_list = self.crawler.crawl_index(book_url)  # 对这本书进行解析
                 if book_list is not None and not self.is_over_threshold():  # 如果书籍列表不为空并且队列没有达到上限
                     for book in book_list:
-                        if self.redis.add(book) == 0:  # 把获取到的书籍加入队列
-                            self.redis.done(book)  # 如果书籍已经存在则标记为完成
+                        if re.match(r'https://book.douban.com/subject/.*', book):  # 检测书籍url格式
+                            if self.redis.add(book) == 0:  # 把获取到的书籍加入队列
+                                self.redis.done(book)  # 如果书籍已经存在则标记为完成
                 if comment_url is not None:  # 如果成功获取到书评URL
                     data_list = self.crawler.crawl_comments(comment_url)  # 解析评论
                     # 显示评论信息
