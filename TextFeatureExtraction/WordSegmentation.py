@@ -7,13 +7,14 @@ import tensorflow.contrib.keras as kr
 from sklearn import metrics
 import numpy as np
 
-#下面reload如果报错好像可以无视，因为是用来区分py版本，下面报错是旧版本py的函数
+# 下面reload如果报错好像可以无视，因为是用来区分py版本，下面报错是旧版本py的函数
 if sys.version_info[0] > 2:
     is_py3 = True
 else:
     reload(sys)
     sys.setdefaultencoding("utf-8")
     is_py3 = False
+
 
 def native_word(word, encoding='utf-8'):
     """如果在python2下面使用python3训练的模型，可考虑调用此函数转化一下字符编码"""
@@ -22,11 +23,13 @@ def native_word(word, encoding='utf-8'):
     else:
         return word
 
+
 def native_content(content):
     if not is_py3:
         return content.decode('utf-8')
     else:
         return content
+
 
 def word_segmentation(sentence, hmm=True):
     """
@@ -39,6 +42,7 @@ def word_segmentation(sentence, hmm=True):
     seg_list = jieba.cut(sentence, HMM=hmm)  # 分词
     return seg_list
 
+
 def open_file(filename, mode='r'):
     """
     常用文件操作，可在python2和python3间切换.
@@ -49,6 +53,7 @@ def open_file(filename, mode='r'):
     else:
         return open(filename, mode)
 
+
 def read_file(filename):
     """读取文件数据"""
     contents, labels = [], []
@@ -56,11 +61,12 @@ def read_file(filename):
         for line in f:
             try:
                 label, content = line.strip().split('\t')
-                contents.append(list(content)) # 字符级特征
+                contents.append(list(content))  # 字符级特征
                 labels.append(label)
             except:
                 pass
     return contents, labels
+
 
 def build_vocab(train_dir, vocab_dir, vocab_size=5000):
     """根据训练集构建词汇表，存储"""
@@ -76,6 +82,7 @@ def build_vocab(train_dir, vocab_dir, vocab_size=5000):
     words = ['<PAD>'] + list(words)
     open_file(vocab_dir, mode='w').write('\n'.join(words) + '\n')
 
+
 def read_vocab(vocab_dir):
     """读取词汇表"""
     # words = open_file(vocab_dir).read().strip().split('\n')
@@ -86,6 +93,7 @@ def read_vocab(vocab_dir):
 
     return words, word_to_id
 
+
 def read_category():
     """读取分类目录，固定"""
     categories = ['体育', '财经', '房产', '家居', '教育', '科技', '时尚', '时政', '游戏', '娱乐']
@@ -95,6 +103,7 @@ def read_category():
     cat_to_id = dict(zip(categories, range(len(categories))))
 
     return categories, cat_to_id
+
 
 def to_words(content, words):
     """将id表示的内容转换为文字"""
@@ -143,6 +152,7 @@ def batch_iter(x, y, batch_size=64):
         start_id = i * batch_size
         end_id = min((i + 1) * batch_size, data_len)
         yield x_shuffle[start_id:end_id], y_shuffle[start_id:end_id]
+
 
 class TCNNConfig(object):
     """CNN配置参数"""
@@ -271,7 +281,6 @@ def train():
     x_train, y_train = process_file(train_dir, word_to_id, cat_to_id, config.seq_length)
     x_val, y_val = process_file(val_dir, word_to_id, cat_to_id, config.seq_length)
 
-
     # 创建session
     session = tf.Session()
     session.run(tf.global_variables_initializer())
@@ -312,7 +321,7 @@ def train():
 
                 msg = 'Iter: {0:>6}, Train Loss: {1:>6.2}, Train Acc: {2:>7.2%},' \
                       + ' Val Loss: {3:>6.2}, Val Acc: {4:>7.2%}'
-                print(msg.format(total_batch, loss_train, acc_train, loss_val, acc_val,improved_str))
+                print(msg.format(total_batch, loss_train, acc_train, loss_val, acc_val, improved_str))
 
             session.run(model.optim, feed_dict=feed_dict)  # 运行优化
             total_batch += 1
@@ -410,11 +419,10 @@ vocab_dir = os.path.join(base_dir, 'cnews.vocab.txt')
 save_dir = 'checkpoints/textcnn'
 save_path = os.path.join(save_dir, 'best_validation')  # 最佳验证结果保存路径
 
-
 if __name__ == '__main__':
-#   用于判断是训练还是预测
-#    if len(sys.argv) != 2 or sys.argv[1] not in ['train', 'test']:
-#        raise ValueError("""usage: python run_cnn.py [train / test]""")
+    #   用于判断是训练还是预测
+    #    if len(sys.argv) != 2 or sys.argv[1] not in ['train', 'test']:
+    #        raise ValueError("""usage: python run_cnn.py [train / test]""")
 
     # print('Configuring CNN model...')
     # config = TCNNConfig()
@@ -432,13 +440,6 @@ if __name__ == '__main__':
     str_tiyu = "山东鲁能近来在中超联赛中取得两连胜，已经走出三连败低谷，同时重燃杀入三甲希望；足协杯中，山东鲁能首回合1-0击败大连一方，次回合只需要一场平局即可晋级决赛。大连一方同样状态不俗，一波三连胜之后，积分追平第七位的广州富力。本赛季双方已经打了三场比赛，山东鲁能2胜1负，联赛中客场落败。山东鲁能此役更换外援配置，佩莱与塔尔德利搭档锋线，格德斯轮休；大连一方变化更大，尽管主帅舒斯特尔喊着放手一搏，但是他们的阵容变化不小，卡拉斯科、穆谢奎未随队出征，主力门将张翀轮休，取而代之的是于子千。第6分钟，山东鲁能后卫传球力量稍小，韩镕泽及时出击解围但不远，盖坦断球之后直接射门，韩镕泽将球没收。第15分钟，山东鲁能创造得分机会，金敬道送出挑传，王彤边路突破到底线附近横传，佩莱中路拿球背身回做，塔尔德利迎球怒射，球擦立柱偏出。第23分钟，里亚斯科斯内切射门将球打飞。山东鲁能第25分钟被动换人，佩莱大腿受伤无法坚持，李霄鹏用吴兴涵将其换下。第31分钟，山东鲁能前场组织进攻，王彤边路传中被后卫解围到后点，候个正着的郑铮凌空抽射，于子千将球挡出底线。蒿俊闵角球传到禁区内，吉尔头球攻门被于子千没收。第42分钟，大连一方获得机会，赵学斌弧线球射门被韩镕泽扑出，周挺跟进补射稍稍高出横梁。第44分钟，大连一方打出快速反击，连续挑球配合，盖坦挑传球，里亚斯科斯快速插上磕磕绊绊将球送入球门，但边裁示意里亚斯科斯越位在先，慢镜头回放显示，王彤前提，造越位成功，进球无效。上半场比赛战罢，双方暂时战成0-0平。"
     pred(str_tiyu)
 
-
-
-    
 # if __name__ == '__main__':
 #     for word in word_segmentation('在这篇文章中，我们将实现一个类似于Kim Yoon的卷积神经网络语句分类的模型', hmm=False):
 #         print(word, end='/')
-
-
-
-
