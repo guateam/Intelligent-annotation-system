@@ -1,9 +1,12 @@
+import os
 import random
 import string
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 
 # 创建app
+from werkzeug.utils import secure_filename
+
 from API.db import Database, generate_password
 
 app = Flask(__name__)
@@ -199,6 +202,7 @@ def get_book_info(book_id):
     db = Database()
     result = db.get({'id': book_id}, 'article')  # 获取书籍id
     if result:
+        result.update({'image_path':change_route(result['image_path'])})
         return jsonify({'code': 1, 'msg': 'success', 'data': result})
     return jsonify({'code': 0, 'msg': 'unexpected book id'})
 
@@ -260,6 +264,54 @@ def student_recommend():
     根据用户模型推荐学生
     :return:
     """
+
+
+@app.route('/api/upload/upload_article', methods=['POST'])
+def upload_article():
+    """
+    上传接口
+    :return: code 1=成功 0=未知用户 -1=未知错误
+    """
+    token = request.form['token']
+    db = Database()
+    user = db.get({'token': token}, 'user')  # 通过用户token获取用户信息
+    if user:
+        base_path = ''
+        article = request.files['article']
+        article_path = os.path.join(base_path, 'static\\upload', article.filename)
+        article.save(article_path)  # 上传文章
+
+        image = request.files['image']
+        image_path = os.path.join(base_path, 'static\\upload', secure_filename(image.filename))
+        image.save(image_path)  # 上传封面
+
+        title = request.form['title']
+        author = request.form['author']
+
+        flag = db.insert({
+            'file_path': article_path,
+            'image_path': image_path,
+            'title': title,
+            'author': author,
+            'uploader': int(user['id'])
+        }, 'article')  # 添加记录
+        if flag:
+            return jsonify({'code': 1, 'msg': 'success'})  # 成功返回
+        return jsonify({'code': -1, 'msg': 'unknown error'})  # 未知错误
+    return jsonify({'code': 0, 'msg': 'unexpected user'})  # 未知用户
+
+
+def change_route(route, change_type=0):
+    """
+    改变route路径
+    :param route: 原路径
+    :param change_type: 转化种类 1=\\转/ 0=/转\\
+    :return: 转换后的内容
+    """
+    if change_type == 0:
+        return route.replace('/', '\\')
+    else:
+        return route.replace('\\', '/')
 
 
 if __name__ == '__main__':

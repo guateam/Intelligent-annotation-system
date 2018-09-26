@@ -412,6 +412,17 @@
                 - data
                     - 数组
                         - 待定
+- 上传
+    - 上传文章
+        - 参数
+            - article ：文章文件
+            - image ：封面
+            - title ：标题
+            - token ：用户token
+            - author ：作者
+        - 返回值
+            - code ：0 = 未知用户，-1 = 未知错误，1 = 成功
+            - msg ：信息
 - 杂项
     - ping /api/check_server()
         - 参数
