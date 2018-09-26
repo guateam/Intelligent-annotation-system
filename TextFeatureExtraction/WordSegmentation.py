@@ -335,11 +335,6 @@ def train():
 
 
 def pred(article):
-    """
-    预测某一篇文章的类型，article为文章，字符串形式
-    :param article: 文章内容
-    :return: [文章类型,[每个类型的预测值]]
-    """
     config = TCNNConfig()
     if not os.path.exists(vocab_dir):  # 如果不存在词汇表，重建
         build_vocab(train_dir, vocab_dir, config.vocab_size)
@@ -363,7 +358,7 @@ def pred(article):
         model.keep_prob: 1.0
     }
     y_pred_cls, logits = session.run([model.y_pred_cls, model.logits], feed_dict=feed_dict)
-    print(categories[y_pred_cls[0]])
+    print(y_pred_cls)
     print(logits)
     return [categories[y_pred_cls[0]], logits]
 
