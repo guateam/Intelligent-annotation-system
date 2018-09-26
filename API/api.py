@@ -295,6 +295,7 @@ def upload_article():
             'author': author,
             'uploader': int(user['id'])
         }, 'article')  # 添加记录
+
         if flag:
             return jsonify({'code': 1, 'msg': 'success'})  # 成功返回
         return jsonify({'code': -1, 'msg': 'unknown error'})  # 未知错误

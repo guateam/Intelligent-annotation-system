@@ -61,7 +61,7 @@ def read_file(filename):
                 print(e.args)
     return contents, labels
 
-def build_vocab(train_dir, vocab_dir, vocab_size=5000):
+def build_vocab(t_dir, voca_dir, vocab_size=5000):
     """根据训练集构建词汇表，存储"""
     data_train, _ = read_file(t_dir)
 
@@ -75,7 +75,7 @@ def build_vocab(train_dir, vocab_dir, vocab_size=5000):
     words = ['<PAD>'] + list(words)
     open_file(voca_dir, mode='w').write('\n'.join(words) + '\n')
 
-def read_vocab(vocab_dir):
+def read_vocab(voca_dir):
     """读取词汇表"""
     # words = open_file(vocab_dir).read().strip().split('\n')
     with open_file(voca_dir) as fp:
