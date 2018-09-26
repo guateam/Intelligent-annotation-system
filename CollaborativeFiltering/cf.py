@@ -6,16 +6,16 @@ def cosine_similarity(vector1, vector2):
     :return: 用户和某个用户的兴趣相似度
     """
     dot_product = 0.0
-    normA = 0.0
-    normB = 0.0
+    norm_a = 0.0
+    norm_b = 0.0
     for a, b in zip(vector1, vector2):
         dot_product += a * b
-        normA += a ** 2
-        normB += b ** 2
-    if normA == 0.0 or normB == 0.0:
+        norm_a += a ** 2
+        norm_b += b ** 2
+    if norm_a == 0.0 or norm_b == 0.0:
         return 0
     else:
-        return round(dot_product / ((normA ** 0.5) * (normB ** 0.5)) * 100, 2)
+        return round(dot_product / ((norm_a ** 0.5) * (norm_b ** 0.5)) * 100, 2)
 
 
 def interest_value(similar, rate_vec):
@@ -68,11 +68,13 @@ def most_interest(similar_vec, rate_vec, k=1, m=1):
     return sorted_interest[:m]
 
 
-def cf(item_vec, rate_vec):
+def cf(item_vec, rate_vec, k=1, m=1):
     """
     用cf算法推荐对象，默认为向量的第一个用户提供推荐
     :param item_vec: 对象的向量
     :param rate_vec: 评分的向量
+    :param k: 选取其他用户的个数，按相似度程度降序排列
+    :param m: 输出的元组个数
     :return: 推荐的对象
     """
     # 相似度矩阵，待计算
@@ -87,25 +89,28 @@ def cf(item_vec, rate_vec):
             similar_vec.append(cosine_similarity(rate_vec[0], rate_vec[i]))
 
     # 获取目标用户最感兴趣的对象类型
-    most_interest_vec = most_interest(similar_vec[1:], rate_vec[1:])
+    most_interest_vec = most_interest(similar_vec[1:], rate_vec[1:], k, m)
     # 输出类型
     # 当用户基数少的时候，由于cos计算结果可能都很大，即使选取最相似的其他用户进行推荐，也会形成推荐不准确
     # 比如这个例子下的结果"财经",目标用户对财经的评价很低，但是依然推荐了财经
-    return item_vec[most_interest_vec[0][0]]
+    data = []
+    for i in range(m):
+        data.append(item_vec[most_interest_vec[i][0]])
+    return data
 
 
 # 以下为使用样例
 
 # 用户id列表
-user_vec = [1, 2, 3, 4]
+uec = [1, 2, 3, 4]
 # 对象类型
-item_vec = ["体育", "游戏", "财经", "军事", "娱乐"]
+ivec = ["体育", "游戏", "财经", "军事", "娱乐"]
 # 每个用户对每个对象类型的评分(在本系统中，对象是文章类型，评分是偏好程度，偏好程度可以根据点赞数量，浏览次数等等数据获得)
-rate_vec = [
+rvec = [
     [1, 3, 0.4, 2.2, 1.3],
     [0.8, 0.7, 1.5, 1.7, 3],
     [1.6, 0.4, 2.3, 1, 1.5],
     [0.7, 1.6, 1.1, 1.2, 0.3],
 ]
 
-print(cf(item_vec, rate_vec))
+print(cf(ivec, rvec, 2, 2))

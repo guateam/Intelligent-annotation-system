@@ -10,7 +10,6 @@ import numpy as np
 is_py3 = True
 
 
-
 def native_word(word, encoding='utf-8'):
     """如果在python2下面使用python3训练的模型，可考虑调用此函数转化一下字符编码"""
     if not is_py3:
@@ -58,14 +57,14 @@ def read_file(filename):
                 label, content = line.strip().split('\t')
                 contents.append(list(content))  # 字符级特征
                 labels.append(label)
-            except:
-                pass
+            except Exception as e:
+                print(e.args)
     return contents, labels
 
 
-def build_vocab(train_dir, vocab_dir, vocab_size=5000):
+def build_vocab(t_dir, voca_dir, vocab_size=5000):
     """根据训练集构建词汇表，存储"""
-    data_train, _ = read_file(train_dir)
+    data_train, _ = read_file(t_dir)
 
     all_data = []
     for content in data_train:
@@ -75,13 +74,13 @@ def build_vocab(train_dir, vocab_dir, vocab_size=5000):
     words, _ = list(zip(*count_pairs))
     # 添加一个 <PAD> 来将所有文本pad为同一长度
     words = ['<PAD>'] + list(words)
-    open_file(vocab_dir, mode='w').write('\n'.join(words) + '\n')
+    open_file(voca_dir, mode='w').write('\n'.join(words) + '\n')
 
 
-def read_vocab(vocab_dir):
+def read_vocab(voca_dir):
     """读取词汇表"""
     # words = open_file(vocab_dir).read().strip().split('\n')
-    with open_file(vocab_dir) as fp:
+    with open_file(voca_dir) as fp:
         # 如果是py2 则每个值都转化为unicode
         words = [native_content(_.strip()) for _ in fp.readlines()]
     word_to_id = dict(zip(words, range(len(words))))
@@ -121,7 +120,7 @@ def process_file(filename, word_to_id, cat_to_id, max_length=600):
     return x_pad, y_pad
 
 
-def process_string(mstring, word_to_id, cat_to_id, max_length=600):
+def process_string(mstring, word_to_id, max_length=600):
     """将文件转换为id表示"""
     contents = [list(mstring)]
 
@@ -182,7 +181,11 @@ class TextCNN(object):
         self.input_x = tf.placeholder(tf.int32, [None, self.config.seq_length], name='input_x')
         self.input_y = tf.placeholder(tf.float32, [None, self.config.num_classes], name='input_y')
         self.keep_prob = tf.placeholder(tf.float32, name='keep_prob')
-
+        self.logits = None
+        self.y_pred_cls = None
+        self.loss = None
+        self.optim = None
+        self.acc = None
         self.cnn()
 
     def cnn(self):
@@ -345,7 +348,7 @@ def pred(article):
     config.vocab_size = len(words)
     model = TextCNN(config)
 
-    x_test = process_string(article, word_to_id, cat_to_id, config.seq_length)
+    x_test = process_string(article, word_to_id, config.seq_length)
 
     session = tf.Session()
     session.run(tf.global_variables_initializer())
@@ -428,6 +431,8 @@ if __name__ == '__main__':
     #        raise ValueError("""usage: python run_cnn.py [train / test]""")
     #   用法如下
     str_tiyu = """随着iPhone XS、XS Max的上市，第三方机构也开始对它们的成本进行分析了，到底是怎样的呢？
-　　TechInsights送出结果显示，256GB版iPhone XS Max的成本价格大约是443美元，约合人民币3000元左右，相比iPhone X（64GB版）版本的成本贵了差不多有50美元。
-　　从分析的结果来看，iPhone XS Max的屏幕很贵，成本是80.5美元，而A12+射频/基带等这一套下来是72美元，闪存芯片为64美元，摄像头成本是44美元。此外，分析报告中还指出，iPhone XS Max的其它机械组件成本是55美元，这样综合下来，这款新机的总成本就在443美元了"""
+　　TechInsights送出结果显示，256GB版iPhone XS Max的成本价格大约是443美元，约合人民币3000元左右，相比iPhone X（64GB版）
+    版本的成本贵了差不多有50美元。
+　　从分析的结果来看，iPhone XS Max的屏幕很贵，成本是80.5美元，而A12+射频/基带等这一套下来是72美元，闪存芯片为64美元，
+    摄像头成本是44美元。此外，分析报告中还指出，iPhone XS Max的其它机械组件成本是55美元，这样综合下来，这款新机的总成本就在443美元了"""
     pred(str_tiyu)
