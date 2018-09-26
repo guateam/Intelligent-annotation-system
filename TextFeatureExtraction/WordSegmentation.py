@@ -125,6 +125,7 @@ def process_file(filename, word_to_id, cat_to_id, max_length=600):
 
     return x_pad, y_pad
 
+
 def process_string(mstring, word_to_id, cat_to_id, max_length=600):
     """将文件转换为id表示"""
     contents = [list(mstring)]
@@ -135,9 +136,9 @@ def process_string(mstring, word_to_id, cat_to_id, max_length=600):
 
     # 使用keras提供的pad_sequences来将文本pad为固定长度
     x_pad = kr.preprocessing.sequence.pad_sequences(data_id, max_length)
-   
 
     return x_pad
+
 
 def batch_iter(x, y, batch_size=64):
     """生成批次数据"""
@@ -225,7 +226,7 @@ class TextCNN(object):
             self.acc = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 
-def feed_data(model,x_batch, y_batch, keep_prob):
+def feed_data(model, x_batch, y_batch, keep_prob):
     feed_dict = {
         model.input_x: x_batch,
         model.input_y: y_batch,
@@ -234,7 +235,7 @@ def feed_data(model,x_batch, y_batch, keep_prob):
     return feed_dict
 
 
-def evaluate(model,sess, x_, y_):
+def evaluate(model, sess, x_, y_):
     """评估在某一数据上的准确率和损失"""
     data_len = len(x_)
     batch_eval = batch_iter(x_, y_, 128)
@@ -242,7 +243,7 @@ def evaluate(model,sess, x_, y_):
     total_acc = 0.0
     for x_batch, y_batch in batch_eval:
         batch_len = len(x_batch)
-        feed_dict = feed_data(model,x_batch, y_batch, 1.0)
+        feed_dict = feed_data(model, x_batch, y_batch, 1.0)
         loss, acc = sess.run([model.loss, model.acc], feed_dict=feed_dict)
         total_loss += loss * batch_len
         total_acc += acc * batch_len
@@ -297,7 +298,7 @@ def train():
         print('Epoch:', epoch + 1)
         batch_train = batch_iter(x_train, y_train, config.batch_size)
         for x_batch, y_batch in batch_train:
-            feed_dict = feed_data(model,x_batch, y_batch, config.dropout_keep_prob)
+            feed_dict = feed_data(model, x_batch, y_batch, config.dropout_keep_prob)
 
             if total_batch % config.save_per_batch == 0:
                 # 每多少轮次将训练结果写入tensorboard scalar
@@ -308,7 +309,7 @@ def train():
                 # 每多少轮次输出在训练集和验证集上的性能
                 feed_dict[model.keep_prob] = 1.0
                 loss_train, acc_train = session.run([model.loss, model.acc], feed_dict=feed_dict)
-                loss_val, acc_val = evaluate(model,session, x_val, y_val)  # todo
+                loss_val, acc_val = evaluate(model, session, x_val, y_val)  # todo
 
                 if acc_val > best_acc_val:
                     # 保存最好结果
@@ -334,8 +335,8 @@ def train():
         if flag:  # 同上
             break
 
-def pred(article):
 
+def pred(article):
     config = TCNNConfig()
     if not os.path.exists(vocab_dir):  # 如果不存在词汇表，重建
         build_vocab(train_dir, vocab_dir, config.vocab_size)
@@ -344,7 +345,7 @@ def pred(article):
     config.vocab_size = len(words)
     model = TextCNN(config)
 
-    x_test= process_string(article, word_to_id, cat_to_id, config.seq_length)
+    x_test = process_string(article, word_to_id, cat_to_id, config.seq_length)
 
     session = tf.Session()
     session.run(tf.global_variables_initializer())
@@ -353,14 +354,15 @@ def pred(article):
     batch_size = 128
     data_len = len(x_test)
     start_id = 0
-    end_id = min( batch_size, data_len)
+    end_id = min(batch_size, data_len)
     feed_dict = {
-            model.input_x: x_test[start_id:end_id],
-            model.keep_prob: 1.0
-        }
-    y_pred_cls,logits = session.run([model.y_pred_cls,model.logits], feed_dict=feed_dict)
+        model.input_x: x_test[start_id:end_id],
+        model.keep_prob: 1.0
+    }
+    y_pred_cls, logits = session.run([model.y_pred_cls, model.logits], feed_dict=feed_dict)
     print(y_pred_cls)
     print(logits)
+
 
 def test():
     print("Loading test data...")
@@ -381,7 +383,7 @@ def test():
     saver.restore(sess=session, save_path=save_path)  # 读取保存的模型
 
     print('Testing...')
-    loss_test, acc_test = evaluate(model,session, x_test, y_test)
+    loss_test, acc_test = evaluate(model, session, x_test, y_test)
     msg = 'Test Loss: {0:>6.2}, Test Acc: {1:>7.2%}'
     print(msg.format(loss_test, acc_test))
 
@@ -433,11 +435,11 @@ if __name__ == '__main__':
     # config.vocab_size = len(words)
     # model = TextCNN(config)
 
- #if sys.argv[1] == 'train':
-    #train()
-    #else:
-    #test()
-    str_tiyu = "山东鲁能近来在中超联赛中取得两连胜，已经走出三连败低谷，同时重燃杀入三甲希望；足协杯中，山东鲁能首回合1-0击败大连一方，次回合只需要一场平局即可晋级决赛。大连一方同样状态不俗，一波三连胜之后，积分追平第七位的广州富力。本赛季双方已经打了三场比赛，山东鲁能2胜1负，联赛中客场落败。山东鲁能此役更换外援配置，佩莱与塔尔德利搭档锋线，格德斯轮休；大连一方变化更大，尽管主帅舒斯特尔喊着放手一搏，但是他们的阵容变化不小，卡拉斯科、穆谢奎未随队出征，主力门将张翀轮休，取而代之的是于子千。第6分钟，山东鲁能后卫传球力量稍小，韩镕泽及时出击解围但不远，盖坦断球之后直接射门，韩镕泽将球没收。第15分钟，山东鲁能创造得分机会，金敬道送出挑传，王彤边路突破到底线附近横传，佩莱中路拿球背身回做，塔尔德利迎球怒射，球擦立柱偏出。第23分钟，里亚斯科斯内切射门将球打飞。山东鲁能第25分钟被动换人，佩莱大腿受伤无法坚持，李霄鹏用吴兴涵将其换下。第31分钟，山东鲁能前场组织进攻，王彤边路传中被后卫解围到后点，候个正着的郑铮凌空抽射，于子千将球挡出底线。蒿俊闵角球传到禁区内，吉尔头球攻门被于子千没收。第42分钟，大连一方获得机会，赵学斌弧线球射门被韩镕泽扑出，周挺跟进补射稍稍高出横梁。第44分钟，大连一方打出快速反击，连续挑球配合，盖坦挑传球，里亚斯科斯快速插上磕磕绊绊将球送入球门，但边裁示意里亚斯科斯越位在先，慢镜头回放显示，王彤前提，造越位成功，进球无效。上半场比赛战罢，双方暂时战成0-0平。"
+    # if sys.argv[1] == 'train':
+    # train()
+    # else:
+    # test()
+    str_tiyu = '山东鲁能近来在中超联赛中取得两连胜，已经走出三连败低谷，同时重燃杀入三甲希望；足协杯中，山东鲁能首回合1-0击败大连一方，次回合只需要一场平局即可晋级决赛。大连一方同样状态不俗，一波三连胜之后，积分追平第七位的广州富力。本赛季双方已经打了三场比赛，山东鲁能2胜1负，联赛中客场落败。山东鲁能此役更换外援配置，佩莱与塔尔德利搭档锋线，格德斯轮休；大连一方变化更大，尽管主帅舒斯特尔喊着放手一搏，但是他们的阵容变化不小，卡拉斯科、穆谢奎未随队出征，主力门将张翀轮休，取而代之的是于子千。第6分钟，山东鲁能后卫传球力量稍小，韩镕泽及时出击解围但不远，盖坦断球之后直接射门，韩镕泽将球没收。第15分钟，山东鲁能创造得分机会，金敬道送出挑传，王彤边路突破到底线附近横传，佩莱中路拿球背身回做，塔尔德利迎球怒射，球擦立柱偏出。第23分钟，里亚斯科斯内切射门将球打飞。山东鲁能第25分钟被动换人，佩莱大腿受伤无法坚持，李霄鹏用吴兴涵将其换下。第31分钟，山东鲁能前场组织进攻，王彤边路传中被后卫解围到后点，候个正着的郑铮凌空抽射，于子千将球挡出底线。蒿俊闵角球传到禁区内，吉尔头球攻门被于子千没收。第42分钟，大连一方获得机会，赵学斌弧线球射门被韩镕泽扑出，周挺跟进补射稍稍高出横梁。第44分钟，大连一方打出快速反击，连续挑球配合，盖坦挑传球，里亚斯科斯快速插上磕磕绊绊将球送入球门，但边裁示意里亚斯科斯越位在先，慢镜头回放显示，王彤前提，造越位成功，进球无效。上半场比赛战罢，双方暂时战成0-0平。'
     pred(str_tiyu)
 
 # if __name__ == '__main__':
