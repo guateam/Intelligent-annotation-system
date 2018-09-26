@@ -84,9 +84,11 @@ class Database(object):
                     return results  # 返回所有数据
                 list1 = []
                 for key, values in data.items():
-                    list1.append(key + ' = "' + str(values) + '"')
+                    list1.append(key + '="' + str(values) + '"')
                 where = ' AND '.join(list1)
                 sql_query = 'SELECT * FROM %s WHERE %s' % (table, where)  # 构造sql语句
+                sql_query.replace('\\','\\\\')
+                print(sql_query)
                 cursor.execute(sql_query)
                 results = cursor.fetchall()
                 if len(results) and type == 1:

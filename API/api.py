@@ -280,19 +280,21 @@ def upload_article():
     if user:
         base_path = ''
         article = request.files['article']
-        article_path = os.path.join(base_path, 'static\\upload', datetime.datetime.now().timestamp(), article.filename)
+        article_path = os.path.join(base_path, 'static', 'upload',
+                                    str(datetime.datetime.now().timestamp() * 6) + article.filename)
         article.save(article_path)  # 上传文章
 
         image = request.files['image']
-        image_path = os.path.join(base_path, 'static\\upload', datetime.datetime.now().timestamp(), image.filename)
+        image_path = os.path.join(base_path, 'static', 'upload',
+                                  str(datetime.datetime.now().timestamp() * 6) + image.filename)
         image.save(image_path)  # 上传封面
 
         title = request.form['title']
         author = request.form['author']
 
         flag = db.insert({
-            'file_path': article_path,
-            'image_path': image_path,
+            'file_path': change_route(article_path, 1),
+            'image_path': change_route(image_path, 1),
             'title': title,
             'author': author,
             'uploader': int(user['id'])
@@ -301,9 +303,9 @@ def upload_article():
             with open(article_path, 'r') as file:
                 result = pred(file.read())
                 print(result)
-                data = db.get({'file_path': article_path}, 'article')
+                data = db.get({'file_path': change_route(article_path, 1)}, 'article')
                 if data:
-                    tag_flag = db.insert({'article_id': data['id'], 'tag': result[0]})
+                    tag_flag = db.insert({'article_id': data['id'], 'tag': result[0]}, 'article_tag')
                     if tag_flag:
                         return jsonify({'code': 1, 'msg': 'success'})  # 成功返回
                 return jsonify({'code': -1, 'msg': 'unknown error'})  # 未知错误
@@ -331,5 +333,5 @@ if __name__ == '__main__':
 
     # with open('static\\upload\\36.txt', 'rb') as file:
     #     result = pred(file.read())
-    #     print(result)
+    #     print(result[0])
     app.run(debug=True)
