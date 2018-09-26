@@ -1,12 +1,24 @@
-# 爬虫项目的调度器
-# 用于协调爬虫各部分功能
-from Crawler.parser import Parser
-from Crawler.downloader import Downloader
+from multiprocessing import Process
+
+from Crawler.getter import Getter
 
 
 class Schedule(object):
-    def __init__(self):
-        # self.db = Database()  # 用于存储目标队列的数据库
-        self.downloader = Downloader()  # 页面下载器
-        self.parser = Parser()  # 页面解析器
-        # self.saver = Saver()  # 数据存储器
+
+    @staticmethod
+    def schedule_getter():
+        """
+        定时获取代理
+        """
+        getter = Getter()
+        getter.run()
+
+    def run(self):
+        print('Getter starting...')
+        getter_process = Process(target=self.schedule_getter)
+        getter_process.start()
+
+
+if __name__ == '__main__':
+    s = Schedule()
+    s.run()
