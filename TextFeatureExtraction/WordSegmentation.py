@@ -1,17 +1,11 @@
 import jieba
 import sys
 from collections import Counter
-from skimage import transform
-import matplotlib.pyplot as plt
-import jieba as jb
-import pylab
 import os
 import tensorflow as tf
 import tensorflow.contrib.keras as kr
 from sklearn import metrics
 import numpy as np
-import random
-import math
 
 #下面reload如果报错好像可以无视，因为是用来区分py版本，下面报错是旧版本py的函数
 if sys.version_info[0] > 2:
