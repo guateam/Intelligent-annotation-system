@@ -131,6 +131,19 @@ def process_file(filename, word_to_id, cat_to_id, max_length=600):
 
     return x_pad, y_pad
 
+def process_string(mstring, word_to_id, cat_to_id, max_length=600):
+    """将文件转换为id表示"""
+    contents = [list(mstring)]
+
+    data_id = []
+    for i in range(len(contents)):
+        data_id.append([word_to_id[x] for x in contents[i] if x in word_to_id])
+
+    # 使用keras提供的pad_sequences来将文本pad为固定长度
+    x_pad = kr.preprocessing.sequence.pad_sequences(data_id, max_length)
+   
+
+    return x_pad
 
 def batch_iter(x, y, batch_size=64):
     """生成批次数据"""
@@ -319,6 +332,23 @@ def train():
         if flag:  # 同上
             break
 
+def pred(article):
+    x_test= process_string(article, word_to_id, cat_to_id, config.seq_length)
+
+    session = tf.Session()
+    session.run(tf.global_variables_initializer())
+    saver = tf.train.Saver()
+    saver.restore(sess=session, save_path=save_path)  # 读取保存的模型
+    batch_size = 128
+    data_len = len(x_test)
+    start_id = 0
+    end_id = min( batch_size, data_len)
+    feed_dict = {
+            model.input_x: x_test[start_id:end_id],
+            model.keep_prob: 1.0
+        }
+    y_pred_cls = session.run(model.y_pred_cls, feed_dict=feed_dict)
+    print(y_pred_cls)
 
 def test():
     print("Loading test data...")
@@ -359,8 +389,8 @@ def test():
     print(cm)
 
 
-base_dir = ''
-train_dir = os.path.join(base_dir, 'cnews.train.txt')
+base_dir = 'dataset/'
+train_dir = os.path.join(base_dir, 'train.txt')
 test_dir = os.path.join(base_dir, 'cnews.test.txt')
 val_dir = os.path.join(base_dir, 'cnews.val.txt')
 vocab_dir = os.path.join(base_dir, 'cnews.vocab.txt')
@@ -382,10 +412,12 @@ if __name__ == '__main__':
     config.vocab_size = len(words)
     model = TextCNN(config)
 
-    # if sys.argv[1] == 'train':
-    train()
-# else:
-#    test()
+ #if sys.argv[1] == 'train':
+    #train()
+    #else:
+    #test()
+    str_tiyu = "山东鲁能近来在中超联赛中取得两连胜，已经走出三连败低谷，同时重燃杀入三甲希望；足协杯中，山东鲁能首回合1-0击败大连一方，次回合只需要一场平局即可晋级决赛。大连一方同样状态不俗，一波三连胜之后，积分追平第七位的广州富力。本赛季双方已经打了三场比赛，山东鲁能2胜1负，联赛中客场落败。山东鲁能此役更换外援配置，佩莱与塔尔德利搭档锋线，格德斯轮休；大连一方变化更大，尽管主帅舒斯特尔喊着放手一搏，但是他们的阵容变化不小，卡拉斯科、穆谢奎未随队出征，主力门将张翀轮休，取而代之的是于子千。第6分钟，山东鲁能后卫传球力量稍小，韩镕泽及时出击解围但不远，盖坦断球之后直接射门，韩镕泽将球没收。第15分钟，山东鲁能创造得分机会，金敬道送出挑传，王彤边路突破到底线附近横传，佩莱中路拿球背身回做，塔尔德利迎球怒射，球擦立柱偏出。第23分钟，里亚斯科斯内切射门将球打飞。山东鲁能第25分钟被动换人，佩莱大腿受伤无法坚持，李霄鹏用吴兴涵将其换下。第31分钟，山东鲁能前场组织进攻，王彤边路传中被后卫解围到后点，候个正着的郑铮凌空抽射，于子千将球挡出底线。蒿俊闵角球传到禁区内，吉尔头球攻门被于子千没收。第42分钟，大连一方获得机会，赵学斌弧线球射门被韩镕泽扑出，周挺跟进补射稍稍高出横梁。第44分钟，大连一方打出快速反击，连续挑球配合，盖坦挑传球，里亚斯科斯快速插上磕磕绊绊将球送入球门，但边裁示意里亚斯科斯越位在先，慢镜头回放显示，王彤前提，造越位成功，进球无效。上半场比赛战罢，双方暂时战成0-0平。"
+    pred(str_tiyu)
 
 
 # if __name__ == '__main__':
