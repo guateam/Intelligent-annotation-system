@@ -358,7 +358,7 @@ def pred(article):
         model.keep_prob: 1.0
     }
     y_pred_cls, logits = session.run([model.y_pred_cls, model.logits], feed_dict=feed_dict)
-    print(y_pred_cls)
+    print(categories[y_pred_cls[0]])
     print(logits)
     return [categories[y_pred_cls[0]], logits]
 
