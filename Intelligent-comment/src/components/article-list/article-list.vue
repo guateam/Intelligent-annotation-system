@@ -3,7 +3,8 @@
         <div class="tag">-书籍推荐-</div>
         <h1 class="header">这是书名</h1>
         <img class="book-pic" src="./pic-book.png" alt="封面">
-        <p class="someword">&nbsp;&nbsp;&nbsp;&nbsp;这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里文这里都是正文这里都是正文这里是正文...
+        <p class="someword">
+            {{ intro }}
             <router-link class="lookmore" to="article-detail">&nbsp;阅读全文&nbsp;&rsaquo;</router-link>
         </p>
         <div class="items">
@@ -20,6 +21,18 @@
 
     export default {
         name: "article-list",
+        data () {
+            return {
+                intro: '这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里文这里都是正文这里都是正文这里是正文...',  // 简介
+            }
+        },
+        mounted () {
+            axios.get('', {
+
+            }).then((response) => {
+                this.intro = response.data.data['intro'];
+            })
+        }
     }
 </script>
 
