@@ -1,25 +1,14 @@
 import jieba
-import sys
 from collections import Counter
-from skimage import transform
-import matplotlib.pyplot as plt
-import jieba as jb
-import pylab
 import os
 import tensorflow as tf
 import tensorflow.contrib.keras as kr
 from sklearn import metrics
 import numpy as np
-import random
-import math
 
-#下面reload如果报错好像可以无视，因为是用来区分py版本，下面报错是旧版本py的函数
-if sys.version_info[0] > 2:
-    is_py3 = True
-else:
-    reload(sys)
-    sys.setdefaultencoding("utf-8")
-    is_py3 = False
+# 下面reload如果报错好像可以无视，因为是用来区分py版本，下面报错是旧版本py的函数
+is_py3 = True
+
 
 def native_word(word, encoding='utf-8'):
     """如果在python2下面使用python3训练的模型，可考虑调用此函数转化一下字符编码"""
@@ -28,11 +17,13 @@ def native_word(word, encoding='utf-8'):
     else:
         return word
 
+
 def native_content(content):
     if not is_py3:
         return content.decode('utf-8')
     else:
         return content
+
 
 def word_segmentation(sentence, hmm=True):
     """
@@ -45,6 +36,7 @@ def word_segmentation(sentence, hmm=True):
     seg_list = jieba.cut(sentence, HMM=hmm)  # 分词
     return seg_list
 
+
 def open_file(filename, mode='r'):
     """
     常用文件操作，可在python2和python3间切换.
@@ -55,6 +47,7 @@ def open_file(filename, mode='r'):
     else:
         return open(filename, mode)
 
+
 def read_file(filename):
     """读取文件数据"""
     contents, labels = [], []
@@ -62,11 +55,12 @@ def read_file(filename):
         for line in f:
             try:
                 label, content = line.strip().split('\t')
-                contents.append(list(content)) # 字符级特征
+                contents.append(list(content))  # 字符级特征
                 labels.append(label)
             except:
                 pass
     return contents, labels
+
 
 def build_vocab(train_dir, vocab_dir, vocab_size=5000):
     """根据训练集构建词汇表，存储"""
@@ -82,6 +76,7 @@ def build_vocab(train_dir, vocab_dir, vocab_size=5000):
     words = ['<PAD>'] + list(words)
     open_file(vocab_dir, mode='w').write('\n'.join(words) + '\n')
 
+
 def read_vocab(vocab_dir):
     """读取词汇表"""
     # words = open_file(vocab_dir).read().strip().split('\n')
@@ -92,6 +87,7 @@ def read_vocab(vocab_dir):
 
     return words, word_to_id
 
+
 def read_category():
     """读取分类目录，固定"""
     categories = ['体育', '财经', '房产', '家居', '教育', '科技', '时尚', '时政', '游戏', '娱乐']
@@ -101,6 +97,7 @@ def read_category():
     cat_to_id = dict(zip(categories, range(len(categories))))
 
     return categories, cat_to_id
+
 
 def to_words(content, words):
     """将id表示的内容转换为文字"""
@@ -122,6 +119,7 @@ def process_file(filename, word_to_id, cat_to_id, max_length=600):
 
     return x_pad, y_pad
 
+
 def process_string(mstring, word_to_id, cat_to_id, max_length=600):
     """将文件转换为id表示"""
     contents = [list(mstring)]
@@ -132,9 +130,9 @@ def process_string(mstring, word_to_id, cat_to_id, max_length=600):
 
     # 使用keras提供的pad_sequences来将文本pad为固定长度
     x_pad = kr.preprocessing.sequence.pad_sequences(data_id, max_length)
-   
 
     return x_pad
+
 
 def batch_iter(x, y, batch_size=64):
     """生成批次数据"""
@@ -149,6 +147,7 @@ def batch_iter(x, y, batch_size=64):
         start_id = i * batch_size
         end_id = min((i + 1) * batch_size, data_len)
         yield x_shuffle[start_id:end_id], y_shuffle[start_id:end_id]
+
 
 class TCNNConfig(object):
     """CNN配置参数"""
@@ -221,7 +220,7 @@ class TextCNN(object):
             self.acc = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 
-def feed_data(model,x_batch, y_batch, keep_prob):
+def feed_data(model, x_batch, y_batch, keep_prob):
     feed_dict = {
         model.input_x: x_batch,
         model.input_y: y_batch,
@@ -230,7 +229,7 @@ def feed_data(model,x_batch, y_batch, keep_prob):
     return feed_dict
 
 
-def evaluate(model,sess, x_, y_):
+def evaluate(model, sess, x_, y_):
     """评估在某一数据上的准确率和损失"""
     data_len = len(x_)
     batch_eval = batch_iter(x_, y_, 128)
@@ -238,7 +237,7 @@ def evaluate(model,sess, x_, y_):
     total_acc = 0.0
     for x_batch, y_batch in batch_eval:
         batch_len = len(x_batch)
-        feed_dict = feed_data(model,x_batch, y_batch, 1.0)
+        feed_dict = feed_data(model, x_batch, y_batch, 1.0)
         loss, acc = sess.run([model.loss, model.acc], feed_dict=feed_dict)
         total_loss += loss * batch_len
         total_acc += acc * batch_len
@@ -277,7 +276,6 @@ def train():
     x_train, y_train = process_file(train_dir, word_to_id, cat_to_id, config.seq_length)
     x_val, y_val = process_file(val_dir, word_to_id, cat_to_id, config.seq_length)
 
-
     # 创建session
     session = tf.Session()
     session.run(tf.global_variables_initializer())
@@ -294,7 +292,7 @@ def train():
         print('Epoch:', epoch + 1)
         batch_train = batch_iter(x_train, y_train, config.batch_size)
         for x_batch, y_batch in batch_train:
-            feed_dict = feed_data(model,x_batch, y_batch, config.dropout_keep_prob)
+            feed_dict = feed_data(model, x_batch, y_batch, config.dropout_keep_prob)
 
             if total_batch % config.save_per_batch == 0:
                 # 每多少轮次将训练结果写入tensorboard scalar
@@ -305,7 +303,7 @@ def train():
                 # 每多少轮次输出在训练集和验证集上的性能
                 feed_dict[model.keep_prob] = 1.0
                 loss_train, acc_train = session.run([model.loss, model.acc], feed_dict=feed_dict)
-                loss_val, acc_val = evaluate(model,session, x_val, y_val)  # todo
+                loss_val, acc_val = evaluate(model, session, x_val, y_val)  # todo
 
                 if acc_val > best_acc_val:
                     # 保存最好结果
@@ -318,7 +316,7 @@ def train():
 
                 msg = 'Iter: {0:>6}, Train Loss: {1:>6.2}, Train Acc: {2:>7.2%},' \
                       + ' Val Loss: {3:>6.2}, Val Acc: {4:>7.2%}'
-                print(msg.format(total_batch, loss_train, acc_train, loss_val, acc_val,improved_str))
+                print(msg.format(total_batch, loss_train, acc_train, loss_val, acc_val, improved_str))
 
             session.run(model.optim, feed_dict=feed_dict)  # 运行优化
             total_batch += 1
@@ -331,8 +329,13 @@ def train():
         if flag:  # 同上
             break
 
-def pred(article):
 
+def pred(article):
+    """
+    预测某一篇文章的类型，article为文章，字符串形式
+    :param article: 文章内容
+    :return: [文章类型,[每个类型的预测值]]
+    """
     config = TCNNConfig()
     if not os.path.exists(vocab_dir):  # 如果不存在词汇表，重建
         build_vocab(train_dir, vocab_dir, config.vocab_size)
@@ -341,7 +344,7 @@ def pred(article):
     config.vocab_size = len(words)
     model = TextCNN(config)
 
-    x_test= process_string(article, word_to_id, cat_to_id, config.seq_length)
+    x_test = process_string(article, word_to_id, cat_to_id, config.seq_length)
 
     session = tf.Session()
     session.run(tf.global_variables_initializer())
@@ -350,16 +353,18 @@ def pred(article):
     batch_size = 128
     data_len = len(x_test)
     start_id = 0
-    end_id = min( batch_size, data_len)
+    end_id = min(batch_size, data_len)
     feed_dict = {
-            model.input_x: x_test[start_id:end_id],
-            model.keep_prob: 1.0
-        }
-    y_pred_cls,logits = session.run([model.y_pred_cls,model.logits], feed_dict=feed_dict)
-    print(y_pred_cls)
+        model.input_x: x_test[start_id:end_id],
+        model.keep_prob: 1.0
+    }
+    y_pred_cls, logits = session.run([model.y_pred_cls, model.logits], feed_dict=feed_dict)
+    print(categories[y_pred_cls[0]])
     print(logits)
 
+
 def test():
+    """测试网络的准确率"""
     print("Loading test data...")
 
     config = TCNNConfig()
@@ -378,7 +383,7 @@ def test():
     saver.restore(sess=session, save_path=save_path)  # 读取保存的模型
 
     print('Testing...')
-    loss_test, acc_test = evaluate(model,session, x_test, y_test)
+    loss_test, acc_test = evaluate(model, session, x_test, y_test)
     msg = 'Test Loss: {0:>6.2}, Test Acc: {1:>7.2%}'
     print(msg.format(loss_test, acc_test))
 
@@ -416,35 +421,12 @@ vocab_dir = os.path.join(base_dir, 'cnews.vocab.txt')
 save_dir = 'checkpoints/textcnn'
 save_path = os.path.join(save_dir, 'best_validation')  # 最佳验证结果保存路径
 
-
 if __name__ == '__main__':
-#   用于判断是训练还是预测
-#    if len(sys.argv) != 2 or sys.argv[1] not in ['train', 'test']:
-#        raise ValueError("""usage: python run_cnn.py [train / test]""")
-
-    # print('Configuring CNN model...')
-    # config = TCNNConfig()
-    # if not os.path.exists(vocab_dir):  # 如果不存在词汇表，重建
-    #     build_vocab(train_dir, vocab_dir, config.vocab_size)
-    # categories, cat_to_id = read_category()
-    # words, word_to_id = read_vocab(vocab_dir)
-    # config.vocab_size = len(words)
-    # model = TextCNN(config)
-
- #if sys.argv[1] == 'train':
-    #train()
-    #else:
-    #test()
-    str_tiyu = "山东鲁能近来在中超联赛中取得两连胜，已经走出三连败低谷，同时重燃杀入三甲希望；足协杯中，山东鲁能首回合1-0击败大连一方，次回合只需要一场平局即可晋级决赛。大连一方同样状态不俗，一波三连胜之后，积分追平第七位的广州富力。本赛季双方已经打了三场比赛，山东鲁能2胜1负，联赛中客场落败。山东鲁能此役更换外援配置，佩莱与塔尔德利搭档锋线，格德斯轮休；大连一方变化更大，尽管主帅舒斯特尔喊着放手一搏，但是他们的阵容变化不小，卡拉斯科、穆谢奎未随队出征，主力门将张翀轮休，取而代之的是于子千。第6分钟，山东鲁能后卫传球力量稍小，韩镕泽及时出击解围但不远，盖坦断球之后直接射门，韩镕泽将球没收。第15分钟，山东鲁能创造得分机会，金敬道送出挑传，王彤边路突破到底线附近横传，佩莱中路拿球背身回做，塔尔德利迎球怒射，球擦立柱偏出。第23分钟，里亚斯科斯内切射门将球打飞。山东鲁能第25分钟被动换人，佩莱大腿受伤无法坚持，李霄鹏用吴兴涵将其换下。第31分钟，山东鲁能前场组织进攻，王彤边路传中被后卫解围到后点，候个正着的郑铮凌空抽射，于子千将球挡出底线。蒿俊闵角球传到禁区内，吉尔头球攻门被于子千没收。第42分钟，大连一方获得机会，赵学斌弧线球射门被韩镕泽扑出，周挺跟进补射稍稍高出横梁。第44分钟，大连一方打出快速反击，连续挑球配合，盖坦挑传球，里亚斯科斯快速插上磕磕绊绊将球送入球门，但边裁示意里亚斯科斯越位在先，慢镜头回放显示，王彤前提，造越位成功，进球无效。上半场比赛战罢，双方暂时战成0-0平。"
+    #   用于判断是训练还是预测
+    #    if len(sys.argv) != 2 or sys.argv[1] not in ['train', 'test']:
+    #        raise ValueError("""usage: python run_cnn.py [train / test]""")
+    #   用法如下
+    str_tiyu = """随着iPhone XS、XS Max的上市，第三方机构也开始对它们的成本进行分析了，到底是怎样的呢？
+　　TechInsights送出结果显示，256GB版iPhone XS Max的成本价格大约是443美元，约合人民币3000元左右，相比iPhone X（64GB版）版本的成本贵了差不多有50美元。
+　　从分析的结果来看，iPhone XS Max的屏幕很贵，成本是80.5美元，而A12+射频/基带等这一套下来是72美元，闪存芯片为64美元，摄像头成本是44美元。此外，分析报告中还指出，iPhone XS Max的其它机械组件成本是55美元，这样综合下来，这款新机的总成本就在443美元了"""
     pred(str_tiyu)
-
-
-
-    
-# if __name__ == '__main__':
-#     for word in word_segmentation('在这篇文章中，我们将实现一个类似于Kim Yoon的卷积神经网络语句分类的模型', hmm=False):
-#         print(word, end='/')
-
-
-
-
