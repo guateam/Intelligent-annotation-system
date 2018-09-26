@@ -56,6 +56,6 @@ def book_rules(rate):
 
 
 if __name__ == '__main__':
-    url = 'https://www.baidu.com/s?wd=ip'
-    html = get_page(url)
+    test_url = 'https://www.baidu.com/s?wd=ip'
+    html = get_page(test_url)
     print(html)
