@@ -221,7 +221,7 @@ class TextCNN(object):
             self.acc = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 
-def feed_data(x_batch, y_batch, keep_prob):
+def feed_data(model,x_batch, y_batch, keep_prob):
     feed_dict = {
         model.input_x: x_batch,
         model.input_y: y_batch,
@@ -230,7 +230,7 @@ def feed_data(x_batch, y_batch, keep_prob):
     return feed_dict
 
 
-def evaluate(sess, x_, y_):
+def evaluate(model,sess, x_, y_):
     """评估在某一数据上的准确率和损失"""
     data_len = len(x_)
     batch_eval = batch_iter(x_, y_, 128)
@@ -238,7 +238,7 @@ def evaluate(sess, x_, y_):
     total_acc = 0.0
     for x_batch, y_batch in batch_eval:
         batch_len = len(x_batch)
-        feed_dict = feed_data(x_batch, y_batch, 1.0)
+        feed_dict = feed_data(model,x_batch, y_batch, 1.0)
         loss, acc = sess.run([model.loss, model.acc], feed_dict=feed_dict)
         total_loss += loss * batch_len
         total_acc += acc * batch_len
@@ -252,6 +252,14 @@ def train():
     tensorboard_dir = 'tensorboard/textcnn'
     if not os.path.exists(tensorboard_dir):
         os.makedirs(tensorboard_dir)
+    config = TCNNConfig()
+
+    if not os.path.exists(vocab_dir):  # 如果不存在词汇表，重建
+        build_vocab(train_dir, vocab_dir, config.vocab_size)
+    categories, cat_to_id = read_category()
+    words, word_to_id = read_vocab(vocab_dir)
+    config.vocab_size = len(words)
+    model = TextCNN(config)
 
     tf.summary.scalar("loss", model.loss)
     tf.summary.scalar("accuracy", model.acc)
@@ -286,7 +294,7 @@ def train():
         print('Epoch:', epoch + 1)
         batch_train = batch_iter(x_train, y_train, config.batch_size)
         for x_batch, y_batch in batch_train:
-            feed_dict = feed_data(x_batch, y_batch, config.dropout_keep_prob)
+            feed_dict = feed_data(model,x_batch, y_batch, config.dropout_keep_prob)
 
             if total_batch % config.save_per_batch == 0:
                 # 每多少轮次将训练结果写入tensorboard scalar
@@ -297,7 +305,7 @@ def train():
                 # 每多少轮次输出在训练集和验证集上的性能
                 feed_dict[model.keep_prob] = 1.0
                 loss_train, acc_train = session.run([model.loss, model.acc], feed_dict=feed_dict)
-                loss_val, acc_val = evaluate(session, x_val, y_val)  # todo
+                loss_val, acc_val = evaluate(model,session, x_val, y_val)  # todo
 
                 if acc_val > best_acc_val:
                     # 保存最好结果
@@ -324,6 +332,15 @@ def train():
             break
 
 def pred(article):
+
+    config = TCNNConfig()
+    if not os.path.exists(vocab_dir):  # 如果不存在词汇表，重建
+        build_vocab(train_dir, vocab_dir, config.vocab_size)
+    categories, cat_to_id = read_category()
+    words, word_to_id = read_vocab(vocab_dir)
+    config.vocab_size = len(words)
+    model = TextCNN(config)
+
     x_test= process_string(article, word_to_id, cat_to_id, config.seq_length)
 
     session = tf.Session()
@@ -338,11 +355,21 @@ def pred(article):
             model.input_x: x_test[start_id:end_id],
             model.keep_prob: 1.0
         }
-    y_pred_cls = session.run(model.y_pred_cls, feed_dict=feed_dict)
+    y_pred_cls,logits = session.run([model.y_pred_cls,model.logits], feed_dict=feed_dict)
     print(y_pred_cls)
+    print(logits)
 
 def test():
     print("Loading test data...")
+
+    config = TCNNConfig()
+    if not os.path.exists(vocab_dir):  # 如果不存在词汇表，重建
+        build_vocab(train_dir, vocab_dir, config.vocab_size)
+    categories, cat_to_id = read_category()
+    words, word_to_id = read_vocab(vocab_dir)
+    config.vocab_size = len(words)
+    model = TextCNN(config)
+
     x_test, y_test = process_file(test_dir, word_to_id, cat_to_id, config.seq_length)
 
     session = tf.Session()
@@ -351,7 +378,7 @@ def test():
     saver.restore(sess=session, save_path=save_path)  # 读取保存的模型
 
     print('Testing...')
-    loss_test, acc_test = evaluate(session, x_test, y_test)
+    loss_test, acc_test = evaluate(model,session, x_test, y_test)
     msg = 'Test Loss: {0:>6.2}, Test Acc: {1:>7.2%}'
     print(msg.format(loss_test, acc_test))
 
@@ -395,14 +422,14 @@ if __name__ == '__main__':
 #    if len(sys.argv) != 2 or sys.argv[1] not in ['train', 'test']:
 #        raise ValueError("""usage: python run_cnn.py [train / test]""")
 
-    print('Configuring CNN model...')
-    config = TCNNConfig()
-    if not os.path.exists(vocab_dir):  # 如果不存在词汇表，重建
-        build_vocab(train_dir, vocab_dir, config.vocab_size)
-    categories, cat_to_id = read_category()
-    words, word_to_id = read_vocab(vocab_dir)
-    config.vocab_size = len(words)
-    model = TextCNN(config)
+    # print('Configuring CNN model...')
+    # config = TCNNConfig()
+    # if not os.path.exists(vocab_dir):  # 如果不存在词汇表，重建
+    #     build_vocab(train_dir, vocab_dir, config.vocab_size)
+    # categories, cat_to_id = read_category()
+    # words, word_to_id = read_vocab(vocab_dir)
+    # config.vocab_size = len(words)
+    # model = TextCNN(config)
 
  #if sys.argv[1] == 'train':
     #train()
