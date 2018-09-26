@@ -412,13 +412,13 @@ def test():
     print(cm)
 
 
-base_dir = 'dataset/'
-train_dir = os.path.join(base_dir, 'train.txt')
-test_dir = os.path.join(base_dir, 'cnews.test.txt')
-val_dir = os.path.join(base_dir, 'cnews.val.txt')
-vocab_dir = os.path.join(base_dir, 'cnews.vocab.txt')
+base_dir = os.path.abspath('../TextFeatureExtraction/')
+train_dir = os.path.join(base_dir, 'dataset/train.txt')
+test_dir = os.path.join(base_dir, 'dataset/cnews.test.txt')
+val_dir = os.path.join(base_dir, 'dataset/cnews.val.txt')
+vocab_dir = os.path.join(base_dir, 'dataset/cnews.vocab.txt')
 
-save_dir = 'checkpoints/textcnn'
+save_dir = os.path.join(base_dir,'checkpoints/textcnn')
 save_path = os.path.join(save_dir, 'best_validation')  # 最佳验证结果保存路径
 
 if __name__ == '__main__':
@@ -426,9 +426,8 @@ if __name__ == '__main__':
     #    if len(sys.argv) != 2 or sys.argv[1] not in ['train', 'test']:
     #        raise ValueError("""usage: python run_cnn.py [train / test]""")
     #   用法如下
-    str_tiyu = """随着iPhone XS、XS Max的上市，第三方机构也开始对它们的成本进行分析了，到底是怎样的呢？
-　　TechInsights送出结果显示，256GB版iPhone XS Max的成本价格大约是443美元，约合人民币3000元左右，相比iPhone X（64GB版）
-    版本的成本贵了差不多有50美元。
-　　从分析的结果来看，iPhone XS Max的屏幕很贵，成本是80.5美元，而A12+射频/基带等这一套下来是72美元，闪存芯片为64美元，
-    摄像头成本是44美元。此外，分析报告中还指出，iPhone XS Max的其它机械组件成本是55美元，这样综合下来，这款新机的总成本就在443美元了"""
+    str_tiyu = """据《镜週刊》报导，一位在演艺圈地位举足轻重的A咖女星在某场聚会中爆料，林青霞已经悄悄结束24年的婚姻，
+    和邢李㷧离婚，据传她因为女儿们已经长大成人，加上无法忍受老公在外有“二心”，也拿了20亿港币（约17.5亿元人民币）的赡养费，选择高龄离婚。
+　　由于A咖女星在演艺圈中人脉极广，地位可说是非常权威，加上林青霞婚变之说一再传出，更让不少人认为传言为真，但本人目前尚未出面回应。
+    而林青霞曾在真人秀中被问及“在节目中觉得最孤独的时候”，她误以为对方问的是婚姻，竟老实回答是和邢李㷧结婚的前半年，让她尴尬赶紧打圆场。"""
     pred(str_tiyu)
