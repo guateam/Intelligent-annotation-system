@@ -1,3 +1,6 @@
+from TextFeatureExtraction.WordSegmentation import pred
+
+
 def cosine_similarity(vector1, vector2):
     """
     计算出余弦相似度
@@ -114,3 +117,4 @@ rvec = [
 ]
 
 print(cf(ivec, rvec, 2, 2))
+
