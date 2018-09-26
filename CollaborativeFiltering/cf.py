@@ -63,7 +63,7 @@ def most_interest(similar_vec, rate_vec, k=1, m=1):
             total_interest[j] += now_vec[j]
 
     zip_interest = dict(zip(range(len(total_interest)), total_interest))
-    # 排序，选出最感兴趣的m个物品
+    # 排序，选出最感兴趣的m类物品
     sorted_interest = sorted(zip_interest.items(), key=lambda item: item[1], reverse=True)
     return sorted_interest[:m]
 
