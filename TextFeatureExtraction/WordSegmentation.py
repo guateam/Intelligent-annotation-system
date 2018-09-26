@@ -7,17 +7,8 @@ from sklearn import metrics
 import numpy as np
 
 # 下面reload如果报错好像可以无视，因为是用来区分py版本，下面报错是旧版本py的函数
-<<<<<<< HEAD
 is_py3 = True
 
-=======
-if sys.version_info[0] > 2:
-    is_py3 = True
-else:
-    reload(sys)
-    sys.setdefaultencoding("utf-8")
-    is_py3 = False
->>>>>>> 8e6052e1c5269932123c9e4b87cede91703248ce
 
 
 def native_word(word, encoding='utf-8'):
@@ -435,31 +426,8 @@ if __name__ == '__main__':
     #   用于判断是训练还是预测
     #    if len(sys.argv) != 2 or sys.argv[1] not in ['train', 'test']:
     #        raise ValueError("""usage: python run_cnn.py [train / test]""")
-<<<<<<< HEAD
     #   用法如下
     str_tiyu = """随着iPhone XS、XS Max的上市，第三方机构也开始对它们的成本进行分析了，到底是怎样的呢？
 　　TechInsights送出结果显示，256GB版iPhone XS Max的成本价格大约是443美元，约合人民币3000元左右，相比iPhone X（64GB版）版本的成本贵了差不多有50美元。
 　　从分析的结果来看，iPhone XS Max的屏幕很贵，成本是80.5美元，而A12+射频/基带等这一套下来是72美元，闪存芯片为64美元，摄像头成本是44美元。此外，分析报告中还指出，iPhone XS Max的其它机械组件成本是55美元，这样综合下来，这款新机的总成本就在443美元了"""
     pred(str_tiyu)
-=======
-
-    # print('Configuring CNN model...')
-    # config = TCNNConfig()
-    # if not os.path.exists(vocab_dir):  # 如果不存在词汇表，重建
-    #     build_vocab(train_dir, vocab_dir, config.vocab_size)
-    # categories, cat_to_id = read_category()
-    # words, word_to_id = read_vocab(vocab_dir)
-    # config.vocab_size = len(words)
-    # model = TextCNN(config)
-
- #if sys.argv[1] == 'train':
-    #train()
-    #else:
-    #test()
-    str_tiyu = "山东鲁能近来在中超联赛中取得两连胜，已经走出三连败低谷，同时重燃杀入三甲希望；足协杯中，山东鲁能首回合1-0击败大连一方，次回合只需要一场平局即可晋级决赛。大连一方同样状态不俗，一波三连胜之后，积分追平第七位的广州富力。本赛季双方已经打了三场比赛，山东鲁能2胜1负，联赛中客场落败。山东鲁能此役更换外援配置，佩莱与塔尔德利搭档锋线，格德斯轮休；大连一方变化更大，尽管主帅舒斯特尔喊着放手一搏，但是他们的阵容变化不小，卡拉斯科、穆谢奎未随队出征，主力门将张翀轮休，取而代之的是于子千。第6分钟，山东鲁能后卫传球力量稍小，韩镕泽及时出击解围但不远，盖坦断球之后直接射门，韩镕泽将球没收。第15分钟，山东鲁能创造得分机会，金敬道送出挑传，王彤边路突破到底线附近横传，佩莱中路拿球背身回做，塔尔德利迎球怒射，球擦立柱偏出。第23分钟，里亚斯科斯内切射门将球打飞。山东鲁能第25分钟被动换人，佩莱大腿受伤无法坚持，李霄鹏用吴兴涵将其换下。第31分钟，山东鲁能前场组织进攻，王彤边路传中被后卫解围到后点，候个正着的郑铮凌空抽射，于子千将球挡出底线。蒿俊闵角球传到禁区内，吉尔头球攻门被于子千没收。第42分钟，大连一方获得机会，赵学斌弧线球射门被韩镕泽扑出，周挺跟进补射稍稍高出横梁。第44分钟，大连一方打出快速反击，连续挑球配合，盖坦挑传球，里亚斯科斯快速插上磕磕绊绊将球送入球门，但边裁示意里亚斯科斯越位在先，慢镜头回放显示，王彤前提，造越位成功，进球无效。上半场比赛战罢，双方暂时战成0-0平。"
-    pred(str_tiyu)
-
-# if __name__ == '__main__':
-#     for word in word_segmentation('在这篇文章中，我们将实现一个类似于Kim Yoon的卷积神经网络语句分类的模型', hmm=False):
-#         print(word, end='/')
->>>>>>> 8e6052e1c5269932123c9e4b87cede91703248ce
