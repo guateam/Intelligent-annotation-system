@@ -5,7 +5,6 @@
 ## Table of Contents 目录
 
    * [INTELLIGENT-ANNOTATION-SYSTEM]()
-      * [TABLE OF CONTENT 目录]()
       * [Process 开发进度表]()
       * [Server 服务端]()
          * [Environment 开发环境]()
