@@ -198,8 +198,13 @@
 ### 后台接口
 
 - Python
+
 - Python - virtualenv => Python虚拟环境
+
+  > 可用自带命令 python -m venv venv
+
 - Python - Flask => Web应用框架
+
 - Python - pymysql => MySQL连接库
 
 ### 机器学习项目
