@@ -2,9 +2,34 @@
 
 课外阅读智能批注系统
 
-## TABLE OF CONTENT 目录
+## Table of Contents 目录
 
-[TOC]
+   * [INTELLIGENT-ANNOTATION-SYSTEM]()
+      * [TABLE OF CONTENT 目录]()
+      * [Process 开发进度表]()
+      * [Server 服务端]()
+         * [Environment 开发环境]()
+         * [API 接口]()
+            * [Design 设计思路]()
+            * [Format 格式约定]()
+            * [Document 文档]()
+               * [Account 账户]()
+               * [Reading 读书]()
+               * [User 用户]()
+               * [Information 信息]()
+               * [Other 杂项]()
+         * [Database 数据库]()
+            * [Design 设计思路]()
+            * [Structure 结构]()
+      * [WEB-APP 网页应用]()
+         * [Environment 开发环境]()
+         * [Page&amp;Function 页面和功能]()
+            * [Design 设计思路]()
+            * [Draft 设计稿]()
+            * [交互逻辑]()
+      * [移动应用]()
+
+Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
 ## Process 开发进度表
 
@@ -12,11 +37,6 @@
 
 ----
 
-<style>
-    td {
-        width: 100px;
-    }
-</style>
 <table>
     <tr>
         <td rowspan="2"><strong>服务端</strong></td>
@@ -57,15 +77,11 @@
     </tr>
 </table>
 
+
 2018-09-24 √
 
 ----
 
-<style>
-    td {
-        width: 100px;
-    }
-</style>
 <table>
     <tr>
         <td rowspan="2"><strong>服务端</strong></td>
@@ -91,6 +107,7 @@
         <td>抽象出部分组件等待复用 √</td>
     </tr>
 </table>
+
 
 ## Server 服务端
 
