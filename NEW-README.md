@@ -474,7 +474,7 @@ IntelligentAnnotationSystem.comments
 | -------------- | --------- | ---- | ---- | ----------------- | -------------- | ------------ |
 | id             | int(11)   | NO   | PRI  | NULL              | auto_increment | 批注id       |
 | article_id     | int(11)   | NO   | MUL  | NULL              |                | 文章id       |
-| user_id        | int(11)   | NO   |      | NULL              |                | 批注人id     |
+| user_id        | int(11)   | NO   | MUL  | NULL              |                | 批注人id     |
 | paragraph      | int(11)   | NO   |      | NULL              |                | 自然段       |
 | start_index    | int(11)   | NO   |      | NULL              |                | 开始索引     |
 | end_index      | int(11)   | NO   |      | NULL              |                | 结束索引     |

@@ -90,8 +90,10 @@ CREATE TABLE `comments` (
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '批注时间',
   `agree_count` int(11) NOT NULL DEFAULT '0' COMMENT '赞同数',
   PRIMARY KEY (`id`),
+  KEY `comments_user_id_fk` (`user_id`),
   KEY `comments_article_id_fk` (`article_id`),
-  CONSTRAINT `comments_article_id_fk` FOREIGN KEY (`article_id`) REFERENCES `article` (`id`)
+  CONSTRAINT `comments_article_id_fk` FOREIGN KEY (`article_id`) REFERENCES `article` (`id`),
+  CONSTRAINT `comments_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='批注表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -119,7 +121,7 @@ CREATE TABLE `user` (
   `password` varchar(200) NOT NULL COMMENT '密码',
   `nickname` varchar(45) DEFAULT NULL COMMENT '昵称',
   `token` varchar(25) DEFAULT NULL COMMENT 'TOKEN',
-  `group` int(11) NOT NULL COMMENT '用户组 1-管理员|2-教师|3-学生',
+  `group` int(11) NOT NULL COMMENT '用户组 1=管理员 2=教师 3=学生',
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='用户表';
@@ -144,4 +146,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-26 16:26:25
+-- Dump completed on 2018-09-30 23:30:46
