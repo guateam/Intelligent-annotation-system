@@ -464,16 +464,20 @@ Format:
 
 ![database](./images/database.png)
 
+- 使用`is_del`代替mysql的`DELETE`操作，避免删除数据
+- 使用`foreign key`约束副表，保证数据的完整和一致
+- 使用`user_history`表记录用户的所有操作，包括浏览，点赞，收藏，评论，阅读，批注等等
+
 #### Structure 结构
 
 IntelligentAnnotationSystem.article_details
 
-| Field            | Type         | Null | Key  | Default | Extra |
-| ---------------- | ------------ | ---- | ---- | ------- | ----- |
-| article_id       | varchar(20)  | NO   | PRI  | NULL    |       |
-| article_uploader | varchar(45)  | NO   |      | NULL    |       |
-| file_dir_path    | varchar(200) | NO   |      | NULL    |       |
-| is_del           | tinyint(1)   | NO   |      | 0       |       |
+| Field            | Type         | Null | Key  | Default | Extra                    |
+| ---------------- | ------------ | ---- | ---- | ------- | ------------------------ |
+| article_id       | varchar(20)  | NO   | PRI  | NULL    |                          |
+| article_uploader | varchar(45)  | NO   |      | NULL    | 上传者id                 |
+| file_dir_path    | varchar(200) | NO   |      | NULL    | 文件路径                 |
+| is_del           | tinyint(1)   | NO   |      | 0       | 是否删除-用于避免del操作 |
 
 IntelligentAnnotationSystem.articles
 
@@ -482,9 +486,9 @@ IntelligentAnnotationSystem.articles
 | article_id        | varchar(20)  | NO   | PRI  | NULL              |       |
 | article_title     | varchar(200) | NO   |      | NULL              |       |
 | article_author    | varchar(45)  | NO   |      | NULL              |       |
-| article_describes | text         | YES  |      | NULL              |       |
+| article_describes | text         | YES  |      | NULL              | 简介  |
 | uploader_date     | datetime     | NO   |      | CURRENT_TIMESTAMP |       |
-| weight            | varchar(45)  | YES  |      | NULL              |       |
+| weight            | varchar(45)  | YES  |      | NULL              | 权重  |
 | is_del            | tinyint(1)   | NO   |      | 0                 |       |
 
 IntelligentAnnotationSystem.comments
@@ -494,23 +498,23 @@ IntelligentAnnotationSystem.comments
 | comment_id   | varchar(20) | NO   | PRI  | NULL              |       |
 | user_id      | varchar(20) | NO   | MUL  | NULL              |       |
 | article_id   | varchar(20) | NO   | MUL  | NULL              |       |
-| content      | text        | NO   |      | NULL              |       |
+| content      | text        | NO   |      | NULL              | 内容  |
 | created_time | datetime    | NO   |      | CURRENT_TIMESTAMP |       |
 | weight       | varchar(45) | YES  |      | NULL              |       |
 | is_del       | tinyint(1)  | NO   |      | 0                 |       |
 
 IntelligentAnnotationSystem.postil
 
-| Field           | Type        | Null | Key  | Default           | Extra |
-| --------------- | ----------- | ---- | ---- | ----------------- | ----- |
-| postil_id       | varchar(20) | NO   | PRI  | NULL              |       |
-| user_id         | varchar(20) | NO   | MUL  | NULL              |       |
-| article_id      | varchar(20) | NO   | MUL  | NULL              |       |
-| paragraph_index | int(11)     | NO   |      | NULL              |       |
-| content         | text        | NO   |      | NULL              |       |
-| created_time    | datetime    | NO   |      | CURRENT_TIMESTAMP |       |
-| weight          | varchar(45) | YES  |      | NULL              |       |
-| is_del          | tinyint(1)  | NO   |      | 0                 |       |
+| Field           | Type        | Null | Key  | Default           | Extra    |
+| --------------- | ----------- | ---- | ---- | ----------------- | -------- |
+| postil_id       | varchar(20) | NO   | PRI  | NULL              | 批注id   |
+| user_id         | varchar(20) | NO   | MUL  | NULL              |          |
+| article_id      | varchar(20) | NO   | MUL  | NULL              |          |
+| paragraph_index | int(11)     | NO   |      | NULL              | 段落索引 |
+| content         | text        | NO   |      | NULL              |          |
+| created_time    | datetime    | NO   |      | CURRENT_TIMESTAMP |          |
+| weight          | varchar(45) | YES  |      | NULL              |          |
+| is_del          | tinyint(1)  | NO   |      | 0                 |          |
 
 IntelligentAnnotationSystem.tags
 
@@ -528,8 +532,8 @@ IntelligentAnnotationSystem.user_details
 | -------- | ------------ | ---- | ---- | ------- | ----- |
 | user_id  | varchar(20)  | NO   | PRI  | NULL    |       |
 | sex      | int(11)      | NO   |      | NULL    |       |
-| birth    | datetime     | YES  |      | NULL    |       |
-| nickname | varchar(45)  | NO   |      | NULL    |       |
+| birth    | datetime     | YES  |      | NULL    | 生日  |
+| nickname | varchar(45)  | NO   |      | NULL    | 昵称  |
 | adress   | varchar(200) | YES  |      | NULL    |       |
 | email    | varchar(45)  | YES  |      | NULL    |       |
 | is_del   | tinyint(1)   | NO   |      | 0       |       |
@@ -540,22 +544,22 @@ IntelligentAnnotationSystem.user_history
 | -------------- | ----------- | ---- | ---- | ----------------- | -------------- |
 | action_id      | int(11)     | NO   | PRI  | NULL              | auto_increment |
 | user_id        | varchar(20) | NO   | MUL  | NULL              |                |
-| type_of_action | int(11)     | NO   |      | NULL              |                |
-| action_target  | varchar(20) | NO   |      | NULL              |                |
+| type_of_action | int(11)     | NO   |      | NULL              | 操作类型       |
+| action_target  | varchar(20) | NO   |      | NULL              | 操作对象       |
 | action_time    | datetime    | NO   |      | CURRENT_TIMESTAMP |                |
 | is_del         | tinyint(1)  | NO   |      | 0                 |                |
 
 IntelligentAnnotationSystem.users
 
-| Field         | Type         | Null | Key  | Default           | Extra |
-| ------------- | ------------ | ---- | ---- | ----------------- | ----- |
-| user_id       | varchar(20)  | NO   | PRI  | NULL              |       |
-| password      | varchar(256) | NO   |      | NULL              |       |
-| user_group    | int(11)      | NO   |      | NULL              |       |
-| personas      | varchar(45)  | NO   |      | NULL              |       |
-| register_date | datetime     | NO   |      | CURRENT_TIMESTAMP |       |
-| weight        | varchar(45)  | YES  |      | NULL              |       |
-| is_del        | tinyint(1)   | NO   |      | 0                 |       |
+| Field         | Type         | Null | Key  | Default           | Extra    |
+| ------------- | ------------ | ---- | ---- | ----------------- | -------- |
+| user_id       | varchar(20)  | NO   | PRI  | NULL              |          |
+| password      | varchar(256) | NO   |      | NULL              |          |
+| user_group    | int(11)      | NO   |      | NULL              |          |
+| personas      | varchar(45)  | NO   |      | NULL              | 用户画像 |
+| register_date | datetime     | NO   |      | CURRENT_TIMESTAMP |          |
+| weight        | varchar(45)  | YES  |      | NULL              |          |
+| is_del        | tinyint(1)   | NO   |      | 0                 |          |
 
 ## WEB-APP 网页应用
 
