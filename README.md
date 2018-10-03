@@ -236,38 +236,39 @@
 
 | Column   | Datatype     | PrimaryKey | NotNull | Default           | Comments | Extra                    |
 | -------- | ------------ | ---------- | ------- | ----------------- | -------- | ------------------------ |
-| id       | int(11)      | yes        | yes     | AI                | 用户id   |                          |
+| id       | int(20)      | yes        | yes     | AI                | 用户id   |                          |
 | username | varchar(20)  | no         | yes     |                   | 用户名   |                          |
 | email    | varchar(45)  | no         | no      |                   | 邮箱     |                          |
 | phone    | varchar(20)  | no         | no      |                   | 手机     |                          |
 | password | varchar(200) | no         | yes     |                   | 密码     |                          |
 | nickname | varchar(45)  | no         | no      |                   | 昵称     |                          |
 | token    | varchar(25)  | no         | no      |                   | TOKEN    |                          |
-| group    | int(11)      | no         | yes     |                   | 用户组   | 1-管理员\|2-教师\|3-学生 |
+| group    | int(20)      | no         | yes     |                   | 用户组   | 1-管理员\|2-教师\|3-学生 |
 | date     | timestamp    | no         | yes     | current_timestamp | 注册时间 |                          |
 
 文章表：article
 
 | Column    | Datatype    | PrimaryKey | NotNull | Default           | Comments       |
 | --------- | ----------- | ---------- | ------- | ----------------- | -------------- |
-| id        | int(11)     | yes        | yes     | AI                | 文章id         |
+| id        | int(20)     | yes        | yes     | AI                | 文章id         |
 | title     | varchar(45) | no         | yes     |                   | 文章标题       |
 | author | varchar(20) | no | yes | "未知作者" | 文章作者 |
 | image_path | varchar(200) | no | no | NULL | 标题图片的路径 |
 | file_path | varchar(200) | no         | yes     |                   | 文章内容的路径 |
-| uploader  | int(11)     | no         | yes     |                   | 上传人         |
-| state     | int(11)     | no         | yes     |                   | 审核状态        |
+| uploader  | int(20)     | no         | yes     |                   | 上传人         |
+| state     | int(1)     | no         | yes     |                   | 审核状态        |
 | date      | timestamp   | no         | yes     | current_timestamp | 上传时间       |
 
 文章类型表：article_tag
 
 | Column     | Datatype    | PrimaryKey | NotNull | Default | Comments | Extra       |
 | ---------- | ----------- | ---------- | ------- | ------- | -------- | ----------- |
-| id         | int(11)     | yes        | yes     | AI      | id       |             |
-| article_id | int(11)     | no         | yes     |         | 文章id   | foreign key |
-| tag        | varchar(20) | no         | yes     |         | Tag      |             |
+| id         | int(20)     | yes        | yes     | AI      | id       |             |
+| article_id | int(20)     | no         | yes     |         | 文章id   | foreign key |
+| tag        | varchar(45) | no         | yes     |         | Tag      |             |
+| weight        | varchar(45) | no         | yes     |         | 权重      |             |
 
-批注表：comments
+批注表：postil
 
 | Column         | Datatype  | PrimaryKey | NotNull | Default           | Comments     | Extra       |
 | -------------- | --------- | ---------- | ------- | ----------------- | ------------ | ----------- |

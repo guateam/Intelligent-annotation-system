@@ -464,103 +464,97 @@ Format:
 
 ![database](./images/database.png)
 
-- 使用`is_del`代替mysql的`DELETE`操作，避免删除数据
+- 使用`is_del`和`state`代替MySQL的`DELETE`操作，避免删除数据
 - 使用`foreign key`约束副表，保证数据的完整和一致
 - 使用`user_history`表记录用户的所有操作，包括浏览，点赞，收藏，评论，阅读，批注等等
 
 #### Structure 结构
 
-IntelligentAnnotationSystem.article_details
+用户表 user：
 
-| Field            | Type         | Null | Key  | Default | Extra                    |
-| ---------------- | ------------ | ---- | ---- | ------- | ------------------------ |
-| article_id       | varchar(20)  | NO   | PRI  | NULL    |                          |
-| article_uploader | varchar(45)  | NO   |      | NULL    | 上传者id                 |
-| file_dir_path    | varchar(200) | NO   |      | NULL    | 文件路径                 |
-| is_del           | tinyint(1)   | NO   |      | 0       | 是否删除-用于避免del操作 |
+| Field    | Type         | Null | Key  | Default           | Extra              |
+| -------- | ------------ | ---- | ---- | ----------------- | ------------------ |
+| id       | int(11)      | NO   | PRI  | NULL              | auto_increment，id |
+| username | varchar(45)  | NO   |      | NULL              | 用户名             |
+| password | varchar(200) | NO   |      | NULL              | 密码               |
+| email    | varchar(45)  | NO   |      | NULL              | 邮箱               |
+| phone    | varchar(45)  | NO   |      | NULL              | 手机号             |
+| group    | int(11)      | NO   |      | NULL              | 用户组             |
+| is_del   | int(11)      | NO   |      | NULL              | 清除状态           |
+| nickname | varchar(45)  | NO   |      | NULL              | 昵称               |
+| date     | timestamp    | NO   |      | CURRENT_TIMESTAMP | 注册日期           |
+| personas | varchar(45)  | NO   |      | NULL              | 用户画像           |
+| token    | varchar(45)  | NO   |      | NULL              | token              |
 
-IntelligentAnnotationSystem.articles
+文章表 article：
 
-| Field             | Type         | Null | Key  | Default           | Extra |
-| ----------------- | ------------ | ---- | ---- | ----------------- | ----- |
-| article_id        | varchar(20)  | NO   | PRI  | NULL              |       |
-| article_title     | varchar(200) | NO   |      | NULL              |       |
-| article_author    | varchar(45)  | NO   |      | NULL              |       |
-| article_describes | text         | YES  |      | NULL              | 简介  |
-| uploader_date     | datetime     | NO   |      | CURRENT_TIMESTAMP |       |
-| weight            | varchar(45)  | YES  |      | NULL              | 权重  |
-| is_del            | tinyint(1)   | NO   |      | 0                 |       |
+| Field      | Type         | Null | Key  | Default           | Extra               |
+| ---------- | ------------ | ---- | ---- | ----------------- | ------------------- |
+| id         | int(11)      | NO   | PRI  | NULL              | auto_increment，id  |
+| title      | varchar(45)  | NO   |      | NULL              | 标题                |
+| file_path  | varchar(200) | NO   |      | NULL              | 文章路径            |
+| image_path | varchar(200) | YES  |      | NULL              | 封面路径            |
+| state      | int(11)      | NO   |      | NULL              | 状态 0=可用 1=清除  |
+| author     | varchar(45)  | NO   |      | NULL              | 作者                |
+| uploader   | int(11)      | NO   | MUL  | NULL              | 上传者，Foreign Key |
+| date       | timestamp    | NO   |      | CURRENT_TIMESTAMP | 上传日期            |
 
-IntelligentAnnotationSystem.comments
+批注表 postil：
 
-| Field        | Type        | Null | Key  | Default           | Extra |
-| ------------ | ----------- | ---- | ---- | ----------------- | ----- |
-| comment_id   | varchar(20) | NO   | PRI  | NULL              |       |
-| user_id      | varchar(20) | NO   | MUL  | NULL              |       |
-| article_id   | varchar(20) | NO   | MUL  | NULL              |       |
-| content      | text        | NO   |      | NULL              | 内容  |
-| created_time | datetime    | NO   |      | CURRENT_TIMESTAMP |       |
-| weight       | varchar(45) | YES  |      | NULL              |       |
-| is_del       | tinyint(1)  | NO   |      | 0                 |       |
+| Field      | Type         | Null | Key  | Default | Extra               |
+| ---------- | ------------ | ---- | ---- | ------- | ------------------- |
+| id         | int(11)      | NO   | PRI  | NULL    | auto_increment，id  |
+| content    | varchar(400) | NO   |      | NULL    | 内容                |
+| start      | int(11)      | NO   |      | NULL    | 开始                |
+| end        | int(11)      | NO   |      | NULL    | 结束                |
+| type       | int(11)      | NO   |      | NULL    | 种类                |
+| article_id | int(11)      | NO   | MUL  | NULL    | 文章id，Foreign Key |
+| user_id    | int(11)      | NO   | MUL  | NULL    | 用户id，Foreign Key |
+| state      | int(11)      | NO   |      | NULL    | 状态 0=可用 1=清除  |
 
-IntelligentAnnotationSystem.postil
+文章tag表 article_tag：
 
-| Field           | Type        | Null | Key  | Default           | Extra    |
-| --------------- | ----------- | ---- | ---- | ----------------- | -------- |
-| postil_id       | varchar(20) | NO   | PRI  | NULL              | 批注id   |
-| user_id         | varchar(20) | NO   | MUL  | NULL              |          |
-| article_id      | varchar(20) | NO   | MUL  | NULL              |          |
-| paragraph_index | int(11)     | NO   |      | NULL              | 段落索引 |
-| content         | text        | NO   |      | NULL              |          |
-| created_time    | datetime    | NO   |      | CURRENT_TIMESTAMP |          |
-| weight          | varchar(45) | YES  |      | NULL              |          |
-| is_del          | tinyint(1)  | NO   |      | 0                 |          |
+| Field      | Type        | Null | Key  | Default | Extra              |
+| ---------- | ----------- | ---- | ---- | ------- | ------------------ |
+| id         | int(11)     | NO   | PRI  | NULL    | auto_increment，id |
+| name       | varchar(45) | NO   |      | NULL    | tag名称            |
+| weight     | varchar(45) | NO   |      | NULL    | 权重               |
+| article_id | int(11)     | NO   | MUL  | NULL    | 文章id             |
 
-IntelligentAnnotationSystem.tags
+文章评论表 article_comment：
 
-| Field        | Type        | Null | Key  | Default | Extra          |
-| ------------ | ----------- | ---- | ---- | ------- | -------------- |
-| tag_id       | int(11)     | NO   | PRI  | NULL    | auto_increment |
-| tags_content | varchar(45) | NO   |      | NULL    |                |
-| tag_type     | int(11)     | NO   |      | NULL    |                |
-| tag_target   | varchar(20) | NO   |      | NULL    |                |
-| is_del       | tinyint(1)  | NO   |      | 0       |                |
+| Field      | Type         | Null | Key  | Default           | Extra                     |
+| ---------- | ------------ | ---- | ---- | ----------------- | ------------------------- |
+| id         | int(11)      | NO   | PRI  | NULL              | auto_increment，id        |
+| content    | varchar(200) | NO   |      | NULL              | 内容                      |
+| state      | int(11)      | NO   |      | NULL              | 状态 0=可用 1=清除        |
+| date       | timestamp    | NO   |      | CURRENT_TIMESTAMP | 发表日期                  |
+| user_id    | int(11)      | NO   | MUL  | NULL              | 用户id，Foreign Key       |
+| article_id | int(11)      | NO   | MUL  | NULL              | 文章id，Foreign Key       |
+| previous   | int(11)      | YES  | MUL  | NULL              | 上一级评论id，Foreign Key |
 
-IntelligentAnnotationSystem.user_details
+批注评论表 postil_comment：
 
-| Field    | Type         | Null | Key  | Default | Extra |
-| -------- | ------------ | ---- | ---- | ------- | ----- |
-| user_id  | varchar(20)  | NO   | PRI  | NULL    |       |
-| sex      | int(11)      | NO   |      | NULL    |       |
-| birth    | datetime     | YES  |      | NULL    | 生日  |
-| nickname | varchar(45)  | NO   |      | NULL    | 昵称  |
-| adress   | varchar(200) | YES  |      | NULL    |       |
-| email    | varchar(45)  | YES  |      | NULL    |       |
-| is_del   | tinyint(1)   | NO   |      | 0       |       |
+| Field     | Type         | Null | Key  | Default           | Extra                     |
+| --------- | ------------ | ---- | ---- | ----------------- | ------------------------- |
+| id        | int(11)      | NO   | PRI  | NULL              | auto_increment，id        |
+| content   | varchar(200) | NO   |      | NULL              | 内容                      |
+| state     | int(11)      | NO   |      | NULL              | 状态 0=可用 1=清除        |
+| date      | timestamp    | NO   |      | CURRENT_TIMESTAMP | 发表日期                  |
+| postil_id | int(11)      | NO   | MUL  | NULL              | 批注id，Foreign Key       |
+| user_id   | int(11)      | NO   | MUL  | NULL              | 用户id，Foreign Key       |
+| previous  | int(11)      | YES  | MUL  | NULL              | 上一级评论id，Foreign Key |
 
-IntelligentAnnotationSystem.user_history
+用户行为表 user_history：
 
-| Field          | Type        | Null | Key  | Default           | Extra          |
-| -------------- | ----------- | ---- | ---- | ----------------- | -------------- |
-| action_id      | int(11)     | NO   | PRI  | NULL              | auto_increment |
-| user_id        | varchar(20) | NO   | MUL  | NULL              |                |
-| type_of_action | int(11)     | NO   |      | NULL              | 操作类型       |
-| action_target  | varchar(20) | NO   |      | NULL              | 操作对象       |
-| action_time    | datetime    | NO   |      | CURRENT_TIMESTAMP |                |
-| is_del         | tinyint(1)  | NO   |      | 0                 |                |
-
-IntelligentAnnotationSystem.users
-
-| Field         | Type         | Null | Key  | Default           | Extra    |
-| ------------- | ------------ | ---- | ---- | ----------------- | -------- |
-| user_id       | varchar(20)  | NO   | PRI  | NULL              |          |
-| password      | varchar(256) | NO   |      | NULL              |          |
-| user_token    | varchar(100) | YES  |      | NULL              |          |
-| user_group    | int(11)      | NO   |      | NULL              |          |
-| personas      | varchar(45)  | NO   |      | NULL              | 用户画像 |
-| register_date | datetime     | NO   |      | CURRENT_TIMESTAMP |          |
-| weight        | varchar(45)  | YES  |      | NULL              |          |
-| is_del        | tinyint(1)   | NO   |      | 0                 |          |
+| Field   | Type        | Null | Key  | Default           | Extra               |
+| ------- | ----------- | ---- | ---- | ----------------- | ------------------- |
+| id      | int(11)     | NO   | PRI  | NULL              | auto_increment，id  |
+| type    | tinyint(2)  | NO   |      | NULL              | 类型                |
+| comment | varchar(45) | NO   |      | NULL              | 内容                |
+| target  | varchar(45) | NO   |      | NULL              | 目标                |
+| user_id | int(11)     | NO   | MUL  | NULL              | 用户id，Foreign Key |
+| date    | timestamp   | NO   |      | CURRENT_TIMESTAMP | 行动日期            |
 
 ## WEB-APP 网页应用
 
