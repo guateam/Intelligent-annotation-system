@@ -65,14 +65,15 @@ def login():
     db = Database()
     result = db.get({'username': username, 'password': generate_password(password)}, 'user')  # 获取数据
     if result:
-        result = db.update({'username': username, 'password': generate_password(password)},
-                           {'token': new_token()},
-                           'user')  # 更新token
-        if result:
-            return jsonify(
-                {'code': 1, 'msg': 'success', 'data': {'token': result['token'], 'group': result['group']}}
-            )  # 成功返回
-        return jsonify({'code': -1, 'msg': 'unable to update token'})  # 失败返回
+        if result['is_del']==0:
+            result = db.update({'username': username, 'password': generate_password(password)},
+                               {'token': new_token()},
+                               'user')  # 更新token
+            if result:
+                return jsonify(
+                    {'code': 1, 'msg': 'success', 'data': {'token': result['token'], 'group': result['group']}}
+                )  # 成功返回
+            return jsonify({'code': -1, 'msg': 'unable to update token'})  # 失败返回
     return jsonify({'code': 0, 'msg': 'unexpected user'})  # 失败返回
 
 
@@ -136,11 +137,11 @@ def sign_up():
         return jsonify({'code': -2, 'msg': 'phone is already signed'})  # 手机号重复
     flag = db.insert({
         'username': username,
+        'password': generate_password(password),
+        'group': group,
         'nickname': nickname,
         'phone': phone,
         'email': email,
-        'password': generate_password(password),
-        'group': group
     }, 'user')  # 添加新用户
     if flag:
         return jsonify({'code': 1, 'msg': 'success'})  # 成功返回
@@ -237,6 +238,14 @@ def comment_recommend():
     根据用户模型推荐批注
     :return:
     """
+    token = request.values.get('token')
+    db = Database()
+    result = []
+    user = db.get({'token': token}, 'user')  # 获取用户信息
+    if user:
+        comment = db.get({}, 'article', 0)
+        for value in comment:
+            pass
 
 
 @app.route('/api/reading/tag_recommend')
@@ -305,7 +314,7 @@ def upload_article():
                 print(result)
                 data = db.get({'file_path': change_route(article_path, 1)}, 'article')
                 if data:
-                    tag_flag = db.insert({'article_id': data['id'], 'tag': result[0]}, 'article_tag')
+                    tag_flag = db.insert({'article_id': data['id'], 'name': result[0]}, 'article_tag')
                     if tag_flag:
                         return jsonify({'code': 1, 'msg': 'success'})  # 成功返回
                 return jsonify({'code': -1, 'msg': 'unknown error'})  # 未知错误

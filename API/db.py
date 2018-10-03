@@ -87,8 +87,7 @@ class Database(object):
                     list1.append(key + '="' + str(values) + '"')
                 where = ' AND '.join(list1)
                 sql_query = 'SELECT * FROM %s WHERE %s' % (table, where)  # 构造sql语句
-                sql_query.replace('\\','\\\\')
-                print(sql_query)
+                sql_query.replace('\\', '\\\\')
                 cursor.execute(sql_query)
                 results = cursor.fetchall()
                 if len(results) and type == 1:
