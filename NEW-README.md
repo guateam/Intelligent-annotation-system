@@ -555,6 +555,7 @@ IntelligentAnnotationSystem.users
 | ------------- | ------------ | ---- | ---- | ----------------- | -------- |
 | user_id       | varchar(20)  | NO   | PRI  | NULL              |          |
 | password      | varchar(256) | NO   |      | NULL              |          |
+| user_token    | varchar(100) | YES  |      | NULL              |          |
 | user_group    | int(11)      | NO   |      | NULL              |          |
 | personas      | varchar(45)  | NO   |      | NULL              | 用户画像 |
 | register_date | datetime     | NO   |      | CURRENT_TIMESTAMP |          |

@@ -28,7 +28,7 @@ CREATE TABLE `article_details` (
   `file_dir_path` varchar(200) NOT NULL,
   `is_del` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`article_id`),
-  CONSTRAINT `fk_article_details_articles` FOREIGN KEY (`article_id`) REFERENCES `articles` (`article_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `fk_article_details_articles` FOREIGN KEY (`article_id`) REFERENCES `articles` (`article_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章详细信息';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -171,12 +171,12 @@ CREATE TABLE `user_details` (
   `user_id` varchar(20) NOT NULL,
   `sex` int(11) NOT NULL COMMENT '1=男\n2=女\n3=未知',
   `birth` datetime DEFAULT NULL,
-  `nickname` varchar(45) NOT NULL,
+  `nickname` varchar(45) DEFAULT NULL,
   `adress` varchar(200) DEFAULT NULL,
   `email` varchar(45) DEFAULT NULL,
   `is_del` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`user_id`),
-  CONSTRAINT `fk_user_details_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `fk_user_details_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户详细信息';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -228,6 +228,7 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `user_id` varchar(20) NOT NULL COMMENT '不允许重复, phone_number',
   `password` varchar(256) NOT NULL,
+  `user_token` varchar(100) DEFAULT NULL,
   `user_group` int(11) NOT NULL COMMENT '1=管理员\n2=维护人员\n3=老师\n4=学生\n5=游客\n',
   `personas` varchar(45) NOT NULL COMMENT '用户画像',
   `register_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -255,4 +256,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-02 19:40:02
+-- Dump completed on 2018-10-03 13:29:38
