@@ -418,7 +418,7 @@ test_dir = os.path.join(base_dir, 'dataset/cnews.test.txt')
 val_dir = os.path.join(base_dir, 'dataset/cnews.val.txt')
 vocab_dir = os.path.join(base_dir, 'dataset/cnews.vocab.txt')
 
-save_dir = os.path.join(base_dir,'checkpoints/textcnn')
+save_dir = os.path.join(base_dir, 'checkpoints/textcnn')
 save_path = os.path.join(save_dir, 'best_validation')  # 最佳验证结果保存路径
 
 if __name__ == '__main__':
@@ -426,8 +426,5 @@ if __name__ == '__main__':
     #    if len(sys.argv) != 2 or sys.argv[1] not in ['train', 'test']:
     #        raise ValueError("""usage: python run_cnn.py [train / test]""")
     #   用法如下
-    str_tiyu = """据《镜週刊》报导，一位在演艺圈地位举足轻重的A咖女星在某场聚会中爆料，林青霞已经悄悄结束24年的婚姻，
-    和邢李㷧离婚，据传她因为女儿们已经长大成人，加上无法忍受老公在外有“二心”，也拿了20亿港币（约17.5亿元人民币）的赡养费，选择高龄离婚。
-　　由于A咖女星在演艺圈中人脉极广，地位可说是非常权威，加上林青霞婚变之说一再传出，更让不少人认为传言为真，但本人目前尚未出面回应。
-    而林青霞曾在真人秀中被问及“在节目中觉得最孤独的时候”，她误以为对方问的是婚姻，竟老实回答是和邢李㷧结婚的前半年，让她尴尬赶紧打圆场。"""
+    str_tiyu = '姚明是中国男篮历史上最伟大的球员，无论是CBA和国家队时期，还是登陆NBA之后，大姚都取得了极大的成功。也正是由于大姚的成功，才将NBA推向中国，让此后的男篮球员进军NBA变得更加简单。不过大姚在进军NBA之前，也曾遭遇过不小的困难，一度萌生了退役的想法。'
     pred(str_tiyu)
