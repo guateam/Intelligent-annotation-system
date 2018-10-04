@@ -418,7 +418,7 @@ test_dir = os.path.join(base_dir, 'dataset/cnews.test.txt')
 val_dir = os.path.join(base_dir, 'dataset/cnews.val.txt')
 vocab_dir = os.path.join(base_dir, 'dataset/cnews.vocab.txt')
 
-save_dir = os.path.join(base_dir,'checkpoints/textcnn')
+save_dir = os.path.join(base_dir, 'checkpoints/textcnn')
 save_path = os.path.join(save_dir, 'best_validation')  # 最佳验证结果保存路径
 
 if __name__ == '__main__':
@@ -426,8 +426,8 @@ if __name__ == '__main__':
     #    if len(sys.argv) != 2 or sys.argv[1] not in ['train', 'test']:
     #        raise ValueError("""usage: python run_cnn.py [train / test]""")
     #   用法如下
-    str_tiyu = """据《镜週刊》报导，一位在演艺圈地位举足轻重的A咖女星在某场聚会中爆料，林青霞已经悄悄结束24年的婚姻，
-    和邢李㷧离婚，据传她因为女儿们已经长大成人，加上无法忍受老公在外有“二心”，也拿了20亿港币（约17.5亿元人民币）的赡养费，选择高龄离婚。
-　　由于A咖女星在演艺圈中人脉极广，地位可说是非常权威，加上林青霞婚变之说一再传出，更让不少人认为传言为真，但本人目前尚未出面回应。
-    而林青霞曾在真人秀中被问及“在节目中觉得最孤独的时候”，她误以为对方问的是婚姻，竟老实回答是和邢李㷧结婚的前半年，让她尴尬赶紧打圆场。"""
+    str_tiyu = """身穿韩国国字号球衣出战的姜浩然作为首发得分后卫出场，以场均2分1篮板0助攻的惨淡数据结束了自己第一年的国家队之旅。
+                  年仅20岁的首尔大学新星姜浩然，在亚洲赛场上遭遇了最大的挫折，韩国最年轻的国家男篮球员已成笑谈。
+                  而韩国男篮，以历史最差的亚锦赛小组赛未出线的战绩结束了自己的男篮亚锦赛之旅，奥运无望。
+                  铩羽而归的韩国男篮被舆论所指，而最大的责难就是这个被给予希望的首尔大的篮球队长姜浩然。"""
     pred(str_tiyu)

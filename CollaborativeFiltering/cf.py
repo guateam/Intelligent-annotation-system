@@ -1,5 +1,5 @@
 from TextFeatureExtraction.WordSegmentation import pred
-
+import numpy as np
 
 def cosine_similarity(vector1, vector2):
     """
@@ -12,13 +12,15 @@ def cosine_similarity(vector1, vector2):
     norm_a = 0.0
     norm_b = 0.0
     for a, b in zip(vector1, vector2):
-        dot_product += a * b
+        dot_product += (a * b)
         norm_a += a ** 2
         norm_b += b ** 2
     if norm_a == 0.0 or norm_b == 0.0:
         return 0
     else:
-        return round(dot_product / ((norm_a ** 0.5) * (norm_b ** 0.5)) * 100, 2)
+        norm_a = norm_a ** 0.5
+        norm_b = norm_b ** 0.5
+        return round(dot_product / (norm_a*norm_b), 4)
 
 
 def interest_value(similar, rate_vec):
@@ -39,8 +41,8 @@ def most_interest(similar_vec, rate_vec, k=1, m=1):
     获取目标用户最感兴趣的几个对象
     :param similar_vec: 其他用户和目标用户的兴趣相似度矩阵，一维
     :param rate_vec: 用户的评分矩阵，二维，一维对应某用户，一维对应该用户的评分
-    :param k: 选取其他用户的个数，按相似度程度降序排列
-    :param m: 输出的元组个数
+    :param k: 选取其他用户的个数，按相似度程度降序排列,默认为1
+    :param m: 输出的元组个数，默认为1
     :return: 元组，格式为 (评论对象下标，兴趣度)
     """
 
@@ -55,8 +57,6 @@ def most_interest(similar_vec, rate_vec, k=1, m=1):
     # 选取前k个最相关的其他用户
     together = together[0:k]
 
-    print(len(together))
-    print(together[0][1])
     # 根据公式计算  用户u对物品i的感兴趣程度  P(u,i) = ∑S(u,k)∩N(i)  Wuv*Rvi
     # S(u, K)包含和用户u兴趣最接近的K个用户， N(i)是对物品i有过行为的用户集合，
     # w_uv是用户u和用户v的兴趣相似度， r_vi代表用户v对物品i的兴趣度
@@ -71,25 +71,27 @@ def most_interest(similar_vec, rate_vec, k=1, m=1):
     return sorted_interest[:m]
 
 
-def cf(item_vec, rate_vec, k=1, m=1):
+def cf(self_vec,others_vec,k=1, m=1,item_vec = []):
     """
-    用cf算法推荐对象，默认为向量的第一个用户提供推荐
-    :param item_vec: 对象的向量
-    :param rate_vec: 评分的向量
+    用cf算法推荐对象
+    :param self_vec: 需要进行推荐的用户评分矩阵,一维[ , , ]
+    :param others_vec: 其他用户的评分矩阵,二维[ [] , [] ]
     :param k: 选取其他用户的个数，按相似度程度降序排列
     :param m: 输出的元组个数
+    :param item_vec: 如果该参数存在，则直接输出推荐对象对应下标的名称，否则输出下标
     :return: 推荐的对象
     """
     # 相似度矩阵，待计算
     similar_vec = []
+    rate_vec = [self_vec]+others_vec
     for i in range(len(rate_vec)):
         if i == 0:
-            # 以第一个用户为目标用户，第一次循环计算自己的相似度，adjusted_cosin算法得到的值越小，相似度越大，这里设置为0
+            # 以第一个用户为目标用户，第一次循环计算自己的相似度，adjusted_cosin算法得到的值越接近1，相似度越大，这里设置为1-1=0
             # 表示最大相似度
             similar_vec.append(0)
         else:
             # 以第一个用户为目标用户，计算其他用户的相似度
-            similar_vec.append(cosine_similarity(rate_vec[0], rate_vec[i]))
+            similar_vec.append(abs(cosine_similarity(rate_vec[0], rate_vec[i])-1))
 
     # 获取目标用户最感兴趣的对象类型
     most_interest_vec = most_interest(similar_vec[1:], rate_vec[1:], k, m)
@@ -98,7 +100,10 @@ def cf(item_vec, rate_vec, k=1, m=1):
     # 比如这个例子下的结果"财经",目标用户对财经的评价很低，但是依然推荐了财经
     data = []
     for i in range(m):
-        data.append(item_vec[most_interest_vec[i][0]])
+        if len(item_vec)!=0:
+            data.append(item_vec[most_interest_vec[i][0]])
+        else:
+            data.append(most_interest_vec[i][0])
     return data
 
 
@@ -109,12 +114,15 @@ uec = [1, 2, 3, 4]
 # 对象类型
 ivec = ["体育", "游戏", "财经", "军事", "娱乐"]
 # 每个用户对每个对象类型的评分(在本系统中，对象是文章类型，评分是偏好程度，偏好程度可以根据点赞数量，浏览次数等等数据获得)
+self_rvec = [1, 3, 0.4, 2.2, 1.3]
 rvec = [
-    [1, 3, 0.4, 2.2, 1.3],
+    [0.9,3.3,0.7,1.9,1],
     [0.8, 0.7, 1.5, 1.7, 3],
     [1.6, 0.4, 2.3, 1, 1.5],
     [0.7, 1.6, 1.1, 1.2, 0.3],
 ]
-
-print(cf(ivec, rvec, 2, 2))
+# print("输出下标：")
+# print(cf(self_rvec, rvec, 2, 2))
+print("输出名称：")
+print(cf(self_rvec, rvec, 2, 2,ivec))
 
