@@ -12,6 +12,10 @@ Vue.use(Router)
 export default new Router({
   routes: [
       {
+          path: '/',
+          redirect: '/mainpage'
+      },
+      {
           path: '/mainpage',
           name: 'mainpage',
           component: Mainpage,

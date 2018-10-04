@@ -1,15 +1,22 @@
 <template>
-    <div class="myself" ref="myself">
-        我的
+    <div>
+        <Login v-if="!isLogin"></Login>
     </div>
 </template>
 
 <script>
+    import Login from '../login/login'
+
     export default {
-        name: "myself"
+        name: "myself",
+        components: {Login},
+        data() {
+            return {
+                isLogin: false,  // 是否登录
+            }
+        },
     }
 </script>
 
 <style scoped>
-
 </style>

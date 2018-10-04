@@ -32,5 +32,6 @@
         line-height: 1.8;
         right: 0;
         position: absolute;
+        margin-top: 55px;
     }
 </style>

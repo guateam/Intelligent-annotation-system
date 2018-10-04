@@ -1,3 +1,4 @@
+<!--书记文章批注分类这个玩意实际上压根就没商量好怎么分所以暂时不管了，先静态丢这里-->
 <template>
     <div class="sometag">
         <h2>热门分类<a href="javascript:" class="lookmore">更多 > </a></h2>

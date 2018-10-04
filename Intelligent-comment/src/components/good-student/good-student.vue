@@ -4,19 +4,26 @@
         <div class="student-detail">
             <div class="abox">
                 <div class="name">
-                    <h2>学生一</h2>
-                    <h3>称号1、称号2</h3>
+                    <h2>{{ student }}</h2>
+                    <h3>{{ studentTag }}</h3>
                 </div>
                 <img src="./head.png" alt="头像" class="head-pic">
             </div>
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;学生简介学生简介学生简介学生简介学生简介学生简介学生简介学生简介学生简介</p>
+            <p class="detail-word">&nbsp;&nbsp;&nbsp;&nbsp;{{ studentIntro }}</p>
         </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "good-student"
+        name: "good-student",
+        data(){
+            return{
+                student:'赵找找',  // 学生名
+                studentTag: '称号一',  // 其实这个我也不知道是个啥
+                studentIntro: '这里是学生简介这里是学生简介这里是生简介简介这里是学学生简介这里是生简介这里是生简介这里是生简学生简介',  // 学生简介
+            }
+        }
     }
 </script>
 

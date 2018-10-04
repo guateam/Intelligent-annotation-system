@@ -4,19 +4,26 @@
         <div class="teacher-detail">
             <div class="abox">
                 <div class="name">
-                    <h2>老师一</h2>
-                    <h3>称号1、称号2</h3>
+                    <h2>{{ teacher }}</h2>
+                    <h3>{{ teacherTag }}</h3>
                 </div>
                 <img src="./head.png" alt="头像" class="head-pic">
             </div>
-            <p class="detail-word">&nbsp;&nbsp;&nbsp;&nbsp;师简介教师师简介教师教师简介教师简介教师简介教师简介教师简介教师简介教师简介教师简介教师简介</p>
+            <p class="detail-word">&nbsp;&nbsp;&nbsp;&nbsp;{{ teacherIntro }}</p>
         </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "good-student"
+        name: "good-student",
+        data() {
+            return{
+                teacher: '王汪汪',  // 教师名
+                teacherTag: '称号一',  // 其实这个我也不知道是个啥
+                teacherIntro: '这里是教师简介这里是教师简介这里是生简介简介这里是学教师简介这里是生简介这里是生简介这里是生简教师简介',  // 教师简介
+            }
+        }
     }
 </script>
 
@@ -24,7 +31,6 @@
     .teacher-detail {
         border-bottom: 1px solid grey;
     }
-
 
     .abox {
         height: 60px;

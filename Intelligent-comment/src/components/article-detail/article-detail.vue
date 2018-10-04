@@ -4,9 +4,9 @@
             <div class="title">
                 <img class="book-pic" src="./pic-book.png" alt="封面">
                 <div class="title-more">
-                    <h1>这是书名</h1>
-                    <h3>作者：<span>张老三</span></h3>
-                    <h3>类别: <span>文学、社会科学</span></h3>
+                    <h1>{{ bookName }}</h1>
+                    <h3>作者：<span>{{ bookAuthor }}</span></h3>
+                    <h3>类别: <span>{{ bookTag }}</span></h3>
                     <span>
                         <Rate disabled show-text allow-half v-model="valueCustomText">
                             <span style="color: #f5a623">{{ valueCustomText }}</span>
@@ -14,24 +14,26 @@
                     </span>
                     <div class="title-more-foot">
                         <button>阅读</button>
-                        <span>分享</span>
+                        <span><img src="./share.png" alt="">分享</span>
                         <span>收藏</span>
                     </div>
                 </div>
             </div>
             <div class="information">
                 <Tabs value="name1">
-                    <TabPane label="标签一" name="name1">标签一的内容</TabPane>
-                    <TabPane label="标签二" name="name2">标签二的内容</TabPane>
-                    <TabPane label="标签三" name="name3">标签三的内容</TabPane>
+                    <TabPane label="书籍简介" name="intro">{{ intro }}</TabPane>
+                    <TabPane label="目录" name="contents">{{ contents }}</TabPane>
                 </Tabs>
             </div>
             <div class="comment">
-                <h1>热门批注</h1>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;“这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注”</p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;“这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注”</p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;“这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注”</p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;“这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注”</p>
+                <Tabs value="name1">
+                    <TabPane label="热门批注" name="intro">
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;“{{ part }}”</p>
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;“{{ annotation }}”</p>
+                        <Page :total="100"/>
+                    </TabPane>
+                    <TabPane label="书籍评论" name="contents">{{ comment }}</TabPane>
+                </Tabs>
             </div>
         </div>
         <div class="right">
@@ -52,7 +54,15 @@
         components: {RealAd, SomeTag, Author},
         data() {
             return {
-                valueCustomText: 3.8
+                bookTag: '社会科学',  // 书籍的标签（分类）
+                bookName: '看不见的城市',  // 书名
+                bookAuthor: '王老三',  // 作者
+                intro: '这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介...',  // 简介
+                valueCustomText: 3.8,  // 书籍评分
+                contents: '暂时还不知道怎么获取书籍目录，先空着',  // 书籍目录
+                part:'书籍里面摘抄的段落或者句子或者什么玩意的吧emm书籍里面摘抄的段落或者句子或者什么玩意的吧emm书籍里面摘抄的段落或者句子或者什么玩意的吧emm',  // 书籍摘抄的段落，下面显示的就是对这一段的批注
+                annotation: '这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注',  // 书籍批注
+                comment:'评论吧,不过暂时貌似还没讨论清楚评论和批注的关系所以暂时先空着',  // 书籍评论
             }
         }
     }
@@ -112,12 +122,19 @@
     }
 
     .title-more-foot span {
-        text-align: center;
-        flex: 0 0 40%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 30%;
+    }
+
+    .title-more-foot span img {
+        width: 20px;
+        height: 20px;
     }
 
     .information {
-        height: 400px;
+        height: 350px;
         background-color: white;
         margin-top: 20px;
     }
@@ -129,5 +146,8 @@
 
     .comment p {
         padding: 10px 20px;
+    }
+    .ivu-page{
+        text-align: center;
     }
 </style>
