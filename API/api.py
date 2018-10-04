@@ -1,10 +1,15 @@
+import datetime
+import os
 import random
 import string
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 
 # 创建app
+from werkzeug.utils import secure_filename
+
 from API.db import Database, generate_password
+from TextFeatureExtraction.WordSegmentation import pred
 
 app = Flask(__name__)
 
@@ -60,14 +65,15 @@ def login():
     db = Database()
     result = db.get({'username': username, 'password': generate_password(password)}, 'user')  # 获取数据
     if result:
-        result = db.update({'username': username, 'password': generate_password(password)},
-                           {'token': new_token()},
-                           'user')  # 更新token
-        if result:
-            return jsonify(
-                {'code': 1, 'msg': 'success', 'data': {'token': result['token'], 'group': result['group']}}
-            )  # 成功返回
-        return jsonify({'code': -1, 'msg': 'unable to update token'})  # 失败返回
+        if result['is_del']==0:
+            result = db.update({'username': username, 'password': generate_password(password)},
+                               {'token': new_token()},
+                               'user')  # 更新token
+            if result:
+                return jsonify(
+                    {'code': 1, 'msg': 'success', 'data': {'token': result['token'], 'group': result['group']}}
+                )  # 成功返回
+            return jsonify({'code': -1, 'msg': 'unable to update token'})  # 失败返回
     return jsonify({'code': 0, 'msg': 'unexpected user'})  # 失败返回
 
 
@@ -124,22 +130,22 @@ def sign_up():
     check_email = db.get({'email': email}, 'user')
     check_phone = db.get({'phone': phone}, 'user')
     if check_username:
-        return jsonify({'code': 0, 'msg': 'username is already signed'})
+        return jsonify({'code': 0, 'msg': 'username is already signed'})  # 用户名重复
     if check_email:
-        return jsonify({'code': -1, 'msg': 'email is already signed'})
+        return jsonify({'code': -1, 'msg': 'email is already signed'})  # 邮箱重复
     if check_phone:
-        return jsonify({'code': -2, 'msg': 'phone is already signed'})
+        return jsonify({'code': -2, 'msg': 'phone is already signed'})  # 手机号重复
     flag = db.insert({
         'username': username,
+        'password': generate_password(password),
+        'group': group,
         'nickname': nickname,
         'phone': phone,
         'email': email,
-        'password': generate_password(password),
-        'group': group
     }, 'user')  # 添加新用户
     if flag:
-        return jsonify({'code': 1, 'msg': 'success'})
-    return jsonify({'code': -3, 'msg': 'unknown'})
+        return jsonify({'code': 1, 'msg': 'success'})  # 成功返回
+    return jsonify({'code': -3, 'msg': 'unknown'})  # 未知错误
 
 
 @app.route('/api/account/check_username_available')
@@ -150,10 +156,10 @@ def check_username_available():
     """
     username = request.form['username']
     db = Database()
-    check_username = db.get({'username': username}, 'user')
+    check_username = db.get({'username': username}, 'user')  # 查询
     if check_username:
-        return jsonify({'code': 0, 'msg': 'username is already signed'})
-    return jsonify({'code': 1, 'msg': 'username is available'})
+        return jsonify({'code': 0, 'msg': 'username is already signed'})  # 不可用
+    return jsonify({'code': 1, 'msg': 'username is available'})  # 可用
 
 
 @app.route('/api/account/check_phone_available')
@@ -199,6 +205,7 @@ def get_book_info(book_id):
     db = Database()
     result = db.get({'id': book_id}, 'article')  # 获取书籍id
     if result:
+        result.update({'image_path': change_route(result['image_path'])})
         return jsonify({'code': 1, 'msg': 'success', 'data': result})
     return jsonify({'code': 0, 'msg': 'unexpected book id'})
 
@@ -231,6 +238,14 @@ def comment_recommend():
     根据用户模型推荐批注
     :return:
     """
+    token = request.values.get('token')
+    db = Database()
+    result = []
+    user = db.get({'token': token}, 'user')  # 获取用户信息
+    if user:
+        comment = db.get({}, 'article', 0)
+        for value in comment:
+            pass
 
 
 @app.route('/api/reading/tag_recommend')
@@ -262,8 +277,70 @@ def student_recommend():
     """
 
 
+@app.route('/api/upload/upload_article', methods=['POST'])
+def upload_article():
+    """
+    上传接口
+    :return: code 1=成功 0=未知用户 -1=未知错误
+    """
+    token = request.form['token']
+    db = Database()
+    user = db.get({'token': token}, 'user')  # 通过用户token获取用户信息
+    if user:
+        base_path = ''
+        article = request.files['article']
+        article_path = os.path.join(base_path, 'static', 'upload',
+                                    str(datetime.datetime.now().timestamp() * 6) + article.filename)
+        article.save(article_path)  # 上传文章
+
+        image = request.files['image']
+        image_path = os.path.join(base_path, 'static', 'upload',
+                                  str(datetime.datetime.now().timestamp() * 6) + image.filename)
+        image.save(image_path)  # 上传封面
+
+        title = request.form['title']
+        author = request.form['author']
+
+        flag = db.insert({
+            'file_path': change_route(article_path, 1),
+            'image_path': change_route(image_path, 1),
+            'title': title,
+            'author': author,
+            'uploader': int(user['id'])
+        }, 'article')  # 添加记录
+        if flag:
+            with open(article_path, 'r') as file:
+                result = pred(file.read())
+                print(result)
+                data = db.get({'file_path': change_route(article_path, 1)}, 'article')
+                if data:
+                    tag_flag = db.insert({'article_id': data['id'], 'name': result[0]}, 'article_tag')
+                    if tag_flag:
+                        return jsonify({'code': 1, 'msg': 'success'})  # 成功返回
+                return jsonify({'code': -1, 'msg': 'unknown error'})  # 未知错误
+        return jsonify({'code': -1, 'msg': 'unknown error'})  # 未知错误
+    return jsonify({'code': 0, 'msg': 'unexpected user'})  # 未知用户
+
+
+def change_route(route, change_type=0):
+    """
+    改变route路径
+    :param route: 原路径
+    :param change_type: 转化种类 1=\\转/ 0=/转\\
+    :return: 转换后的内容
+    """
+    if change_type == 0:
+        return route.replace('/', '\\')
+    else:
+        return route.replace('\\', '/')
+
+
 if __name__ == '__main__':
     # 开启调试模式，修改代码后不需要重新启动服务即可生效
     # 请勿在生产环境下使用调试模式
     # Flask服务将默认运行在localhost的5000端口上
+
+    # with open('static\\upload\\36.txt', 'rb') as file:
+    #     result = pred(file.read())
+    #     print(result[0])
     app.run(debug=True)
