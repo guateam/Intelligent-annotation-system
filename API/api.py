@@ -3,13 +3,12 @@ import os
 import random
 import string
 
-from flask import Flask, request, jsonify, Response
-
-# 创建app
-from werkzeug.utils import secure_filename
+from flask import Flask, request, jsonify
 
 from API.db import Database, generate_password
 from TextFeatureExtraction.WordSegmentation import pred
+
+# 创建app
 
 app = Flask(__name__)
 
@@ -107,7 +106,7 @@ def logout():
     """
     token = request.form['token']
     db = Database()
-    result = db.update({'token': token}, {'token': ''}, 'user')  # 释放token
+    result = db.update({'token': token, 'is_del': 0}, {'token': ''}, 'user')  # 释放token
     if result:
         return jsonify({'code': 1, 'msg': 'success'})  # 成功返回
     return jsonify({'code': 0, 'msg': 'unexpected user'})  # 失败返回
@@ -219,14 +218,14 @@ def article_recommend():
     token = request.values.get('token')
     db = Database()
     result = []
-    user = db.get({'token': token}, 'user')  # 获取用户信息
+    user = db.get({'token': token, 'is_del': 0}, 'user')  # 获取用户信息
     if user:
         book = db.get({}, 'article', 0)  # 获取书籍信息
         for value in book:
             tags = db.get({'article_id': value['id']}, 'article_tag', 0)  # 获取书籍对应tag信息
             if tags:
                 pass  # 执行相关操作
-                value.update({'num_comment': 0, 'like': 0})
+                value.update({'num_comment': 0, 'like': 0})  # 获取评论与收藏数（需要更改）
                 result.append(value)
         return jsonify({'code': 1, 'msg': '', 'data': result})
     return jsonify({'code': 0, 'msg': 'unexpected user'})
@@ -240,12 +239,31 @@ def comment_recommend():
     """
     token = request.values.get('token')
     db = Database()
-    result = []
-    user = db.get({'token': token}, 'user')  # 获取用户信息
+    user = db.get({'token': token, 'is_del': 0}, 'user')  # 获取用户信息
     if user:
-        comment = db.get({}, 'article', 0)
+        comment = db.get({'state': 0}, 'postil', 0)
+        data = []
         for value in comment:
-            pass
+            if value['state'] == 0:
+                article = db.get({'id': value['article_id']}, 'article')  # 获取批注所在文章
+                if article:
+                    uploader = db.get({'id': value['user_id'], 'is_del': 0}, 'user')  # 获取批注上传人
+                    if uploader:
+                        data.append({
+                            'id': value['id'],
+                            'book_id': article['id'],
+                            'comment': value['content'],
+                            'comment_uploader_id': value['user_id'],
+                            'comment_uploader': uploader['nickname'],
+                            'comment_start': value['start'],
+                            'comment_end': value['end'],
+                            'num_comment': db.count({'postil_id': value['id'], 'state': 0}, 'postil_comment'),
+                            'like': 0  # 要改
+                        })
+        if data:
+            return jsonify({'code': 1, 'msg': 'success', 'data': data})
+        return jsonify({'code': -1, 'msg': 'empty data'})
+    return jsonify({'code': 0, 'msg': 'unexpected user'})
 
 
 @app.route('/api/reading/tag_recommend')
@@ -256,7 +274,7 @@ def tag_recommend():
     """
     token = request.values.get('token')
     db = Database()
-    user = db.get({'token': token}, 'user')
+    user = db.get({'token': token, 'is_del': 0}, 'user')
     if user:
         pass
 
@@ -272,6 +290,11 @@ def teacher_recommend():
     根据用户模型推荐老师
     :return:
     """
+    token = request.values.get('token')
+    db = Database()
+    user = db.get({'token': token, 'is_del': 0}, 'user')
+    if user:
+        pass
 
 
 @app.route('/api/user/student_recommend')
@@ -280,6 +303,11 @@ def student_recommend():
     根据用户模型推荐学生
     :return:
     """
+    token = request.values.get('token')
+    db = Database()
+    user = db.get({'token': token, 'is_del': 0}, 'user')
+    if user:
+        pass
 
 
 @app.route('/api/upload/upload_article', methods=['POST'])

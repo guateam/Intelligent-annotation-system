@@ -326,8 +326,10 @@ Format:
                      book_id: book_id,           		# 文章id
                      book_name: book_name,         		# 文章标题
                      comment: comment,           		# 批注内容
+                     comment_uploader_id: comment_uploader_id, # 批注上传人id
                      comment_uploader: comment_uploader, # 批注上传人
-                     comment_sentence: comment_sentence, # 批注目标段落
+                     comment_start: comment_start, 		# 批注开始处
+                     comment_end: comment_end,			# 批注结束处
                      num_comment: num_comment,       	# 评论数
                      like: like,              			# 点赞数
                  },
