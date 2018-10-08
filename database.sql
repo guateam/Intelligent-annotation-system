@@ -219,6 +219,35 @@ LOCK TABLES `user_history` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `user_personas`
+--
+
+DROP TABLE IF EXISTS `user_personas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_personas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `article_id` varchar(20) NOT NULL COMMENT '文章id',
+  `user_id` varchar(20) NOT NULL COMMENT '用户id',
+  `weight` float NOT NULL COMMENT '权重',
+  PRIMARY KEY (`id`),
+  KEY `user_personas_articles_article_id_fk` (`article_id`),
+  KEY `user_personas_users_user_id_fk` (`user_id`),
+  CONSTRAINT `user_personas_articles_article_id_fk` FOREIGN KEY (`article_id`) REFERENCES `articles` (`article_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `user_personas_users_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户画像';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_personas`
+--
+
+LOCK TABLES `user_personas` WRITE;
+/*!40000 ALTER TABLE `user_personas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_personas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -256,4 +285,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-03 13:29:38
+-- Dump completed on 2018-10-08 16:15:55

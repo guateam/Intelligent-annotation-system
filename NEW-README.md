@@ -556,6 +556,15 @@ Format:
 | user_id | int(11)     | NO   | MUL  | NULL              | 用户id，Foreign Key |
 | date    | timestamp   | NO   |      | CURRENT_TIMESTAMP | 行动日期            |
 
+用户画像表 user_personas:
+
+| Field      | Type        | Null | Key  | Default | Extra               |
+| ---------- | ----------- | ---- | ---- | ------- | ------------------- |
+| id         | int(11)     | NO   | PRI  | NULL    | auto_increment，id  |
+| article_id | varchar(20) | NO   | MUL  | NULL    | 文章id，Foreign Key |
+| user_id    | varchar(20) | NO   | MUL  | NULL    | 用户id，Foreign Key |
+| weight     | float       | NO   |      | NULL    | 权重                |
+
 ## WEB-APP 网页应用
 
 ### Environment 开发环境
