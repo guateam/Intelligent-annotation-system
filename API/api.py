@@ -65,7 +65,7 @@ def login():
     db = Database()
     result = db.get({'username': username, 'password': generate_password(password)}, 'user')  # 获取数据
     if result:
-        if result['is_del']==0:
+        if result['is_del'] == 0:
             result = db.update({'username': username, 'password': generate_password(password)},
                                {'token': new_token()},
                                'user')  # 更新token
@@ -205,7 +205,7 @@ def get_book_info(book_id):
     db = Database()
     result = db.get({'id': book_id}, 'article')  # 获取书籍id
     if result:
-        result.update({'image_path': change_route(result['image_path'])})
+        result.update({'image_path': result['image_path']})
         return jsonify({'code': 1, 'msg': 'success', 'data': result})
     return jsonify({'code': 0, 'msg': 'unexpected book id'})
 
@@ -254,6 +254,11 @@ def tag_recommend():
     根据用户模型推荐tag
     :return:
     """
+    token = request.values.get('token')
+    db = Database()
+    user = db.get({'token': token}, 'user')
+    if user:
+        pass
 
 
 '''
@@ -314,11 +319,26 @@ def upload_article():
                 print(result)
                 data = db.get({'file_path': change_route(article_path, 1)}, 'article')
                 if data:
-                    tag_flag = db.insert({'article_id': data['id'], 'name': result[0]}, 'article_tag')
-                    if tag_flag:
-                        return jsonify({'code': 1, 'msg': 'success'})  # 成功返回
-                return jsonify({'code': -1, 'msg': 'unknown error'})  # 未知错误
+                    for value in result:
+                        tag_flag = db.insert({
+                            'article_id': data['id'],
+                            'name': value['name'],
+                            'weight': value['weight']
+                        }, 'article_tag')
+                        if not tag_flag:
+                            return jsonify({'code': -1, 'msg': 'tag insert failed'})  # tag注入错误
+                return jsonify({'code': 1, 'msg': 'success'})  # 成功返回
         return jsonify({'code': -1, 'msg': 'unknown error'})  # 未知错误
+    return jsonify({'code': 0, 'msg': 'unexpected user'})  # 未知用户
+
+
+@app.route('/api/message/get_message')
+def get_message():
+    token = request.form['token']
+    db = Database()
+    user = db.get({'token': token}, 'user')
+    if user:
+        pass
     return jsonify({'code': 0, 'msg': 'unexpected user'})  # 未知用户
 
 

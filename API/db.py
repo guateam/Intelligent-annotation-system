@@ -5,11 +5,7 @@ import hashlib
 MYSQL_HOST = 'localhost'
 MYSQL_PORT = 3306
 MYSQL_USER = 'root'
-<<<<<<< HEAD
-MYSQL_PASSWORD = '123456'
-=======
 MYSQL_PASSWORD = 'zhangyuk'
->>>>>>> develop
 MYSQL_DB = 'IntelligentAnnotationSystem'
 """ 以上为变量为演示所用，正式开发时请统一写入config文件后引入 """
 

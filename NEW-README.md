@@ -167,11 +167,11 @@ Format:
 
       ```python
       {
-          code: ,       # 0=未知用户 -1=未成功初始化token 1=成功
-          msg: ,        # 信息
+          code: code,       	# 0=未知用户 -1=未成功初始化token 1=成功
+          msg: msg,        	# 信息
           data: {
-              token: ,  # 用户标识
-              group: ,  # 用户群组
+              token: token,  	# 用户标识
+              group: group,  	# 用户群组
           }
       }
       ```
@@ -186,8 +186,8 @@ Format:
 
       ```python
       {
-          code: ,  # 0=未知用户 1=成功
-          msg: ,   # 信息
+          code: code,  	# 0=未知用户 1=成功
+          msg: msg,   	# 信息
       }
       ```
 
@@ -201,8 +201,8 @@ Format:
 
       ```python
       {
-          code: ,  # 0=用户名已存在 -1=EMail已存在 -2=手机号已存在 -3=未知错误 1=成功
-          msg: ,   # 信息
+          code: code,  	# 0=用户名已存在 -1=EMail已存在 -2=手机号已存在 -3=未知错误 1=成功
+          msg: msg,  		# 信息
       }
       ```
 
@@ -216,8 +216,8 @@ Format:
 
       ```python
       {
-          code: ,  # 0=不可用 1=可用
-          msg: ,   # 信息
+          code: code,  	# 0=不可用 1=可用
+          msg: msg,   	# 信息
       }
       ```
 
@@ -231,8 +231,8 @@ Format:
 
       ```python
       {
-          code: ,  # 0=不可用 1=可用
-          msg: ,   # 信息
+          code: code,  	# 0=不可用 1=可用
+          msg: msg,   	# 信息
       }
       ```
 
@@ -246,8 +246,8 @@ Format:
 
       ```python
       {
-          code: ,  # 0=不可用 1=可用
-          msg: ,   # 信息
+          code: code,  	# 0=不可用 1=可用
+          msg: msg,   	# 信息
       }
       ```
 
@@ -263,15 +263,15 @@ Format:
 
      ```python
      {
-         code: ,           # 0=未知书籍 1=成功
-         msg: ,            # 信息
+         code: code,           		# 0=未知书籍 1=成功
+         msg: msg,            		# 信息
          data: {
-             id: ,         # 文章id
-             title: ,      # 文章标题
-             file_path: ,  # 文章内容地址
-             uploader: ,   # 上传人
-             state: ,      # 文章状态 0=未审核 1=已审核 -1=未通过审核或下架
-             date: ,       # 文章上传日期
+             id: id,         		# 文章id
+             title: title,      		# 文章标题
+             file_path: file_path,  	# 文章内容地址
+             uploader: uploader,   	# 上传人
+             state: state,      		# 文章状态 0=未审核 1=已审核 -1=未通过审核或下架
+             date: date,       		# 文章上传日期
          }
      }
      ```
@@ -286,23 +286,23 @@ Format:
 
      ```python
      {
-         code: ,                     # 0=未知用户 1=成为
-         msg: ,                      # 信息
+         code: code,                     	# 0=未知用户 1=成为
+         msg: msg,                      		# 信息
          data: {
              [
                  {
-                     id: ,           # 文章id
-                     title: ,        # 文章标题
-                     file_path: ,    # 文章内容地址
-                     uploader: ,     # 上传人
-                     date: ,         # 文章上传日期
-                     cover: ,        # 封面
-                     author: ,       # 作者
-                     num_comment: ,  # 评论数
-                     like: ,         # 点赞数
+                     id: id,           		# 文章id
+                     title: title,       	# 文章标题
+                     file_path: file_path,   # 文章内容地址
+                     uploader: uploader,     # 上传人
+                     date: date,         	# 文章上传日期
+                     cover: cover,        	# 封面
+                     author: author,       	# 作者
+                     num_comment: num_comment,  # 评论数
+                     like: like,         	# 点赞数
                  },
                  ...
-             ]                       # 文章数组
+             ]                       		# 文章数组
          }
      }
      ```
@@ -317,22 +317,22 @@ Format:
 
      ```python
      {
-         code: ,                          # 0=未知用户 1=成为
-         msg: ,                           # 信息
+         code: code,                          			# 0=未知用户 1=成为
+         msg: msg,                          			 	# 信息
          data: {
              [
                  {
-                     id: ,                # 批注id
-                     book_id: ,           # 文章id
-                     book_name: ,         # 文章标题
-                     comment: ,           # 批注内容
-                     comment_uploader: ,  # 批注上传人
-                     comment_sentence: ,  # 批注目标段落
-                     num_comment: ,       # 评论数
-                     like: ,              # 点赞数
+                     id: id,                				# 批注id
+                     book_id: book_id,           		# 文章id
+                     book_name: book_name,         		# 文章标题
+                     comment: comment,           		# 批注内容
+                     comment_uploader: comment_uploader, # 批注上传人
+                     comment_sentence: comment_sentence, # 批注目标段落
+                     num_comment: num_comment,       	# 评论数
+                     like: like,              			# 点赞数
                  },
                  ...
-             ]                            # 批注数组
+             ]                            				# 批注数组
          }
      }
      ```
@@ -347,16 +347,16 @@ Format:
 
      ```python
      {
-         code: ,              # 0=未知用户 1=成功
-         msg: ,               # 信息
+         code: code,              	# 0=未知用户 1=成功
+         msg: msg,               	# 信息
          data: {
              [
                  {
-                     id: ,    # Tag ID
-                     name: ,  # 分类名称
+                     id: id,    		# Tag ID
+                     name: name,  	# 分类名称
                  },
                  ...
-             ]                # 分类数组
+             ]                		# 分类数组
          }
      }
      ```
@@ -373,18 +373,18 @@ Format:
 
      ```python
      {
-         code: ,                   # 0=未知用户 1=成功
-         msg: ,                    # 信息
+         code: code,                   		# 0=未知用户 1=成功
+         msg: msg,                    		# 信息
          data: {
              [
                  {
-                     id: ,         # 用户id
-                     name: ,       # 用户昵称
-                     school: ,     # 来自学校
-                     introduce: ,  # 简介
+                     id: id,         		# 用户id
+                     name: name,       		# 用户昵称
+                     school: school,     	# 来自学校
+                     introduce: introduce,  	# 简介
                  },
                  ...
-             ]                     # 老师列表
+             ]                     			# 老师列表
          }
      }
      ```
@@ -399,27 +399,27 @@ Format:
 
      ```python
      {
-         code: ,                   # 0=未知用户 1=成功
-         msg: ,                    # 信息
+         code: code,                   		# 0=未知用户 1=成功
+         msg: msg,                    		# 信息
          data: {
              [
                  {
-                     id: ,         # 用户id
-                     name: ,       # 用户昵称
-                     school: ,     # 来自学校
-                     introduce: ,  # 简介
+                     id: id,         		# 用户id
+                     name: name,       		# 用户昵称
+                     school: school,     	# 来自学校
+                     introduce: introduce,  	# 简介
                  },
                  ...
-             ]                     # 学生列表
+             ]                    			# 学生列表
          }
      }
      ```
 
-##### Information 信息
+##### message 信息
 
 1. 通知信息
 
-   - 接口
+   - 接口 `\api\message\get_message()`
 
    - 参数 `token`-用户token
 
@@ -427,12 +427,12 @@ Format:
 
      ```python
      {
-         code: ,  # 0=未知用户 1=成功
-         msg: ,   # 信息
+         code: code,  	# 0=未知用户 1=成功
+         msg: msg,   	# 信息
          data: {
              [
                  {
-                     # 待定
+                     	# 待定
                  },
                  ...
              ]
@@ -453,8 +453,8 @@ Format:
 
      ```python
      {
-         code: ,  # 1=成功
-         msg: ,   # 信息
+         code: code,  	# 1=成功
+         msg: msg,   	# 信息
      }
      ```
 
