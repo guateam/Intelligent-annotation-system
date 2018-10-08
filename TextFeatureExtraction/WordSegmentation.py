@@ -363,7 +363,8 @@ def pred(article):
     for i in range(len(logits[0:1][0])):
         simi.append({categories[i]:logits[0:1][0][i]})
 #    print(simi)
-    return [categories[y_pred_cls[0]], simi]
+#    categories[y_pred_cls[0]]
+    return simi
 
 
 def test():
