@@ -317,7 +317,7 @@ Format:
 
      ```python
      {
-         code: code,                          			# 0=未知用户 1=成为
+         code: code,                          			# 0=未知用户 1=成功 -1=未知错误
          msg: msg,                          			 	# 信息
          data: {
              [
