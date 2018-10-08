@@ -16,89 +16,95 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `article_details`
+-- Table structure for table `article`
 --
 
-DROP TABLE IF EXISTS `article_details`;
+DROP TABLE IF EXISTS `article`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `article_details` (
-  `article_id` varchar(20) NOT NULL,
-  `article_uploader` varchar(45) NOT NULL,
-  `file_dir_path` varchar(200) NOT NULL,
-  `is_del` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`article_id`),
-  CONSTRAINT `fk_article_details_articles` FOREIGN KEY (`article_id`) REFERENCES `articles` (`article_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章详细信息';
+CREATE TABLE `article` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `title` varchar(45) NOT NULL COMMENT '标题',
+  `file_path` varchar(200) NOT NULL COMMENT '文件路径',
+  `image_path` varchar(200) DEFAULT NULL COMMENT '封面路径',
+  `state` int(11) NOT NULL COMMENT '状态 0=正常 1=清除',
+  `author` varchar(45) NOT NULL COMMENT '作者',
+  `uploader` int(11) NOT NULL COMMENT '上传人',
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上传日期',
+  PRIMARY KEY (`id`),
+  KEY `fk_article_user_idx` (`uploader`),
+  CONSTRAINT `fk_article_user` FOREIGN KEY (`uploader`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `article_details`
+-- Dumping data for table `article`
 --
 
-LOCK TABLES `article_details` WRITE;
-/*!40000 ALTER TABLE `article_details` DISABLE KEYS */;
-/*!40000 ALTER TABLE `article_details` ENABLE KEYS */;
+LOCK TABLES `article` WRITE;
+/*!40000 ALTER TABLE `article` DISABLE KEYS */;
+/*!40000 ALTER TABLE `article` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `articles`
+-- Table structure for table `article_comment`
 --
 
-DROP TABLE IF EXISTS `articles`;
+DROP TABLE IF EXISTS `article_comment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `articles` (
-  `article_id` varchar(20) NOT NULL,
-  `article_title` varchar(200) NOT NULL,
-  `article_author` varchar(45) NOT NULL,
-  `article_describes` text,
-  `uploader_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `weight` varchar(45) DEFAULT NULL,
-  `is_del` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`article_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章';
+CREATE TABLE `article_comment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `content` varchar(200) NOT NULL COMMENT '内容',
+  `state` int(11) NOT NULL COMMENT '状态 0=正常 1=清除',
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '评论日期',
+  `user_id` int(11) NOT NULL COMMENT '用户id',
+  `article_id` int(11) NOT NULL COMMENT '文章id',
+  `previous` int(11) DEFAULT NULL COMMENT '上一级评论',
+  PRIMARY KEY (`id`),
+  KEY `fk_postil_comment_user1_idx` (`user_id`),
+  KEY `fk_article_comment_article1_idx` (`article_id`),
+  KEY `fk_article_comment_article_comment1_idx` (`previous`),
+  CONSTRAINT `fk_article_comment_article1` FOREIGN KEY (`article_id`) REFERENCES `article` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_article_comment_article_comment1` FOREIGN KEY (`previous`) REFERENCES `article_comment` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_postil_comment_user10` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `articles`
+-- Dumping data for table `article_comment`
 --
 
-LOCK TABLES `articles` WRITE;
-/*!40000 ALTER TABLE `articles` DISABLE KEYS */;
-/*!40000 ALTER TABLE `articles` ENABLE KEYS */;
+LOCK TABLES `article_comment` WRITE;
+/*!40000 ALTER TABLE `article_comment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `article_comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `comments`
+-- Table structure for table `article_tag`
 --
 
-DROP TABLE IF EXISTS `comments`;
+DROP TABLE IF EXISTS `article_tag`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `comments` (
-  `comment_id` varchar(20) NOT NULL,
-  `user_id` varchar(20) NOT NULL,
-  `article_id` varchar(20) NOT NULL,
-  `content` text NOT NULL,
-  `created_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `weight` varchar(45) DEFAULT NULL,
-  `is_del` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`comment_id`),
-  KEY `fk_comments_users_idx` (`user_id`),
-  KEY `fk_comments_articles_idx` (`article_id`),
-  CONSTRAINT `fk_comments_articles` FOREIGN KEY (`article_id`) REFERENCES `articles` (`article_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fk_comments_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论';
+CREATE TABLE `article_tag` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `name` varchar(45) NOT NULL COMMENT 'tag名字',
+  `weight` varchar(45) NOT NULL COMMENT '权重',
+  `article_id` int(11) NOT NULL COMMENT '文章id',
+  PRIMARY KEY (`id`),
+  KEY `fk_article_tag_article1_idx` (`article_id`),
+  CONSTRAINT `fk_article_tag_article1` FOREIGN KEY (`article_id`) REFERENCES `article` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `comments`
+-- Dumping data for table `article_tag`
 --
 
-LOCK TABLES `comments` WRITE;
-/*!40000 ALTER TABLE `comments` DISABLE KEYS */;
-/*!40000 ALTER TABLE `comments` ENABLE KEYS */;
+LOCK TABLES `article_tag` WRITE;
+/*!40000 ALTER TABLE `article_tag` DISABLE KEYS */;
+/*!40000 ALTER TABLE `article_tag` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -109,20 +115,20 @@ DROP TABLE IF EXISTS `postil`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `postil` (
-  `postil_id` varchar(20) NOT NULL,
-  `user_id` varchar(20) NOT NULL,
-  `article_id` varchar(20) NOT NULL,
-  `paragraph_index` int(11) NOT NULL,
-  `content` text NOT NULL,
-  `created_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `weight` varchar(45) DEFAULT NULL,
-  `is_del` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`postil_id`),
-  KEY `fk_postil_users_idx` (`user_id`),
-  KEY `fk_postil_articles_idx` (`article_id`),
-  CONSTRAINT `fk_postil_articles` FOREIGN KEY (`article_id`) REFERENCES `articles` (`article_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_postil_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='批注';
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `content` varchar(400) NOT NULL COMMENT '内容',
+  `start` int(11) NOT NULL COMMENT '开始处',
+  `end` int(11) NOT NULL COMMENT '结束处',
+  `type` int(11) NOT NULL COMMENT '种类',
+  `article_id` int(11) NOT NULL COMMENT '文章id',
+  `user_id` int(11) NOT NULL COMMENT '用户id',
+  `state` int(11) NOT NULL COMMENT '状态 0=正常 1=删除',
+  PRIMARY KEY (`id`),
+  KEY `fk_postil_article1_idx` (`article_id`),
+  KEY `fk_postil_user1_idx` (`user_id`),
+  CONSTRAINT `fk_postil_article1` FOREIGN KEY (`article_id`) REFERENCES `article` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_postil_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -135,58 +141,70 @@ LOCK TABLES `postil` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `tags`
+-- Table structure for table `postil_comment`
 --
 
-DROP TABLE IF EXISTS `tags`;
+DROP TABLE IF EXISTS `postil_comment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tags` (
-  `tag_id` int(11) NOT NULL AUTO_INCREMENT,
-  `tags_content` varchar(45) NOT NULL,
-  `tag_type` int(11) NOT NULL COMMENT '1=文章\n2=评论\n3=批注\n4=用户',
-  `tag_target` varchar(20) NOT NULL COMMENT '标签指向的目标id',
-  `is_del` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`tag_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='标签';
+CREATE TABLE `postil_comment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `content` varchar(200) NOT NULL COMMENT '内容',
+  `state` int(11) NOT NULL COMMENT '状态 0=正常 1=删除',
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '评论日期',
+  `postil_id` int(11) NOT NULL COMMENT '批注id',
+  `user_id` int(11) NOT NULL COMMENT '用户id',
+  `previous` int(11) DEFAULT NULL COMMENT '上一级评论',
+  PRIMARY KEY (`id`),
+  KEY `fk_postil_comment_postil1_idx` (`postil_id`),
+  KEY `fk_postil_comment_user1_idx` (`user_id`),
+  KEY `fk_postil_comment_postil_comment1_idx` (`previous`),
+  CONSTRAINT `fk_postil_comment_postil1` FOREIGN KEY (`postil_id`) REFERENCES `postil` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_postil_comment_postil_comment1` FOREIGN KEY (`previous`) REFERENCES `postil_comment` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_postil_comment_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tags`
+-- Dumping data for table `postil_comment`
 --
 
-LOCK TABLES `tags` WRITE;
-/*!40000 ALTER TABLE `tags` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tags` ENABLE KEYS */;
+LOCK TABLES `postil_comment` WRITE;
+/*!40000 ALTER TABLE `postil_comment` DISABLE KEYS */;
+/*!40000 ALTER TABLE `postil_comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `user_details`
+-- Table structure for table `user`
 --
 
-DROP TABLE IF EXISTS `user_details`;
+DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user_details` (
-  `user_id` varchar(20) NOT NULL,
-  `sex` int(11) NOT NULL COMMENT '1=男\n2=女\n3=未知',
-  `birth` datetime DEFAULT NULL,
-  `nickname` varchar(45) DEFAULT NULL,
-  `adress` varchar(200) DEFAULT NULL,
-  `email` varchar(45) DEFAULT NULL,
-  `is_del` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`user_id`),
-  CONSTRAINT `fk_user_details_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户详细信息';
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `username` varchar(45) NOT NULL COMMENT '用户名',
+  `password` varchar(200) NOT NULL COMMENT '密码',
+  `email` varchar(45) NOT NULL COMMENT '邮箱',
+  `phone` varchar(45) NOT NULL COMMENT '手机',
+  `group` int(11) NOT NULL COMMENT '用户组',
+  `is_del` int(11) NOT NULL COMMENT '状态',
+  `nickname` varchar(45) NOT NULL COMMENT '昵称',
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册日期',
+  `personas` varchar(45) NOT NULL COMMENT '用户画像',
+  `token` varchar(45) NOT NULL COMMENT 'token',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='用户信息存储表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user_details`
+-- Dumping data for table `user`
 --
 
-LOCK TABLES `user_details` WRITE;
-/*!40000 ALTER TABLE `user_details` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_details` ENABLE KEYS */;
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'admin','593421b87fabdaa514f3943ab2a037ff5ac3063f63c278e0d6b4a0dc3ee15361','0','0',1,0,'admin','2018-10-03 08:52:30','','');
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -197,16 +215,16 @@ DROP TABLE IF EXISTS `user_history`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_history` (
-  `action_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` varchar(20) NOT NULL,
-  `type_of_action` int(11) NOT NULL COMMENT '0=取消\n1=点击\n2=阅读\n3=收藏\n4=点赞\n5=点踩\n6=关注\n7=加入班级\n8=上传文章\n9=添加评论\n10=添加批注\n',
-  `action_target` varchar(20) NOT NULL COMMENT '操作目标的id',
-  `action_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `is_del` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`action_id`),
-  KEY `fk_user_history_users_idx` (`user_id`),
-  CONSTRAINT `fk_user_history_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户历史操作';
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` tinyint(2) NOT NULL,
+  `comment` varchar(45) NOT NULL,
+  `target` varchar(45) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_user_history_user1_idx` (`user_id`),
+  CONSTRAINT `fk_user_history_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -219,32 +237,32 @@ LOCK TABLES `user_history` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `users`
+-- Table structure for table `user_personas`
 --
 
-DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `user_personas`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `users` (
-  `user_id` varchar(20) NOT NULL COMMENT '不允许重复, phone_number',
-  `password` varchar(256) NOT NULL,
-  `user_token` varchar(100) DEFAULT NULL,
-  `user_group` int(11) NOT NULL COMMENT '1=管理员\n2=维护人员\n3=老师\n4=学生\n5=游客\n',
-  `personas` varchar(45) NOT NULL COMMENT '用户画像',
-  `register_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `weight` varchar(45) DEFAULT NULL,
-  `is_del` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户';
+CREATE TABLE `user_personas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `article_id` int(11) NOT NULL COMMENT '文章id',
+  `user_id` int(11) NOT NULL COMMENT '用户id',
+  `weight` float NOT NULL COMMENT '权重',
+  PRIMARY KEY (`id`),
+  KEY `user_personas_article_id_fk` (`article_id`),
+  KEY `user_personas_user_id_fk_2` (`user_id`),
+  CONSTRAINT `user_personas_article_id_fk` FOREIGN KEY (`article_id`) REFERENCES `article` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `user_personas_user_id_fk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户画像表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `users`
+-- Dumping data for table `user_personas`
 --
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+LOCK TABLES `user_personas` WRITE;
+/*!40000 ALTER TABLE `user_personas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_personas` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -256,4 +274,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-03 13:29:38
+-- Dump completed on 2018-10-08 16:26:38
