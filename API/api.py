@@ -204,7 +204,6 @@ def get_book_info(book_id):
     db = Database()
     result = db.get({'id': book_id}, 'article')  # 获取书籍id
     if result:
-        result.update({'image_path': result['image_path']})
         return jsonify({'code': 1, 'msg': 'success', 'data': result})
     return jsonify({'code': 0, 'msg': 'unexpected book id'})
 

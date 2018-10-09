@@ -1,5 +1,6 @@
-import pymysql
 import hashlib
+
+import pymysql
 
 """                      MYSQL信息                      """
 MYSQL_HOST = 'localhost'
