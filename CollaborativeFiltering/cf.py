@@ -3,7 +3,7 @@ import numpy as np
 
 def cosine_similarity(vector1, vector2):
     """
-    计算出余弦相似度
+    计算出余弦相似度,越接近1越相似
     :param vector1: 用户的评分矩阵，一维
     :param vector2: 某个其他用户的评分矩阵，一维
     :return: 用户和某个用户的兴趣相似度
@@ -23,6 +23,40 @@ def cosine_similarity(vector1, vector2):
         return round(dot_product / (norm_a*norm_b), 4)
 
 
+def set_similarity_vec(vec,name = "similarity_vector.txt"):
+    """
+    计算相似矩阵
+    :param vec: 待算的的向量，可以为 用户评分列表或者文章列表
+    :param name: 存储的文件名称
+    :return: 返回规模为 用户*用户 或者 文章*文章 的相似度矩阵
+    """
+    simi_vec = [[0 for i in range(len(vec))] for j in range(len(vec)) ]
+    f = open(name,"w")
+    for i in range(len(vec)):
+        for j in range(len(vec)):
+            simi_vec[i][j] = cosine_similarity(vec[i], vec[j])
+            f.write(str(simi_vec[i][j])+",")
+        f.write("\n")
+    f.close()
+    return simi_vec
+
+
+def read_similarity_vec(dir = "similarity_vector.txt"):
+    """
+    读取文件中存储的相似度矩阵
+    :param dir: 读取的文件路径，默认为本目录下的similarity_vector.txt
+    :return: 相似度矩阵
+    """
+    with open(dir,'r') as f:
+        lines = f.readlines()
+        simi_vec = [[0 for i in range(len(lines))] for j in range(len(lines)) ]
+        for i in range(len(lines)):
+            line = lines[i].split(",")
+            for j in range(len(line)-1):
+                simi_vec[i][j] = float(line[j])
+    return simi_vec
+
+
 def interest_value(similar, rate_vec):
     """
     获取兴趣程度，作为protected方法使用
@@ -34,6 +68,23 @@ def interest_value(similar, rate_vec):
     for i in range(len(rate_vec)):
         interest_vec.append(similar * rate_vec[i])
     return interest_vec
+
+
+def most_similar(simi_vec,idx):
+    """
+    根据相似度矩阵获取最相似的项
+    :param simi_vec: 相似度矩阵
+    :param idx: 比较的对象下标
+    :return: 最相似项的下标
+    """
+    most_val = 10000
+    most_idx = 0
+    for i in range(len(simi_vec[idx])):
+        if(abs(simi_vec[idx][i]-1) < most_val ):
+            if(idx != i):
+                most_val = abs(simi_vec[idx][i]-1)
+                most_idx = i
+    return most_idx
 
 
 def most_interest(similar_vec, rate_vec, k=1, m=1):
@@ -107,7 +158,18 @@ def cf(self_vec,others_vec,k=1, m=1,item_vec = []):
     return data
 
 
-# 以下为使用样例
+def item_cf(dir,target):
+    """
+    基于物品的cf算法
+    :param dir: 要读取的物品相似度矩阵文件
+    :param target: 为某个物品推荐，该物品的下标
+    :return: 推荐的物品下标
+    """
+    simi_vec = read_similarity_vec(dir)
+    idx = most_similar(simi_vec,target)
+    return idx
+
+# 以下为基于用户的使用样例
 
 # 用户id列表
 uec = [1, 2, 3, 4]
@@ -116,13 +178,26 @@ ivec = ["体育", "游戏", "财经", "军事", "娱乐"]
 # 每个用户对每个对象类型的评分(在本系统中，对象是文章类型，评分是偏好程度，偏好程度可以根据点赞数量，浏览次数等等数据获得)
 self_rvec = [1, 3, 0.4, 2.2, 1.3]
 rvec = [
-    [0.9,3.3,0.7,1.9,1],
+    [0.9, 3.3, 0.7, 1.9, 1],
     [0.8, 0.7, 1.5, 1.7, 3],
-    [1.6, 0.4, 2.3, 1, 1.5],
+    [1.6, 0.4, 2.3, 1.0, 1.5],
     [0.7, 1.6, 1.1, 1.2, 0.3],
 ]
-# print("输出下标：")
-# print(cf(self_rvec, rvec, 2, 2))
 print("输出名称：")
 print(cf(self_rvec, rvec, 2, 2,ivec))
+
+
+# 以下是item_cf的使用样例
+# 首先建立物品的相似矩阵(根据物品的评分矩阵来获得，物品评分矩阵是所有用户对该物品的评分合集)
+item = [
+    [1,2,3,1,0],
+    [3,2,1,2,1],
+    [1,1,2,2,1],
+    [2,1,2,3,1]
+]
+set_similarity_vec(item,"item_simi.txt")
+print(item_cf("item_simi.txt",0))
+
+print(read_similarity_vec())
+
 

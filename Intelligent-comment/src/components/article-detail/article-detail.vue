@@ -83,7 +83,7 @@
     }
 
     .detail {
-        width: 52%;
+        width: 55%;
         margin: 30px 5% 30px 10%;
         line-height: 1.8;
         float: left;

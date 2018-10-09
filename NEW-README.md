@@ -167,11 +167,11 @@ Format:
 
       ```python
       {
-          code: code,       	# 0=未知用户 -1=未成功初始化token 1=成功
-          msg: msg,        	# 信息
+          code: ,       # 0=未知用户 -1=未成功初始化token 1=成功
+          msg: ,        # 信息
           data: {
-              token: token,  	# 用户标识
-              group: group,  	# 用户群组
+              token: ,  # 用户标识
+              group: ,  # 用户群组
           }
       }
       ```
@@ -186,8 +186,8 @@ Format:
 
       ```python
       {
-          code: code,  	# 0=未知用户 1=成功
-          msg: msg,   	# 信息
+          code: ,  # 0=未知用户 1=成功
+          msg: ,   # 信息
       }
       ```
 
@@ -201,8 +201,8 @@ Format:
 
       ```python
       {
-          code: code,  	# 0=用户名已存在 -1=EMail已存在 -2=手机号已存在 -3=未知错误 1=成功
-          msg: msg,  		# 信息
+          code: ,  # 0=用户名已存在 -1=EMail已存在 -2=手机号已存在 -3=未知错误 1=成功
+          msg: ,   # 信息
       }
       ```
 
@@ -216,8 +216,8 @@ Format:
 
       ```python
       {
-          code: code,  	# 0=不可用 1=可用
-          msg: msg,   	# 信息
+          code: ,  # 0=不可用 1=可用
+          msg: ,   # 信息
       }
       ```
 
@@ -231,8 +231,8 @@ Format:
 
       ```python
       {
-          code: code,  	# 0=不可用 1=可用
-          msg: msg,   	# 信息
+          code: ,  # 0=不可用 1=可用
+          msg: ,   # 信息
       }
       ```
 
@@ -246,8 +246,8 @@ Format:
 
       ```python
       {
-          code: code,  	# 0=不可用 1=可用
-          msg: msg,   	# 信息
+          code: ,  # 0=不可用 1=可用
+          msg: ,   # 信息
       }
       ```
 
@@ -263,15 +263,15 @@ Format:
 
      ```python
      {
-         code: code,           		# 0=未知书籍 1=成功
-         msg: msg,            		# 信息
+         code: ,           # 0=未知书籍 1=成功
+         msg: ,            # 信息
          data: {
-             id: id,         		# 文章id
-             title: title,      		# 文章标题
-             file_path: file_path,  	# 文章内容地址
-             uploader: uploader,   	# 上传人
-             state: state,      		# 文章状态 0=未审核 1=已审核 -1=未通过审核或下架
-             date: date,       		# 文章上传日期
+             id: ,         # 文章id
+             title: ,      # 文章标题
+             file_path: ,  # 文章内容地址
+             uploader: ,   # 上传人
+             state: ,      # 文章状态 0=未审核 1=已审核 -1=未通过审核或下架
+             date: ,       # 文章上传日期
          }
      }
      ```
@@ -286,23 +286,23 @@ Format:
 
      ```python
      {
-         code: code,                     	# 0=未知用户 1=成为
-         msg: msg,                      		# 信息
+         code: ,                     # 0=未知用户 1=成为
+         msg: ,                      # 信息
          data: {
              [
                  {
-                     id: id,           		# 文章id
-                     title: title,       	# 文章标题
-                     file_path: file_path,   # 文章内容地址
-                     uploader: uploader,     # 上传人
-                     date: date,         	# 文章上传日期
-                     cover: cover,        	# 封面
-                     author: author,       	# 作者
-                     num_comment: num_comment,  # 评论数
-                     like: like,         	# 点赞数
+                     id: ,           # 文章id
+                     title: ,        # 文章标题
+                     file_path: ,    # 文章内容地址
+                     uploader: ,     # 上传人
+                     date: ,         # 文章上传日期
+                     cover: ,        # 封面
+                     author: ,       # 作者
+                     num_comment: ,  # 评论数
+                     like: ,         # 点赞数
                  },
                  ...
-             ]                       		# 文章数组
+             ]                       # 文章数组
          }
      }
      ```
@@ -317,24 +317,22 @@ Format:
 
      ```python
      {
-         code: code,                          			# 0=未知用户 1=成功 -1=未知错误
-         msg: msg,                          			 	# 信息
+         code: ,                          # 0=未知用户 1=成为
+         msg: ,                           # 信息
          data: {
              [
                  {
-                     id: id,                				# 批注id
-                     book_id: book_id,           		# 文章id
-                     book_name: book_name,         		# 文章标题
-                     comment: comment,           		# 批注内容
-                     comment_uploader_id: comment_uploader_id, # 批注上传人id
-                     comment_uploader: comment_uploader, # 批注上传人
-                     comment_start: comment_start, 		# 批注开始处
-                     comment_end: comment_end,			# 批注结束处
-                     num_comment: num_comment,       	# 评论数
-                     like: like,              			# 点赞数
+                     id: ,                # 批注id
+                     book_id: ,           # 文章id
+                     book_name: ,         # 文章标题
+                     comment: ,           # 批注内容
+                     comment_uploader: ,  # 批注上传人
+                     comment_sentence: ,  # 批注目标段落
+                     num_comment: ,       # 评论数
+                     like: ,              # 点赞数
                  },
                  ...
-             ]                            				# 批注数组
+             ]                            # 批注数组
          }
      }
      ```
@@ -349,16 +347,16 @@ Format:
 
      ```python
      {
-         code: code,              	# 0=未知用户 1=成功
-         msg: msg,               	# 信息
+         code: ,              # 0=未知用户 1=成功
+         msg: ,               # 信息
          data: {
              [
                  {
-                     id: id,    		# Tag ID
-                     name: name,  	# 分类名称
+                     id: ,    # Tag ID
+                     name: ,  # 分类名称
                  },
                  ...
-             ]                		# 分类数组
+             ]                # 分类数组
          }
      }
      ```
@@ -375,18 +373,18 @@ Format:
 
      ```python
      {
-         code: code,                   		# 0=未知用户 1=成功
-         msg: msg,                    		# 信息
+         code: ,                   # 0=未知用户 1=成功
+         msg: ,                    # 信息
          data: {
              [
                  {
-                     id: id,         		# 用户id
-                     name: name,       		# 用户昵称
-                     school: school,     	# 来自学校
-                     introduce: introduce,  	# 简介
+                     id: ,         # 用户id
+                     name: ,       # 用户昵称
+                     school: ,     # 来自学校
+                     introduce: ,  # 简介
                  },
                  ...
-             ]                     			# 老师列表
+             ]                     # 老师列表
          }
      }
      ```
@@ -401,27 +399,27 @@ Format:
 
      ```python
      {
-         code: code,                   		# 0=未知用户 1=成功
-         msg: msg,                    		# 信息
+         code: ,                   # 0=未知用户 1=成功
+         msg: ,                    # 信息
          data: {
              [
                  {
-                     id: id,         		# 用户id
-                     name: name,       		# 用户昵称
-                     school: school,     	# 来自学校
-                     introduce: introduce,  	# 简介
+                     id: ,         # 用户id
+                     name: ,       # 用户昵称
+                     school: ,     # 来自学校
+                     introduce: ,  # 简介
                  },
                  ...
-             ]                    			# 学生列表
+             ]                     # 学生列表
          }
      }
      ```
 
-##### message 信息
+##### Information 信息
 
 1. 通知信息
 
-   - 接口 `\api\message\get_message()`
+   - 接口
 
    - 参数 `token`-用户token
 
@@ -429,12 +427,12 @@ Format:
 
      ```python
      {
-         code: code,  	# 0=未知用户 1=成功
-         msg: msg,   	# 信息
+         code: ,  # 0=未知用户 1=成功
+         msg: ,   # 信息
          data: {
              [
                  {
-                     	# 待定
+                     # 待定
                  },
                  ...
              ]
@@ -455,8 +453,8 @@ Format:
 
      ```python
      {
-         code: code,  	# 1=成功
-         msg: msg,   	# 信息
+         code: ,  # 1=成功
+         msg: ,   # 信息
      }
      ```
 
@@ -558,20 +556,11 @@ Format:
 | user_id | int(11)     | NO   | MUL  | NULL              | 用户id，Foreign Key |
 | date    | timestamp   | NO   |      | CURRENT_TIMESTAMP | 行动日期            |
 
-用户画像表 user_personas:
-
-| Field      | Type        | Null | Key  | Default | Extra               |
-| ---------- | ----------- | ---- | ---- | ------- | ------------------- |
-| id         | int(11)     | NO   | PRI  | NULL    | auto_increment，id  |
-| article_id | varchar(20) | NO   | MUL  | NULL    | 文章id，Foreign Key |
-| user_id    | varchar(20) | NO   | MUL  | NULL    | 用户id，Foreign Key |
-| weight     | float       | NO   |      | NULL    | 权重                |
-
 ## WEB-APP 网页应用
 
 ### Environment 开发环境
 
-```shell
+```
 语言：
 	ES6
 	vue 2.5.17
@@ -591,6 +580,8 @@ Format:
 	autoprefixer-loader==3.2.0
 ```
 
+
+
 ### Page&Function 页面和功能
 
 #### Design 设计思路
@@ -599,40 +590,33 @@ Format:
 
 #### Draft 设计稿
 
-- 登录注册
++ 登录注册
 
-  ![login](./images/login.png)
-
-  - 设计思路
-    - 用户以手机号或者邮箱进行登录注册，同时辅以QQ、微信等社交账号快捷登录的方式，使之能快速进入系统并上手使用
-    - 下方二维码方便用户直接扫描下载本产品的移动客户端，对客户端进行宣传同时增加用户粘性
-
-- 系统主页
-
-  ![圈点阅读](./images/圈点阅读.jpg)
-
-  - 设计思路
-    - 上方导航栏固定在页面顶部，方便用户随时进行首页、发现页、通知及个人中心页面的切换，同时固定搜索框也进一步方便用户随时能找到想要浏览的内容
-    - 左侧主体为推荐列表，用户登录后系统会根据算法智能推荐可能感兴趣的文章、热门批注等内容，各个不同的文章以分隔开的卡片形式进行展示供用户浏览；每个卡片内会对文章（或书籍、批注等）的分类标签、标题、作者、简介、封面等信息进行展示，引起用户兴趣后用户可以直接点击阅读全文进入详情页（详情页将在后面介绍）。
-    - 卡片下方的工具栏方便用户直接进行点赞收藏分享等操作，也可以直接看到该文章评论数量或点击进行快捷评论
-    - 右侧的侧边栏会展示一些系统针对用户进行的个性化推荐的热门分类、优秀教师、优秀学生，丰富了页面内容也增加了页面的多样性
-
-- 详情页
-
-  ![detail](./images/detail.png)
-
-  - 设计思路
-    - 左侧依旧为页面主体展示部分，最上方先展示作品的简单信息例如名称、作者、打分情况等，同时用户可以直接在此点击进入阅读界面开始阅读之旅
-    - 左侧中间是一个导言和目录的tab选框，用于展示该作品的简介及目录，方便用户快速获取该作品的主要内容同时也翻阅目录快捷跳转阅读的功能
-    - 下方的热门批注及评论展示块则提供了该作品的所有批注、评论等内容，优质批注的筛选推荐也是本系统的主打功能之一
-    - 右侧侧边栏出了热门分类的推荐及APP下载二维码之外还对上传该作品的作者信息进行了补充，也为快速进入同一作者别的作品提供了入口
-
-+ 发现页
-
-  ![findmore](./images/findmore.jpg)
+  ![login](D:\phpStudy\WWW\Intelligent-annotation-system\images\login.png)
 
   + 设计思路
+    + 用户以手机号或者邮箱进行登录注册，同时辅以QQ、微信等社交账号快捷登录的方式，使之能快速进入系统并上手使用
+    + 下方二维码方便用户直接扫描下载本产品的移动客户端，对客户端进行宣传同时增加用户粘性
 
++ 系统主页
+
+  ![圈点阅读](D:\phpStudy\WWW\Intelligent-annotation-system\images\圈点阅读.jpg)
+
+  + 设计思路
+    + 上方导航栏固定在页面顶部，方便用户随时进行首页、发现页、通知及个人中心页面的切换，同时固定搜索框也进一步方便用户随时能找到想要浏览的内容
+    + 左侧主体为推荐列表，用户登录后系统会根据算法智能推荐可能感兴趣的文章、热门批注等内容，各个不同的文章以分隔开的卡片形式进行展示供用户浏览；每个卡片内会对文章（或书籍、批注等）的分类标签、标题、作者、简介、封面等信息进行展示，引起用户兴趣后用户可以直接点击阅读全文进入详情页（详情页将在后面介绍）。
+    + 卡片下方的工具栏方便用户直接进行点赞收藏分享等操作，也可以直接看到该文章评论数量或点击进行快捷评论
+    + 右侧的侧边栏会展示一些系统针对用户进行的个性化推荐的热门分类、优秀教师、优秀学生，丰富了页面内容也增加了页面的多样性
+
++ 详情页
+
+  ![detail](D:\phpStudy\WWW\Intelligent-annotation-system\images\detail.png)
+
+  + 设计思路
+    + 左侧依旧为页面主体展示部分，最上方先展示作品的简单信息例如名称、作者、打分情况等，同时用户可以直接在此点击进入阅读界面开始阅读之旅
+    + 左侧中间是一个导言和目录的tab选框，用于展示该作品的简介及目录，方便用户快速获取该作品的主要内容同时也翻阅目录快捷跳转阅读的功能
+    + 下方的热门批注及评论展示块则提供了该作品的所有批注、评论等内容，优质批注的筛选推荐也是本系统的主打功能之一
+    + 右侧侧边栏出了热门分类的推荐及APP下载二维码之外还对上传该作品的作者信息进行了补充，也为快速进入同一作者别的作品提供了入口
 
 #### 交互逻辑
 
