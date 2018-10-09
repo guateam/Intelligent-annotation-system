@@ -571,7 +571,7 @@ Format:
 
 ### Environment 开发环境
 
-```
+```shell
 语言：
 	ES6
 	vue 2.5.17
@@ -591,8 +591,6 @@ Format:
 	autoprefixer-loader==3.2.0
 ```
 
-
-
 ### Page&Function 页面和功能
 
 #### Design 设计思路
@@ -603,7 +601,7 @@ Format:
 
 - 登录注册
 
-  ![login](D:\phpStudy\WWW\Intelligent-annotation-system\images\login.png)
+  ![login](./images/login.png)
 
   - 设计思路
     - 用户以手机号或者邮箱进行登录注册，同时辅以QQ、微信等社交账号快捷登录的方式，使之能快速进入系统并上手使用
@@ -611,7 +609,7 @@ Format:
 
 - 系统主页
 
-  ![圈点阅读](D:\phpStudy\WWW\Intelligent-annotation-system\images\圈点阅读.jpg)
+  ![圈点阅读](./images/圈点阅读.jpg)
 
   - 设计思路
     - 上方导航栏固定在页面顶部，方便用户随时进行首页、发现页、通知及个人中心页面的切换，同时固定搜索框也进一步方便用户随时能找到想要浏览的内容
@@ -621,7 +619,7 @@ Format:
 
 - 详情页
 
-  ![detail](D:\phpStudy\WWW\Intelligent-annotation-system\images\detail.png)
+  ![detail](./images/detail.png)
 
   - 设计思路
     - 左侧依旧为页面主体展示部分，最上方先展示作品的简单信息例如名称、作者、打分情况等，同时用户可以直接在此点击进入阅读界面开始阅读之旅
@@ -631,7 +629,7 @@ Format:
 
 + 发现页
 
-  ![findmore](D:\phpStudy\WWW\Intelligent-annotation-system\images\findmore.jpg)
+  ![findmore](./images/findmore.jpg)
 
   + 设计思路
 
