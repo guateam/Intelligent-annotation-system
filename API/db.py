@@ -5,11 +5,7 @@ import hashlib
 MYSQL_HOST = 'localhost'
 MYSQL_PORT = 3306
 MYSQL_USER = 'root'
-<<<<<<< HEAD
-MYSQL_PASSWORD = '123456'
-=======
 MYSQL_PASSWORD = 'zhangyuk'
->>>>>>> develop
 MYSQL_DB = 'IntelligentAnnotationSystem'
 """ 以上为变量为演示所用，正式开发时请统一写入config文件后引入 """
 
@@ -127,3 +123,29 @@ class Database(object):
         except pymysql.MySQLError as e:
             print(e.args)
             return []
+
+    def count(self, data, table):
+        """
+        统计特定条件下的数据总数
+        :param data: dist 筛选条件
+        :param table: 目标表名
+        :return: int 统计数据
+        """
+        try:
+            with self.db.cursor() as cursor:
+                if not data:  # 判断data是否为空
+                    sql_query = 'SELECT COUNT(*) FROM %s' % table
+                    cursor.execute(sql_query)
+                    results = cursor.fetchall()
+                    return results[0]['COUNT(*)']  # 返回所有数据
+                list1 = []
+                for key, values in data.items():
+                    list1.append('`' + key + '`="' + str(values) + '"')
+                where = ' AND '.join(list1)
+                sql_query = 'SELECT COUNT(*) FROM %s WHERE %s' % (table, where)
+                cursor.execute(sql_query)
+                results = cursor.fetchall()
+                return results[0]['COUNT(*)']  # 返回所有数据
+        except pymysql.MySQLError as e:
+            print(e.args)
+            return -1  # 报错
