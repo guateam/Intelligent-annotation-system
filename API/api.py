@@ -190,6 +190,18 @@ def check_email_available():
     return jsonify({'code': 1, 'msg': 'email is available'})
 
 
+@app.route('/api/account/set_user_history')
+def set_user_history():
+    """
+    设定用户历史活动
+    :return: code 1=成功 0=失败
+    """
+    token = request.form('token')
+    type = request.form('type')
+    target = request.form('target')
+    content = request.form('content')
+
+
 '''
     阅读接口 reading
 '''
