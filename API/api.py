@@ -6,6 +6,7 @@ import string
 from flask import Flask, request, jsonify
 
 from API.db import Database, generate_password
+from CollaborativeFiltering.cf import item_cf
 from TextFeatureExtraction.WordSegmentation import pred
 
 # 创建app
@@ -219,13 +220,23 @@ def article_recommend():
     result = []
     user = db.get({'token': token, 'is_del': 0}, 'user')  # 获取用户信息
     if user:
-        book = db.get({}, 'article', 0)  # 获取书籍信息
-        for value in book:
-            tags = db.get({'article_id': value['id']}, 'article_tag', 0)  # 获取书籍对应tag信息
-            if tags:
-                pass  # 执行相关操作
-                value.update({'num_comment': 0, 'like': 0})  # 获取评论与收藏数（需要更改）
-                result.append(value)
+        article_list = []
+        personas = db.get({'user_id': user['id']}, 'user_personas', 0)
+        if personas:
+            sorted(personas, key=lambda personas: personas['weight'], reverse=True)
+            for value in personas:
+                article_id = item_cf("../CollaborativeFiltering/item_simi.txt", value['article_id'] - 1)
+                article_list.append(article_id + 1)
+        for value in article_list:
+            book = db.get({'id': value}, 'article')
+            if book:
+                book.update({'num_comment': 0, 'like': 0})  # 获取评论与收藏数（需要更改）
+                flag = True
+                for it in result:
+                    if it['id'] == book['id']:
+                        flag = False
+                if flag:
+                    result.append(book)
         return jsonify({'code': 1, 'msg': '', 'data': result})
     return jsonify({'code': 0, 'msg': 'unexpected user'})
 

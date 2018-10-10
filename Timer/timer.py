@@ -11,14 +11,14 @@ def cf():
     :return:
     """
     db = Database()
-    user = db.get({'is_del': 0}, 'user',0)
-    book_count = db.count({}, 'article')
+    user_count=db.count({'is_del':0},'user')
     matrix = []
-    for value in user:
-        data = db.get({'user_id': value['id']}, 'user_personas',0)
-        list = [0] * book_count
-        for book in data:
-            list[book['article_id'] - 1] = book['weight']
+    article=db.get({},'article',0)
+    for value in article:
+        data = db.get({'article_id': value['id']}, 'user_personas',0)
+        list = [0.5] * user_count
+        for user in data:
+            list[user['user_id'] - 1] = user['weight']
         matrix.append(list)
     print(matrix)
     print(set_similarity_vec(matrix, "../CollaborativeFiltering/item_simi.txt"))
