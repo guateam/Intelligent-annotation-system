@@ -320,6 +320,20 @@ def student_recommend():
         pass
 
 
+@app.route('/api/user/user_detail')
+def user_detail():
+    """
+    获取用户详细信息
+    :return: code 0=未知用户 1=成功 -1=未知错误
+    """
+    pass
+
+
+'''
+    上传接口
+'''
+
+
 @app.route('/api/upload/upload_article', methods=['POST'])
 def upload_article():
     """

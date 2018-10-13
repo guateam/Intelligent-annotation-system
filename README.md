@@ -416,6 +416,23 @@ Format:
          }
      }
      ```
+3. 用户详细信息
+
+    - 接口 `/api/user/user_detail()`
+
+    - 参数 `token`-用户token `user_id`-用户id
+
+    - 返回值
+
+      ```python
+      {
+          code: code,		# 0=位置用户 1=成功 -1=未知错误
+          msg: msg,		#信息
+          data: {
+              			#待定
+          }
+      }
+      ```
 
 ##### message 信息
 
