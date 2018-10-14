@@ -24,6 +24,8 @@ def generate_password(original_password):
 
 
 class Database(object):
+    MYSQL_NULL = ' is null'
+
     # __init__方法将在类实例创建时执行，可用于完成数据库的初始化操作
     def __init__(self, host=MYSQL_HOST, port=MYSQL_PORT, user=MYSQL_USER, password=MYSQL_PASSWORD, db=MYSQL_DB):
         try:
@@ -85,7 +87,10 @@ class Database(object):
                     return results  # 返回所有数据
                 list1 = []
                 for key, values in data.items():
-                    list1.append(key + '="' + str(values) + '"')
+                    if values == self.MYSQL_NULL:
+                        list1.append(key + self.MYSQL_NULL)
+                    else:
+                        list1.append(key + '="' + str(values) + '"')
                 where = ' AND '.join(list1)
                 sql_query = 'SELECT * FROM %s WHERE %s' % (table, where)  # 构造sql语句
                 sql_query.replace('\\', '\\\\')

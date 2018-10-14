@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class="right">
-            <Author></Author>
+            <Author :author_id="uploader"></Author>
             <SomeTag></SomeTag>
             <RealAd></RealAd>
         </div>
@@ -48,6 +48,7 @@
     import SomeTag from "../some-tag/some-tag";
     import RealAd from "../real-ad/real-ad";
     import Author from '../author/author'
+    import axios from 'axios'
 
     export default {
         name: "article-detail",
@@ -60,10 +61,27 @@
                 intro: '这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介...',  // 简介
                 valueCustomText: 3.8,  // 书籍评分
                 contents: '暂时还不知道怎么获取书籍目录，先空着',  // 书籍目录
-                part:'书籍里面摘抄的段落或者句子或者什么玩意的吧emm书籍里面摘抄的段落或者句子或者什么玩意的吧emm书籍里面摘抄的段落或者句子或者什么玩意的吧emm',  // 书籍摘抄的段落，下面显示的就是对这一段的批注
+                part: '书籍里面摘抄的段落或者句子或者什么玩意的吧emm书籍里面摘抄的段落或者句子或者什么玩意的吧emm书籍里面摘抄的段落或者句子或者什么玩意的吧emm',  // 书籍摘抄的段落，下面显示的就是对这一段的批注
                 annotation: '这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注这里是批注',  // 书籍批注
-                comment:'评论吧,不过暂时貌似还没讨论清楚评论和批注的关系所以暂时先空着',  // 书籍评论
+                comment: '评论吧,不过暂时貌似还没讨论清楚评论和批注的关系所以暂时先空着',  // 书籍评论
+                uploader:1
             }
+        },
+        created() {
+            var that = this
+            axios.get(this.GLOBAL.ajax_path + '/api/reading/get_book_info/' + this.$route.params.book_id).then((data) => {
+                if (data.status == 200) {
+                    if (data.data) {
+                        if (data.data.code == 1) {
+                            data = data.data.data;
+                            that.bookTag = '没实装~';
+                            that.bookName = data.title;
+                            that.bookAuthor = data.author;
+                            that.intro = '没实装~没实装~没实装~没实装~没实装~没实装~没实装~没实装~没实装~没实装~没实装~没实装~';
+                        }
+                    }
+                }
+            })
         }
     }
 </script>
@@ -147,7 +165,8 @@
     .comment p {
         padding: 10px 20px;
     }
-    .ivu-page{
+
+    .ivu-page {
         text-align: center;
     }
 </style>

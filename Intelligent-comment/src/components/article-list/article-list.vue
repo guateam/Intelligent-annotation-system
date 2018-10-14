@@ -1,20 +1,23 @@
 <template>
-    <div class="article">
-        <div class="tag">- {{ bookTag }} -</div>
-        <h1 class="header">{{ bookName }}</h1>
-        <img class="book-pic" src="./pic-book.png" alt="封面">
-        <p class="someword">
-            {{ intro }}
-            <router-link class="lookmore" to="article-detail">&nbsp;阅读全文&nbsp;&rsaquo;</router-link>
-        </p>
-        <div class="items">
-            <span>like</span>
-            <span class="comment"><img src="./comment.png" alt="">共有{{ commentNumber }}条评论</span>
-            <span><img src="./share.png" alt="">分享</span>
-            <!--收藏的logo暂时出了点问题先不管了-->
-            <span><img :src="ifcollection" alt="">收藏</span>
-            <!--暂时不需要 更多 这个功能-->
-            <span>更多</span>
+    <div>
+        <div class="article" v-for="item in data">
+            <div class="tag">- {{ item.bookTag }} -</div>
+            <h1 class="header">{{ item.bookName }}</h1>
+            <img class="book-pic" src="./pic-book.png" alt="封面">
+            <p class="someword">
+                {{ item.intro }}
+                <router-link class="lookmore" :to="'/article-detail/'+item.id">&nbsp;阅读全文&nbsp;&rsaquo;
+                </router-link>
+            </p>
+            <div class="items">
+                <span>like</span>
+                <span class="comment"><img src="./comment.png" alt="">共有{{ item.commentNumber }}条评论</span>
+                <span><img src="./share.png" alt="">分享</span>
+                <!--收藏的logo暂时出了点问题先不管了-->
+                <span><img :src="item.ifcollection" alt="">收藏</span>
+                <!--暂时不需要 更多 这个功能-->
+                <span>更多</span>
+            </div>
         </div>
     </div>
 </template>
@@ -22,16 +25,13 @@
 <script>
     import collectionNo from './collection-no.png'
     import collectionYes from './collection.png'
+    import axios from 'axios'
 
     export default {
         name: "article-list",
         data() {
             return {
-                bookTag: '书籍推荐',  // 这一块的内容的标签，分文章、书籍、批注推荐等
-                bookName: '看不见的城市',  // 书名
-                intro: '这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里都是正文这里文这里都是正文这里都是正文这里是正文...',  // 简介
-                commentNumber: '1954',  // 文章所有评论的数目
-                ifcollection: 'collectionNo',  // 未收藏状态的logo
+                data: []
             }
         },
         methods: {
@@ -43,6 +43,28 @@
             changecollection()
             axios.get('', {}).then((response) => {
                 this.intro = response.data.data['intro'];
+            })
+        },
+        created() {
+            var that = this
+            axios.get(this.GLOBAL.ajax_path + '/api/reading/article_recommend?token=' + this.$cookies.get('token')).then((data) => {
+                if (data.status == 200) {
+                    if (data.data) {
+                        if (data.data.code == 1) {
+                            data = data.data.data
+                            for(let i=0;i<data.length;i++){
+                                that.data.push({
+                                    bookTag:'文章推荐',
+                                    bookName:data[i].title,
+                                    intro:'这里是介绍，但是没有实装。。。',
+                                    commentNumber:data[i].num_comment,
+                                    ifcollection:data[i].collection?'collectionNo':'collectionYes',
+                                    id:data[i].id
+                                })
+                            }
+                        }
+                    }
+                }
             })
         }
     }
