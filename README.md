@@ -426,10 +426,19 @@ Format:
 
       ```python
       {
-          code: code,		# 0=位置用户 1=成功 -1=未知错误
-          msg: msg,		#信息
+          code: code,							# 0=位置用户 1=成功 -1=未知错误
+          msg: msg,							# 信息
           data: {
-              			#待定
+              id:id,							# 用户id
+              nickname:nickname,				# 昵称
+              introduction:introduction,		# 简介，未实装，问题见issue
+              article:[
+                  {
+                      id:id,					# 文章id
+                      title:title				# 文章标题
+                  },
+                  ...
+              ]								# 文章列表
           }
       }
       ```

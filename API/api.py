@@ -326,7 +326,22 @@ def user_detail():
     获取用户详细信息
     :return: code 0=未知用户 1=成功 -1=未知错误
     """
-    pass
+    user_id = request.values.get('user_id')
+    db = Database()
+    user = db.get({'id': user_id}, 'user')
+    if user:
+        article = db.get({'user_id': user_id}, 'article', 0)  # 获取该用户的文章列表
+        article_list = []
+        for value in article:
+            article_list.append({'id': value['id'], 'title': value['title']})  # 处理列表
+        data = {
+            'id': user['id'],
+            'nickname': user['nickname'],
+            'introduction': '',  # 因为没有简介字段所以现在是空的,
+            'article': article_list
+        }
+        return jsonify({'code': 1, 'msg': 'success', 'data': data})  # 返回
+    return jsonify({'code': 0, 'msg': 'unknown user'})  # 未知用户
 
 
 '''
