@@ -132,6 +132,7 @@ Packages:
     sklearn==0.0
     tensorboard==1.10.0
     tensorflow==1.10.1
+    Flask-Cors==3.0.6
 ```
 
 ### API 接口
@@ -276,7 +277,43 @@ Format:
      }
      ```
 
-2. 首页文章推荐
+2. 通过书籍id获取文章评论
+
+   - 接口 `/api/reading/get_book_comment()`
+
+   - 参数 `article_id`-文章id
+
+   - 返回值
+
+     ```python
+     {
+         code:code,								# code 0=未找到评论 1=成功
+         msg:msg,								# 信息
+         data:[
+             {
+                 id:id,							# 评论id
+                 content:content,				# 内容
+                 nickname:nickname,				# 昵称
+                 user_id:user_id,				# 用户id
+                 children:[				
+                     {		
+                         id:id,					# 评论id
+                 		content:content,		# 内容
+                 		nickname:nickname,		# 昵称
+                 		user_id:user_id,		# 用户id
+                 		children:[
+                             ...					# 子评论列表
+                 		]
+                     },
+                     ...							# 子评论列表
+                 ]
+             },
+             ...									# 评论列表
+         ]
+     }
+     ```
+
+3. 首页文章推荐
 
    - 接口 `/api/reading/article_recommend()`
 
@@ -307,7 +344,7 @@ Format:
      }
      ```
 
-3. 首页优秀批注推荐
+4. 首页优秀批注推荐
 
    - 接口 `/api/reading/comment_recommend()`
 
@@ -339,7 +376,7 @@ Format:
      }
      ```
 
-4. 首页热门分类
+5. 首页热门分类
 
    - 接口 `/api/reading/tag_recommend()`
 
@@ -615,6 +652,8 @@ Format:
 	vue-router==3.0.1
 	vuex==3.0.1
 	autoprefixer-loader==3.2.0
+	vue-cookies==1.5.7
+	qs==6.5.2
 ```
 
 ### Page&Function 页面和功能

@@ -16,13 +16,15 @@
             <p class="detail-word">&nbsp;&nbsp;&nbsp;&nbsp;{{ teacherIntro }}</p>
             <div class="other">
                 <h3>其他作品:</h3>
-                <ul>-{{ teacherWork }}</ul>
+                <ul v-for="(item,key) in teacherWork" v-if="key<5">-{{ item.title }}</ul>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+    import axios from 'axios'
+
     export default {
         name: "good-student",
         data() {
@@ -32,6 +34,22 @@
                 teacherIntro: '这里是教师简介这里是教师简介这里是教师简介这里是教师简介这里是教师简介这里是教师',  // 教师简介
                 teacherWork: '作品一',  // 讲道理应该是教师上传的其他作品吧
             }
+        },
+        props: ['author_id'],
+        created() {
+            var that = this
+            axios.get(this.GLOBAL.ajax_path + '/api/user/user_detail?user_id=' + this.author_id).then((data) => {
+                if (data.status == 200) {
+                    if (data.data) {
+                        if (data.data.code == 1) {
+                            data = data.data.data
+                            that.teacher = data.nickname
+                            that.teacherIntro = data.introduction
+                            that.teacherWork = data.article
+                        }
+                    }
+                }
+            })
         }
     }
 </script>

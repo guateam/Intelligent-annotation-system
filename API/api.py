@@ -4,6 +4,7 @@ import random
 import string
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS, cross_origin
 
 from API.db import Database, generate_password
 from CollaborativeFiltering.cf import item_cf
@@ -12,7 +13,7 @@ from TextFeatureExtraction.WordSegmentation import pred
 # 创建app
 
 app = Flask(__name__)
-
+CORS(app,supports_credentials=True)
 '''
     返回格式
     json
@@ -211,6 +212,7 @@ def set_user_history():
 def get_book_info(book_id):
     """
     获取书籍简介信息
+    :param book_id: 文章id
     :return: code(0=未知书籍id，1=成功)
     """
     # book_id = request.form['id'] 废弃调用方法
@@ -219,6 +221,57 @@ def get_book_info(book_id):
     if result:
         return jsonify({'code': 1, 'msg': 'success', 'data': result})
     return jsonify({'code': 0, 'msg': 'unexpected book id'})
+
+
+@app.route('/api/reading/get_book_comment')
+def get_book_comment():
+    """
+    获取文章评论
+    :return: code 0=未找到评论 1=成功
+    """
+    article_id = request.values.get('article_id')
+    db = Database()
+    # 获取该文章下所有不是回复的评论
+    result = db.get({'article_id': article_id, 'state': 0, 'previous': db.MYSQL_NULL}, 'article_comment', 0)
+    if result:
+        data = []
+        for value in result:
+            user = db.get({'id': value['user_id']}, 'user')
+            if user:
+                item = {
+                    'id': value['id'],
+                    'content': value['content'],
+                    'username': user['nickname'],
+                    'user_id': user['id'],
+                    'children': get_child_comment(value['id'])  # 获取该评论的回复
+                }
+                data.append(item)
+        return jsonify({'code': 1, 'msg': 'success', 'data': data})  # 成功的返回
+    return jsonify({'code': 0, 'msg': 'cannot find the record'})  # 评论为空
+
+
+def get_child_comment(comment_id):
+    """
+    获取评论的评论
+    :param comment_id: 评论id
+    :return: list 子评论的列表
+    """
+    db = Database()
+    # 获取评论的评论
+    comment = db.get({'previous': comment_id, 'state': 0}, 'article_comment',0)
+    data = []
+    for value in comment:
+        user = db.get({'id': value['user_id']}, 'user')
+        if user:
+            item = {
+                'id': value['id'],
+                'content': value['content'],
+                'username': user['nickname'],
+                'user_id': user['id'],
+                'children': get_child_comment(value['id'])
+            }
+            data.append(item)
+    return data
 
 
 @app.route('/api/reading/article_recommend')
@@ -242,7 +295,10 @@ def article_recommend():
         for value in article_list:
             book = db.get({'id': value}, 'article')
             if book:
-                book.update({'num_comment': 0, 'like': 0})  # 获取评论与收藏数（需要更改）
+                num_comment=db.count({'article_id':value,'state':0},'article_comment')
+                like=0 # 获取评论与收藏数（需要更改）
+                collection= db.count({''})
+                book.update({'num_comment': num_comment, 'like': 0})  # 获取评论与收藏数（需要更改）
                 flag = True
                 for it in result:
                     if it['id'] == book['id']:
@@ -342,7 +398,7 @@ def user_detail():
     db = Database()
     user = db.get({'id': user_id}, 'user')
     if user:
-        article = db.get({'user_id': user_id}, 'article', 0)  # 获取该用户的文章列表
+        article = db.get({'uploader': user_id}, 'article', 0)  # 获取该用户的文章列表
         article_list = []
         for value in article:
             article_list.append({'id': value['id'], 'title': value['title']})  # 处理列表

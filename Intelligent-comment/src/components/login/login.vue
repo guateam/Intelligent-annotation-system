@@ -8,9 +8,9 @@
                     <h2>不止能做批注的阅读软件</h2>
                 </div>
                 <div class="user-login">
-                    <Input v-model="phone" placeholder="请输入手机号" clearable/>
-                    <Input v-model="password" placeholder="请输入密码" clearable/>
-                    <Button type="primary" long>登录</Button>
+                    <Input v-model="username" placeholder="请输入用户名、手机号或邮箱" clearable/>
+                    <Input v-model="password" placeholder="请输入密码" clearable type="password"/>
+                    <Button type="primary" long v-on:click="login()">登录</Button>
                 </div>
                 <div class="box-foot">
                     <h2><span>扫描二维码登录</span>|<span>社交账号登录</span></h2>
@@ -27,13 +27,14 @@
 <script>
     import RealAd from "../real-ad/real-ad";
     import Register from "../register/register";
-
+    import  axios  from "axios"
+    import qs from 'qs'
     export default {
         name: "login",
         components: {Register, RealAd},
         data() {
             return {
-                phone: '',
+                username: '',
                 password: '',
                 register: false
             }
@@ -42,6 +43,23 @@
             // 这里有问题我知道的等做功能的之后再来改吧嘤嘤嘤
             userRegister() {
                 this.register = !this.register;
+            },
+            login: function () {
+                axios.post(this.GLOBAL.ajax_path+'/api/account/login',qs.stringify({
+                    username:this.username,
+                    password: this.password
+                })).then((data) => {
+                    if(data.status==200){
+                        if(data.data){
+                            if(data.data.code==1){
+                                data=data.data.data
+                                this.$cookies.set('token',data.token)
+                                this.$cookies.set('group',data.group)
+                                this.$router.push('/mainpage')
+                            }
+                        }
+                    }
+                })
             }
         }
     }
