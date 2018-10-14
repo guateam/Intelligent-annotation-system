@@ -416,6 +416,32 @@ Format:
          }
      }
      ```
+3. 用户详细信息
+
+    - 接口 `/api/user/user_detail()`
+
+    - 参数 `token`-用户token `user_id`-用户id
+
+    - 返回值
+
+      ```python
+      {
+          code: code,							# 0=位置用户 1=成功 -1=未知错误
+          msg: msg,							# 信息
+          data: {
+              id:id,							# 用户id
+              nickname:nickname,				# 昵称
+              introduction:introduction,		# 简介，未实装，问题见issue
+              article:[
+                  {
+                      id:id,					# 文章id
+                      title:title				# 文章标题
+                  },
+                  ...
+              ]								# 文章列表
+          }
+      }
+      ```
 
 ##### message 信息
 
