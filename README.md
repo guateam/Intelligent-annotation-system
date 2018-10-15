@@ -325,9 +325,9 @@ Format:
                  children:[				
                      {		
                          id:id,              # 评论id
-                 		content:content,    # 内容
-                 		nickname:nickname,  # 昵称
-                 		user_id:user_id,    # 用户id
+                         content:content,    # 内容
+                         nickname:nickname,  # 昵称
+                         user_id:user_id,    # 用户id
                  		children:[
                              ...             # 子评论列表
                  		]
@@ -386,10 +386,10 @@ Format:
          data: {
              [
                  {
-                     id: id,                				       # 批注id
-                     book_id: book_id,           		       # 文章id
-                     book_name: book_name,         		       # 文章标题
-                     comment: comment,           		       # 批注内容
+                     id: id,                                    # 批注id
+                     book_id: book_id,                          # 文章id
+                     book_name: book_name,                      # 文章标题
+                     comment: comment,                          # 批注内容
                      comment_uploader_id: comment_uploader_id,  # 批注上传人id
                      comment_uploader: comment_uploader,        # 批注上传人
                      comment_start: comment_start,              # 批注开始处
