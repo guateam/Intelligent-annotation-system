@@ -3,7 +3,7 @@
         <div class="article" v-for="item in data">
             <div class="tag">- {{ item.bookTag }} -</div>
             <h1 class="header">{{ item.bookName }}</h1>
-            <img class="book-pic" src="./pic-book.png" alt="封面">
+            <img class="book-pic" :src="ajax_path+'/'+item.cover" alt="封面">
             <p class="someword">
                 {{ item.intro }}
                 <router-link class="lookmore" :to="'/article-detail/'+item.id">&nbsp;阅读全文&nbsp;&rsaquo;
@@ -14,7 +14,7 @@
                 <span class="comment"><img src="./comment.png" alt="">共有{{ item.commentNumber }}条评论</span>
                 <span><img src="./share.png" alt="">分享</span>
                 <!--收藏的logo暂时出了点问题先不管了-->
-                <span><img :src="item.ifcollection" alt="">收藏</span>
+                <span v-on:click="changecollection(item)"><img :src="item.ifcollection" alt=""><span v-if="item.collection">已收藏</span><span v-if="!item.collection">收藏</span></span>
                 <!--暂时不需要 更多 这个功能-->
                 <span>更多</span>
             </div>
@@ -31,21 +31,17 @@
         name: "article-list",
         data() {
             return {
-                data: []
+                data: [],
+                ajax_path:this.GLOBAL.ajax_path
             }
         },
         methods: {
-            changecollection() {
-                this.ifcollection = collectionNo;
+            changecollection(item) {
+                item.collection=!item.collection;
+                item.ifcollection=item.collection?collectionYes:collectionNo
             }
         },
         mounted() {
-            changecollection()
-            axios.get('', {}).then((response) => {
-                this.intro = response.data.data['intro'];
-            })
-        },
-        created() {
             var that = this
             axios.get(this.GLOBAL.ajax_path + '/api/reading/article_recommend?token=' + this.$cookies.get('token')).then((data) => {
                 if (data.status == 200) {
@@ -56,16 +52,21 @@
                                 that.data.push({
                                     bookTag:'文章推荐',
                                     bookName:data[i].title,
-                                    intro:'这里是介绍，但是没有实装。。。',
+                                    intro:data[i].intro,
                                     commentNumber:data[i].num_comment,
-                                    ifcollection:data[i].collection?'collectionNo':'collectionYes',
-                                    id:data[i].id
+                                    ifcollection:data[i].collection?collectionYes:collectionNo,
+                                    collection:data[i].collection,
+                                    id:data[i].id,
+                                    cover:data[i].image_path
                                 })
                             }
                         }
                     }
                 }
             })
+        },
+        created() {
+
         }
     }
 </script>

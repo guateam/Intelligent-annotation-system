@@ -12,7 +12,7 @@
         components: {Login},
         data() {
             return {
-                isLogin: false,  // 是否登录
+                isLogin: this.$cookies.isKey('token'),  // 是否登录
             }
         },
     }

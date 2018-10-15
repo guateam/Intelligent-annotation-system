@@ -46,6 +46,7 @@
                             that.teacher = data.nickname
                             that.teacherIntro = data.introduction
                             that.teacherWork = data.article
+                            that.teacherTag='称号没有这个字段'
                         }
                     }
                 }

@@ -77,7 +77,7 @@
                             that.bookTag = '没实装~';
                             that.bookName = data.title;
                             that.bookAuthor = data.author;
-                            that.intro = '没实装~没实装~没实装~没实装~没实装~没实装~没实装~没实装~没实装~没实装~没实装~没实装~';
+                            that.intro = data.intro;
                         }
                     }
                 }

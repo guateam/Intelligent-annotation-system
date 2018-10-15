@@ -13,7 +13,7 @@ from TextFeatureExtraction.WordSegmentation import pred
 # 创建app
 
 app = Flask(__name__)
-CORS(app,supports_credentials=True)
+CORS(app, supports_credentials=True)
 '''
     返回格式
     json
@@ -258,7 +258,7 @@ def get_child_comment(comment_id):
     """
     db = Database()
     # 获取评论的评论
-    comment = db.get({'previous': comment_id, 'state': 0}, 'article_comment',0)
+    comment = db.get({'previous': comment_id, 'state': 0}, 'article_comment', 0)
     data = []
     for value in comment:
         user = db.get({'id': value['user_id']}, 'user')
@@ -293,12 +293,12 @@ def article_recommend():
                 article_id = item_cf("../CollaborativeFiltering/item_simi.txt", value['article_id'] - 1)
                 article_list.append(article_id + 1)
         for value in article_list:
-            book = db.get({'id': value}, 'article')
+            book = db.get({'id': value,'state':0}, 'article')
             if book:
-                num_comment=db.count({'article_id':value,'state':0},'article_comment')
-                like=0 # 获取评论与收藏数（需要更改）
-                collection= db.count({''})
-                book.update({'num_comment': num_comment, 'like': 0})  # 获取评论与收藏数（需要更改）
+                num_comment = db.count({'article_id': value, 'state': 0}, 'article_comment')
+                like = 0  # 获取评论与收藏数（需要更改）
+                collection = db.count({'target': value, 'type': 3, 'user_id': user['id']}, 'user_history')
+                book.update({'num_comment': num_comment, 'like': like, 'collection': collection > 0})  # 获取评论与收藏数（需要更改）
                 flag = True
                 for it in result:
                     if it['id'] == book['id']:
@@ -319,28 +319,40 @@ def comment_recommend():
     db = Database()
     user = db.get({'token': token, 'is_del': 0}, 'user')  # 获取用户信息
     if user:
-        comment = db.get({'state': 0}, 'postil', 0)
-        data = []
-        for value in comment:
-            if value['state'] == 0:
-                article = db.get({'id': value['article_id']}, 'article')  # 获取批注所在文章
+        result = []
+        postil_list = []
+        personas = db.get({'user_id': user['id']}, 'user_personas_postil', 0)
+        if personas:
+            sorted(personas, key=lambda personas: personas['weight'], reverse=True)
+            for value in personas:
+                postil_id = item_cf("../CollaborativeFiltering/item_simi_postil.txt", value['postil_id'] - 1)
+                postil_list.append(postil_id + 1)
+        for value in postil_list:
+            postil = db.get({'id': value,'state':0}, 'postil')
+            if postil:
+                article=db.get({'id':postil['article_id'],'state':0},'article')
                 if article:
-                    uploader = db.get({'id': value['user_id'], 'is_del': 0}, 'user')  # 获取批注上传人
-                    if uploader:
-                        data.append({
-                            'id': value['id'],
-                            'book_id': article['id'],
-                            'comment': value['content'],
-                            'comment_uploader_id': value['user_id'],
-                            'comment_uploader': uploader['nickname'],
-                            'comment_start': value['start'],
-                            'comment_end': value['end'],
-                            'num_comment': db.count({'postil_id': value['id'], 'state': 0}, 'postil_comment'),
-                            'like': 0  # 要改
-                        })
-        if data:
-            return jsonify({'code': 1, 'msg': 'success', 'data': data})
-        return jsonify({'code': -1, 'msg': 'empty data'})
+                    user=db.get({'id':postil['user_id'],'is_del':0},'user')
+                    if user:
+                        item={
+                            'id':postil['id'],
+                            'content':postil['content'],
+                            'start':postil['start'],
+                            'end':postil['end'],
+                            'user_id':postil['user_id'],
+                            'type':postil['type'],
+                            'username':user['nickname'],
+                            'article_id':article['id'],
+                            'article_name':article['title'],
+                            'article_file':article['file_path']
+                        }
+                        flag = True
+                        for it in result:
+                            if it['id'] == postil['id']:
+                                flag = False
+                        if flag:
+                            result.append(item)
+        return jsonify({'code': 1, 'msg': '', 'data': result})
     return jsonify({'code': 0, 'msg': 'unexpected user'})
 
 
@@ -405,7 +417,7 @@ def user_detail():
         data = {
             'id': user['id'],
             'nickname': user['nickname'],
-            'introduction': '',  # 因为没有简介字段所以现在是空的,
+            'introduction': user['intro'],  # 因为没有简介字段所以现在是空的,
             'article': article_list
         }
         return jsonify({'code': 1, 'msg': 'success', 'data': data})  # 返回
@@ -440,13 +452,15 @@ def upload_article():
 
         title = request.form['title']
         author = request.form['author']
+        intro = request.form['intro']
 
         flag = db.insert({
             'file_path': change_route(article_path, 1),
             'image_path': change_route(image_path, 1),
             'title': title,
             'author': author,
-            'uploader': int(user['id'])
+            'uploader': int(user['id']),
+            'intro': intro
         }, 'article')  # 添加记录
         if flag:
             with open(article_path, 'r') as file:

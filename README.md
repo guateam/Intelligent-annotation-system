@@ -592,6 +592,7 @@ Format:
 | author     | varchar(45)  | NO   |      | NULL              | 作者                |
 | uploader   | int(11)      | NO   | MUL  | NULL              | 上传者，Foreign Key |
 | date       | timestamp    | NO   |      | CURRENT_TIMESTAMP | 上传日期            |
+| intro      | varchar(45)  | NO   |     | NULL              | 文章简介 |
 
 批注表 postil：
 
@@ -658,6 +659,17 @@ Format:
 | article_id | varchar(20) | NO   | MUL  | NULL    | 文章id，Foreign Key |
 | user_id    | varchar(20) | NO   | MUL  | NULL    | 用户id，Foreign Key |
 | weight     | float       | NO   |      | NULL    | 权重                |
+
+用户批注画像表 user_personas_postil
+
+| Field     | Type    | Null | Key  | Default | Extra               |
+| --------- | ------- | ---- | ---- | ------- | ------------------- |
+| id        | int(11) | NO   | PRI  | NULL    | auto_increment,id   |
+| postil_id | int(11) | NO   | MUL  | NULL    | 批注id，Foreign Key |
+| user_id   | int(11) | NO   | MUL  | NULL    | 用户id，Foreign Key |
+| weight    | float   | NO   |      | NULL    | 权重                |
+
+
 
 ## WEB-APP 网页应用
 
