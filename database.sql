@@ -193,6 +193,8 @@ CREATE TABLE `user` (
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册日期',
   `personas` varchar(45) NOT NULL COMMENT '用户画像',
   `token` varchar(45) NOT NULL COMMENT 'token',
+  `intro` text COMMENT '用户简介',
+  `avatar_path` varchar(200) DEFAULT NULL COMMENT '用户头像路径',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='用户信息存储表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -203,7 +205,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'admin','593421b87fabdaa514f3943ab2a037ff5ac3063f63c278e0d6b4a0dc3ee15361','0','0',1,0,'admin','2018-10-03 08:52:30','','');
+INSERT INTO `user` VALUES (1,'admin','593421b87fabdaa514f3943ab2a037ff5ac3063f63c278e0d6b4a0dc3ee15361','0','0',1,0,'admin','2018-10-03 08:52:30','','',NULL,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -274,4 +276,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-08 16:26:38
+-- Dump completed on 2018-10-15 12:47:06

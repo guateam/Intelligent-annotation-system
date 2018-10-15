@@ -6,7 +6,7 @@ import pymysql
 MYSQL_HOST = 'localhost'
 MYSQL_PORT = 3306
 MYSQL_USER = 'root'
-MYSQL_PASSWORD = 'zhangyuk'
+MYSQL_PASSWORD = '1455140909'
 MYSQL_DB = 'IntelligentAnnotationSystem'
 """ 以上为变量为演示所用，正式开发时请统一写入config文件后引入 """
 

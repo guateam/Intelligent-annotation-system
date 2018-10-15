@@ -480,7 +480,7 @@ Format:
       }
       ```
 
-##### message 信息
+##### Message 信息
 
 1. 通知信息
 
@@ -537,19 +537,21 @@ Format:
 
 用户表 user：
 
-| Field    | Type         | Null | Key  | Default           | Extra              |
-| -------- | ------------ | ---- | ---- | ----------------- | ------------------ |
-| id       | int(11)      | NO   | PRI  | NULL              | auto_increment，id |
-| username | varchar(45)  | NO   |      | NULL              | 用户名             |
-| password | varchar(200) | NO   |      | NULL              | 密码               |
-| email    | varchar(45)  | NO   |      | NULL              | 邮箱               |
-| phone    | varchar(45)  | NO   |      | NULL              | 手机号             |
-| group    | int(11)      | NO   |      | NULL              | 用户组             |
-| is_del   | int(11)      | NO   |      | NULL              | 清除状态           |
-| nickname | varchar(45)  | NO   |      | NULL              | 昵称               |
-| date     | timestamp    | NO   |      | CURRENT_TIMESTAMP | 注册日期           |
-| personas | varchar(45)  | NO   |      | NULL              | 用户画像           |
-| token    | varchar(45)  | NO   |      | NULL              | token              |
+| Field       | Type         | Null | Key  | Default           | Extra              |
+| ----------- | ------------ | ---- | ---- | ----------------- | ------------------ |
+| id          | int(11)      | NO   | PRI  | NULL              | auto_increment，id |
+| username    | varchar(45)  | NO   |      | NULL              | 用户名             |
+| password    | varchar(200) | NO   |      | NULL              | 密码               |
+| email       | varchar(45)  | NO   |      | NULL              | 邮箱               |
+| phone       | varchar(45)  | NO   |      | NULL              | 手机号             |
+| group       | int(11)      | NO   |      | NULL              | 用户组             |
+| is_del      | int(11)      | NO   |      | NULL              | 清除状态           |
+| nickname    | varchar(45)  | NO   |      | NULL              | 昵称               |
+| date        | timestamp    | NO   |      | CURRENT_TIMESTAMP | 注册日期           |
+| personas    | varchar(45)  | NO   |      | NULL              | 用户画像           |
+| token       | varchar(45)  | NO   |      | NULL              | token              |
+| intro       | text         | YES  |      | NULL              | 用户简介           |
+| avatar_path | varchar(200) | YES  |      | NULL              | 用户头像路径       |
 
 文章表 article：
 
