@@ -16,7 +16,7 @@
                * [Account 账户](#account-账户)
                * [Reading 读书](#reading-读书)
                * [User 用户](#user-用户)
-               * [Information 信息](#information-信息)
+               * [Message 信息](#message-信息)
                * [Other 杂项](#other-杂项)
          * [Database 数据库](#database-数据库)
             * [Design 设计思路](#design-设计思路-1)
@@ -33,6 +33,33 @@ Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
 ## Process 开发进度表
 
+**此后进度转移到GitHub的Project标签下**
+
+2018-10-23
+
+<table>
+    <tr>
+        <td rowspan="2"><strong>服务端</strong></td>
+        <td><strong>接口</strong></td>
+        <td colspan="4">修改注册接口</td>
+    </tr>
+    <tr>
+        <td><strong>核心算法</strong></td>
+        <td colspan="4">尽快完成用户和文章推荐</td>
+    </tr>
+    <tr>
+        <td rowspan="2"><strong>网页应用</strong></td>
+        <td><strong>设计</strong></td>
+        <td colspan="4">阅读页</td>
+    </tr>
+    <tr>
+        <td><strong>制作</strong></td>
+        <td>修改注册页</td>
+        <td>阅读页面</td>
+        <td>Search</td>
+        <td>和服务端对接</td>
+    </tr>
+</table>
 2018-10-08
 
 ----
