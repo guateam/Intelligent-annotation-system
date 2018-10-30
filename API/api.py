@@ -1,8 +1,11 @@
+#! -*- coding:utf-8 -*-
 import datetime
 import os
 import random
 import string
 
+import requests
+from pyquery import PyQuery
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 
@@ -502,6 +505,44 @@ def change_route(route, change_type=0):
         return route.replace('/', '\\')
     else:
         return route.replace('\\', '/')
+
+
+def do_wiki_search(key_words):
+    """
+    从百科查询词条，使用引擎：百度百科
+    :param key_words: 关键字
+    :return: 搜索结果
+    """
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36',
+    }
+    base_url = 'https://baike.baidu.com/search/word?word={}'
+    target_url = base_url.format(key_words)
+    response = requests.get(url=target_url, headers=headers)
+    response.encoding = 'utf-8'
+    if response.status_code == requests.codes.ok:
+        doc = PyQuery(response.text)
+        para = doc.find('body > div.body-wrapper > div.content-wrapper > div > div.main-content > div.lemma-summary > div:nth-child(1)').text()
+        return jsonify({
+            'code': 1,
+            'msg': '',
+            'data': para,
+        })
+    else:
+        return jsonify({
+            'code': -1,
+            'msg': '页面请求失败',
+        })
+
+
+@app.route('/api/wiki/search')
+def wiki_search():
+    """
+    百科接口
+    :return:
+    """
+    key_words = request.args.get('kwd', type=str, default=None)
+    return do_wiki_search(key_words)
 
 
 if __name__ == '__main__':

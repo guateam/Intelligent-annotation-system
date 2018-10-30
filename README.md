@@ -181,7 +181,7 @@ Format:
 	}
 ```
 
-#### Document 文档
+#### Documentation 文档
 
 ##### Account 账户
 
@@ -549,6 +549,23 @@ Format:
          msg: msg,    # 信息
      }
      ```
+
+2. Search
+
+    - 接口 `/api/wiki/search`
+
+    - 参数 `kwd`-搜索关键字
+
+    - 返回值
+
+        ```shell
+        {
+            code: code,  # 1=成功, -1=页面请求失败
+            msg: msg,    # 信息
+            data: data,  # 搜索结果
+        }
+        ```
+
 
 ### Database 数据库
 
