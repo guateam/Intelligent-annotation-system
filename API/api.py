@@ -515,24 +515,30 @@ def do_wiki_search(key_words):
     """
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36',
-    }
+    }  # 设置UA
     base_url = 'https://baike.baidu.com/search/word?word={}'
     target_url = base_url.format(key_words)
     response = requests.get(url=target_url, headers=headers)
-    response.encoding = 'utf-8'
+    response.encoding = 'utf-8'  # 设置编码
     if response.status_code == requests.codes.ok:
-        doc = PyQuery(response.text)
+        doc = PyQuery(response.text)  # 加载解析器
         para = doc.find('body > div.body-wrapper > div.content-wrapper > div > div.main-content > div.lemma-summary > div:nth-child(1)').text()
-        return jsonify({
-            'code': 1,
-            'msg': '',
-            'data': para,
-        })
-    else:
-        return jsonify({
-            'code': -1,
-            'msg': '页面请求失败',
-        })
+        if para == "":
+            # 学校类词条
+            para = doc.find('body > div.body-wrapper.feature.feature_small.collegeSmall > div.feature_poster > div > div.poster-left > div.poster-top > div.lemma-summary > div:nth-child(1)').text()
+        if para == "":
+            # 明星类词条
+            para = doc.find('#posterCon > dd.desc > div > div:nth-child(1)').text()
+        if para != "":
+            return jsonify({
+                'code': 1,
+                'msg': '',
+                'data': para,
+            })
+    return jsonify({
+        'code': -1,
+        'msg': '页面请求失败',
+    })
 
 
 @app.route('/api/wiki/search')
